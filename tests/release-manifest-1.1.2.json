@@ -1,0 +1,9 @@
+{
+  "version": "1.1.2",
+  "build_time": "2026-10-10T13:59:35.4025767+03:00",
+  "executable_sha256": "CE4A176F095B88457D89008D3CE1B63C5C17502F18CB72640DE5ED2544A0DEFF",
+  "engine_tests": 121,
+  "engine_report": "design-engine-results-1.1.2.json",
+  "changes": "Centered symmetric chevron in a square dropdown badge, with equal stroke insets and stable rotation",
+  "runtime": "self-contained .NET 8 Windows x64"
+}

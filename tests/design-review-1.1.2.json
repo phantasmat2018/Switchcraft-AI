@@ -1,0 +1,11 @@
+{
+  "version": "1.1.2",
+  "verified_at": "2026-10-10T14:00:07.6051099+03:00",
+  "build": "passed",
+  "engine_tests": 121,
+  "visual_checks": [
+    "Closed: square badge and centered symmetric chevron",
+    "Open: centered upward chevron without positional shift",
+    "Escape: dropdown closes and downward chevron is restored"
+  ]
+}

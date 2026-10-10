@@ -1,0 +1,282 @@
+﻿{
+    "version":  "1.6.0",
+    "built_at":  "2026-10-10T17:44:42.0675430+03:00",
+    "filename":  "Switchcraft-Setup-1.6.0-win-x64-test.exe",
+    "test_build":  true,
+    "installer_sha256":  "72CB54E2E97669CD45C1C7A2048CB84D8C6D9C95625451C3FF184CF9DAC3BEF7",
+    "installer_bytes":  65404476,
+    "application_sha256":  "4F5D893D8EC81576FF35C392E4994CDD7DB8D5B77ADFF15AF9FE9758CBD1F2DE",
+    "signature":  "NotSigned",
+    "payload_files":  [
+                          {
+                              "path":  "D3DCompiler_47_cor3.dll",
+                              "size":  4741488,
+                              "sha256":  "A05F99734F7C4822FEFC12B367AF21FD0976ED6608752FB1E1E80B6ECE7ECBBB"
+                          },
+                          {
+                              "path":  "Dictionaries\\MPL-1.1.txt",
+                              "size":  25755,
+                              "sha256":  "F849FC26A7A99981611A3A370E83078DEB617D12A45776D6C4CADA4D338BE469"
+                          },
+                          {
+                              "path":  "Dictionaries\\NOTICE.md",
+                              "size":  1313,
+                              "sha256":  "893CD39E179FA51D2B81DD3F647D4D3DFB08CE98C4FEAA006C88C28830577829"
+                          },
+                          {
+                              "path":  "Dictionaries\\README_ru_RU.txt",
+                              "size":  1886,
+                              "sha256":  "262AF2F6AD70A61E5EE1332FF44FA8EE50EDCA819CF33207D8AD6BA6A0C9BE52"
+                          },
+                          {
+                              "path":  "Dictionaries\\README_uk_UA.txt",
+                              "size":  362,
+                              "sha256":  "664436FEE625B4A3E712483947D1711A2F467670F4C389BCF10ABCA2A564E1DC"
+                          },
+                          {
+                              "path":  "Dictionaries\\ru_RU.aff",
+                              "size":  71236,
+                              "sha256":  "38CE7D4AF78E211E9BAFE4BF7E3D6A2C420591136CB738EC6648F8FDF6524CD7"
+                          },
+                          {
+                              "path":  "Dictionaries\\ru_RU.dic",
+                              "size":  3473191,
+                              "sha256":  "F6047416A0204ADBECF3A451B874EC8A97EE37E2CBC714466EF04D8DBCC0D6FC"
+                          },
+                          {
+                              "path":  "Dictionaries\\uk_UA.aff",
+                              "size":  211759,
+                              "sha256":  "2219DD15E9802ADEBC45722C60943B1472640260491AF38DD3E43B07E75585E6"
+                          },
+                          {
+                              "path":  "Dictionaries\\uk_UA.dic",
+                              "size":  8919324,
+                              "sha256":  "2E5A9E67BE63BDB089B3459ADDB5D71113319D13768E277BCAE20F3CC1AD5A93"
+                          },
+                          {
+                              "path":  "Dictionaries\\WeCantSpell.Hunspell-LICENSE.txt",
+                              "size":  2060,
+                              "sha256":  "F25E0F8A8B9D551C3D5EAD234EFB2C89E2F24A0943C4E919173C89E7D4BE9A23"
+                          },
+                          {
+                              "path":  "Licenses\\dotnet-runtime-LICENSE.txt",
+                              "size":  1139,
+                              "sha256":  "D7A68596AB69B06F51CA278A6545148E4269A9381C26D597C13DF5D88E08CF5B"
+                          },
+                          {
+                              "path":  "Licenses\\dotnet-runtime-THIRD-PARTY-NOTICES.txt",
+                              "size":  68910,
+                              "sha256":  "B60B2912DA28EAA6518593C9E2EFB5334EE062D3C42E80D8FDFA806B3DC52977"
+                          },
+                          {
+                              "path":  "Licenses\\dotnet-windowsdesktop-LICENSE.txt",
+                              "size":  1137,
+                              "sha256":  "A89886665765362EB77E0F8E26602C924520041D1711B2EEDC136434FE4D01AB"
+                          },
+                          {
+                              "path":  "PenImc_cor3.dll",
+                              "size":  157968,
+                              "sha256":  "8CE3AF4E7AAEAD8158A4CA267BE93BBA0AF4F32C7D27368C71C3A7EB0960DBCC"
+                          },
+                          {
+                              "path":  "PresentationNative_cor3.dll",
+                              "size":  1235768,
+                              "sha256":  "00B7947C843A7564A0B168ED46ABFDB87F6AA6BAC8CA1BB277760F872C82FF95"
+                          },
+                          {
+                              "path":  "README.md",
+                              "size":  35244,
+                              "sha256":  "939709C115E2A4E3786297EB34E0EBDB5E623D43616152DD8EC6552834B744C0"
+                          },
+                          {
+                              "path":  "Runtime\\_FoundationICU.dll",
+                              "size":  37336576,
+                              "sha256":  "D0EAB0A521FC6F5A56385ABA3986F578886455C6102997B950340AD127A1769C"
+                          },
+                          {
+                              "path":  "Runtime\\BlocksRuntime.dll",
+                              "size":  11776,
+                              "sha256":  "12BF4225F22B3407ED0EC5D458606D8C5EB8580895AA8BCA64D50BD99DE7C4E9"
+                          },
+                          {
+                              "path":  "Runtime\\concrt140.dll",
+                              "size":  322640,
+                              "sha256":  "E2E4609C569C69F7B1686F6D0E81CE62187AC5DF05E0247954500053B3C3DE3F"
+                          },
+                          {
+                              "path":  "Runtime\\dispatch.dll",
+                              "size":  234496,
+                              "sha256":  "C1056EE527FCD2EB36911D1B9DB69CCCAB20EF59C6C8654A1FD8D7D9A2BFD491"
+                          },
+                          {
+                              "path":  "Runtime\\Foundation.dll",
+                              "size":  4742144,
+                              "sha256":  "190166905A9F6C43E9CA26E8BD73E1B2492E4B310C30CC5480EA4A2241BD45A1"
+                          },
+                          {
+                              "path":  "Runtime\\FoundationEssentials.dll",
+                              "size":  5492224,
+                              "sha256":  "405B663E4139B3449A51110FD47F69F9BB8A86B2F917C54399B669997279FA24"
+                          },
+                          {
+                              "path":  "Runtime\\FoundationInternationalization.dll",
+                              "size":  1546240,
+                              "sha256":  "AA0C31CE83B6230536B296FF1AABDCD467E08B60720C043A25139D1C8CF5ED57"
+                          },
+                          {
+                              "path":  "Runtime\\FoundationNetworking.dll",
+                              "size":  1476608,
+                              "sha256":  "524669B0823B307063DB197ECF8ED6F5776FC7C2F4456E41D75A023FCEF8F45E"
+                          },
+                          {
+                              "path":  "Runtime\\FoundationXML.dll",
+                              "size":  818688,
+                              "sha256":  "8A88E01565C321EB75334666D4125547F1D2DE5145E304AFF53524864B408D26"
+                          },
+                          {
+                              "path":  "Runtime\\msvcp140.dll",
+                              "size":  575592,
+                              "sha256":  "9057D39B36B6C7D054865EE2BF9CDE7A490FE3B01EC4E82514687E24F576269F"
+                          },
+                          {
+                              "path":  "Runtime\\msvcp140_1.dll",
+                              "size":  35944,
+                              "sha256":  "A65249861238E1C18B84AE5D112617C438D83A76B67EDDC170AD82DBC2338665"
+                          },
+                          {
+                              "path":  "Runtime\\msvcp140_2.dll",
+                              "size":  267880,
+                              "sha256":  "89E2E9A163165E20C540F9ADEA081E927DDFE4A556547B0F45F11586D4CCE165"
+                          },
+                          {
+                              "path":  "Runtime\\msvcp140_atomic_wait.dll",
+                              "size":  50256,
+                              "sha256":  "FBF41E4B53F51BBF73FEE37B6120103FEA6B7D5AE29916F8EF50C50CFDEDEEAD"
+                          },
+                          {
+                              "path":  "Runtime\\msvcp140_codecvt_ids.dll",
+                              "size":  31824,
+                              "sha256":  "0E1D3D76E899A89FB3893FB13ABAE232FF62AD4F573214DD2F02B8398166BCC6"
+                          },
+                          {
+                              "path":  "Runtime\\swift_Concurrency.dll",
+                              "size":  539136,
+                              "sha256":  "F9BA55296DC65C2D8ACA0258AAB8C0EB291A8F691A7ADC742941C058F4F4E7F3"
+                          },
+                          {
+                              "path":  "Runtime\\swift_Differentiation.dll",
+                              "size":  357376,
+                              "sha256":  "B9A9E9A1E927208F1A46269B5431C3BC9374F04B71679861CDD71C6E6B45CC75"
+                          },
+                          {
+                              "path":  "Runtime\\swift_RegexParser.dll",
+                              "size":  970240,
+                              "sha256":  "55D0BC032BFCD9612EAAB4602F6C1BC25C33F1A6DBC6DBB769BA3215A15C7662"
+                          },
+                          {
+                              "path":  "Runtime\\swift_StringProcessing.dll",
+                              "size":  668672,
+                              "sha256":  "D5F864B489BA895D22D0F6AC8CBC137B113F98B82E0BEBDA7AE7D4F61FBC396F"
+                          },
+                          {
+                              "path":  "Runtime\\swiftCore.dll",
+                              "size":  6124544,
+                              "sha256":  "979DD3B60DEC6EDB0CD18EA4A8BB7FE46F657C4CDD252229647887A7F6A00F56"
+                          },
+                          {
+                              "path":  "Runtime\\swiftCRT.dll",
+                              "size":  39936,
+                              "sha256":  "38C0DC258FF72BBA50A834AD7E0F5CE9B059C08E58FC1DF2C2440029D30C18EC"
+                          },
+                          {
+                              "path":  "Runtime\\swiftDispatch.dll",
+                              "size":  150528,
+                              "sha256":  "7C343592E4FD76E48716D81757D9800ACCDA7AE05D1659E2D5C855F17BF40D39"
+                          },
+                          {
+                              "path":  "Runtime\\swiftDistributed.dll",
+                              "size":  100352,
+                              "sha256":  "D4AE894FB17388D8E1496C2EED43E74EE5E9B72A6D626371536A4A39253E93AB"
+                          },
+                          {
+                              "path":  "Runtime\\swiftObservation.dll",
+                              "size":  77824,
+                              "sha256":  "092ACF7DCD245D463A00283C772BC904386FD21E8D0303175AFBAD6300BA8C00"
+                          },
+                          {
+                              "path":  "Runtime\\swiftRegexBuilder.dll",
+                              "size":  78336,
+                              "sha256":  "54E8B95DA370ED24186163970094160848DDC230F8F28E8A6C8C34DF873229B7"
+                          },
+                          {
+                              "path":  "Runtime\\swiftRemoteMirror.dll",
+                              "size":  863744,
+                              "sha256":  "CD0447723F99E07877BA41F264A4272F721A4B5C425C7467F0507917BCDABB44"
+                          },
+                          {
+                              "path":  "Runtime\\swiftSwiftOnoneSupport.dll",
+                              "size":  218624,
+                              "sha256":  "087AA2AB730BA7A05B01743860067D910893C170739AC965E750BE5963C02408"
+                          },
+                          {
+                              "path":  "Runtime\\swiftSynchronization.dll",
+                              "size":  54272,
+                              "sha256":  "CC64EFF717F2131EC61B10EE9B9D0BE4A3C3FDE8293554B4C17489AFE2BE78F7"
+                          },
+                          {
+                              "path":  "Runtime\\swiftWinSDK.dll",
+                              "size":  32256,
+                              "sha256":  "0577821432DCC694DA5E87AB8FE5FD46806608839E162C834E511BB47F1F4AD0"
+                          },
+                          {
+                              "path":  "Runtime\\typeswitcher_rules.json",
+                              "size":  3447066,
+                              "sha256":  "276E0EBE36E1E1DB54571B7C0C3E8D409FED4068AF15EAD49A69D5446ECF618E"
+                          },
+                          {
+                              "path":  "Runtime\\TypeSwitcherCABI.dll",
+                              "size":  1381376,
+                              "sha256":  "D145819FE7EEE4E98DE62859B6A60E61899D02AF874CA376F119A0941321BB6F"
+                          },
+                          {
+                              "path":  "Runtime\\vccorlib140.dll",
+                              "size":  351824,
+                              "sha256":  "8903B5D88968791D2A93648A54A1AC3D1C708C579A72311FFE194F6D66903043"
+                          },
+                          {
+                              "path":  "Runtime\\vcruntime140.dll",
+                              "size":  120432,
+                              "sha256":  "DA72E6677BD1BCD01C453C1998AAA19AEAF6659F4774CF6848409DA8232A95B2"
+                          },
+                          {
+                              "path":  "Runtime\\vcruntime140_1.dll",
+                              "size":  49744,
+                              "sha256":  "26E470B29BED3D873E0C328186E53F95E9EDBFE0B0FD0CDA44743A0B1A04A828"
+                          },
+                          {
+                              "path":  "Runtime\\vcruntime140_threads.dll",
+                              "size":  38504,
+                              "sha256":  "326110C8C5CAC836CFED1643304CB6BDC4A8737A7A535D6B1EFF4D63878AEF9D"
+                          },
+                          {
+                              "path":  "Switchcraft.exe",
+                              "size":  154261075,
+                              "sha256":  "4F5D893D8EC81576FF35C392E4994CDD7DB8D5B77ADFF15AF9FE9758CBD1F2DE"
+                          },
+                          {
+                              "path":  "THIRD-PARTY.md",
+                              "size":  3508,
+                              "sha256":  "9CD5FB4A90BB88E12360B7EAA6A7C8528BB0E8AA8A42891A876D5B40A236C8C3"
+                          },
+                          {
+                              "path":  "vcruntime140_cor3.dll",
+                              "size":  124544,
+                              "sha256":  "D5E4D9A3E835FA679450145D6A7D94E36573A509317111904D9B3712C30D9066"
+                          },
+                          {
+                              "path":  "wpfgfx_cor3.dll",
+                              "size":  1951544,
+                              "sha256":  "07C3631D158122AC48110BF81B1F67AA80C6965C8996AC1DDA534B2766970B83"
+                          }
+                      ]
+}

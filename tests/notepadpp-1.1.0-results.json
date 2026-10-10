@@ -1,0 +1,47 @@
+{
+  "version": "1.1.0",
+  "timestamp": "2026-10-10T13:09:55.6653612+03:00",
+  "application": "Notepad++",
+  "method": "Observed real Notepad++ scratch tab through computer-use screenshots; physical keys and Switchcraft shortcuts. No changes to existing user documents.",
+  "total": 5,
+  "passed": 5,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "Selected text to English",
+      "input": "п",
+      "action": "Ctrl+Alt+2",
+      "expected": "g",
+      "actual": "g",
+      "passed": true
+    },
+    {
+      "name": "Auto correction after space",
+      "input": "ghbdtn ",
+      "expected": "привет ",
+      "actual": "привет ",
+      "passed": true
+    },
+    {
+      "name": "Undo auto correction",
+      "action": "Ctrl+Alt+Backspace",
+      "expected": "ghbdtn ",
+      "actual": "ghbdtn ",
+      "passed": true
+    },
+    {
+      "name": "Enter consumed by Notepad++ autocomplete",
+      "input": "ghbdtn",
+      "expected": "ghbdtn, unchanged with no inserted newline",
+      "actual": "ghbdtn, unchanged with no inserted newline",
+      "passed": true
+    },
+    {
+      "name": "Auto correction after Enter",
+      "input": "rjulf + Enter",
+      "expected": "когда followed by one CRLF",
+      "actual": "когда followed by one CRLF",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "version": "1.2.0",
+  "verified_at": "2026-10-10T14:42:37.5582591+03:00",
+  "ui_checks": [
+    "Settings: TypeSafe toggle is visible and off by default",
+    "Enabling shows API key and model fields with text-transfer disclosure",
+    "Missing key is explained without sending a request",
+    "Disabling hides connection fields and restores local sidebar status"
+  ],
+  "final_mode": "local",
+  "api_key_configured": false,
+  "live_api_verified": false
+}

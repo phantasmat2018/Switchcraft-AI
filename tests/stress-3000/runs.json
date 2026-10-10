@@ -1,0 +1,149 @@
+[
+  {
+    "name": "control-paused-fast",
+    "sensitivity": "balanced",
+    "paused": true,
+    "sentCharacters": 3000,
+    "actualCharacters": 3000,
+    "targetDelayMs": 2,
+    "wordPauseMs": 0,
+    "typingSeconds": 13.1505214,
+    "actualCharactersPerSecond": 228.12783681717744,
+    "exactInputPreserved": false,
+    "exactExpectedText": false,
+    "sameCharacterCount": true,
+    "inputEditDistance": 25,
+    "expectedEditDistance": 25,
+    "expectedCorrections": 0,
+    "confirmedCorrections": 0,
+    "corrections": [],
+    "differences": [
+      {
+        "token": 16,
+        "expected": "натиснув",
+        "actual": "натиaнув"
+      },
+      {
+        "token": 33,
+        "expected": "08:30,",
+        "actual": "08:s0,"
+      },
+      {
+        "token": 47,
+        "expected": "the",
+        "actual": "Сhe"
+      },
+      {
+        "token": 57,
+        "expected": "допомогу,",
+        "actual": "доповогу,"
+      },
+      {
+        "token": 71,
+        "expected": "цього",
+        "actual": "цьогn"
+      },
+      {
+        "token": 75,
+        "expected": "проєкт,",
+        "actual": "проєки,"
+      },
+      {
+        "token": 94,
+        "expected": "місці.",
+        "actual": "мисці."
+      },
+      {
+        "token": 104,
+        "expected": "ночи,",
+        "actual": "ночm,"
+      },
+      {
+        "token": 146,
+        "expected": "українською",
+        "actual": "українсокою"
+      },
+      {
+        "token": 148,
+        "expected": "зайвого",
+        "actual": "аайвого"
+      },
+      {
+        "token": 177,
+        "expected": "такси",
+        "actual": "такЛи"
+      },
+      {
+        "token": 202,
+        "expected": "Кыргызстан",
+        "actual": "Кыъгызстан"
+      },
+      {
+        "token": 207,
+        "expected": "нотатці.",
+        "actual": "tотатціI"
+      },
+      {
+        "token": 229,
+        "expected": "г,",
+        "actual": "а,"
+      },
+      {
+        "token": 239,
+        "expected": "stop,",
+        "actual": "нtop,"
+      },
+      {
+        "token": 282,
+        "expected": "короткий",
+        "actual": "короткиа"
+      },
+      {
+        "token": 338,
+        "expected": "рядок,",
+        "actual": "рядокd"
+      },
+      {
+        "token": 346,
+        "expected": "sentence.",
+        "actual": ",entence."
+      },
+      {
+        "token": 348,
+        "expected": "збережеться",
+        "actual": "збееежеться"
+      },
+      {
+        "token": 432,
+        "expected": "test",
+        "actual": "t.st"
+      },
+      {
+        "token": 434,
+        "expected": "Фінальна",
+        "actual": "Фінал.на"
+      },
+      {
+        "token": 437,
+        "expected": "зберегли",
+        "actual": "з.ерегли"
+      },
+      {
+        "token": 439,
+        "expected": "сохранили",
+        "actual": "сохра.или"
+      },
+      {
+        "token": 451,
+        "expected": "the",
+        "actual": "t.e"
+      }
+    ],
+    "messages": [],
+    "hookStillRunning": true,
+    "health": "",
+    "maxUiHeartbeatGapMs": 71.0483,
+    "cpuSeconds": 16.65625,
+    "workingSetBytes": 280559616
+  }
+]

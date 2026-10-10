@@ -1,0 +1,9 @@
+{
+  "version": "1.1.1",
+  "build_time": "2026-10-10T13:55:23.7372610+03:00",
+  "executable_sha256": "9229A2E52BF3FA076B375293BFCA3EE1CAF3B1E608F535D3A378CABD324C0409",
+  "engine_tests": 121,
+  "engine_report": "design-engine-results.json",
+  "changes": "Dark button palette, vector ComboBox chevron and states, S monogram and multiresolution icon",
+  "runtime": "self-contained .NET 8 Windows x64"
+}

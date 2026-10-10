@@ -1,0 +1,266 @@
+{
+  "timestamp": "2026-10-10T13:44:52.4742277+03:00",
+  "installer_sha256": "502E2188F875246A6948DA3EAE47888CA9F8CE1D07046779EB09656579D3A464",
+  "total": 64,
+  "passed": 64,
+  "failed": 0,
+  "error": null,
+  "checks": [
+    {
+      "name": "Exact release installer hash",
+      "passed": true
+    },
+    {
+      "name": "Release installer succeeds in a path containing spaces",
+      "passed": true
+    },
+    {
+      "name": "Release payload: D3DCompiler_47_cor3.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Dictionaries\\MPL-1.1.txt",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Dictionaries\\NOTICE.md",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Dictionaries\\README_ru_RU.txt",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Dictionaries\\README_uk_UA.txt",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Dictionaries\\ru_RU.aff",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Dictionaries\\ru_RU.dic",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Dictionaries\\uk_UA.aff",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Dictionaries\\uk_UA.dic",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Dictionaries\\WeCantSpell.Hunspell-LICENSE.txt",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Licenses\\dotnet-runtime-LICENSE.txt",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Licenses\\dotnet-runtime-THIRD-PARTY-NOTICES.txt",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Licenses\\dotnet-windowsdesktop-LICENSE.txt",
+      "passed": true
+    },
+    {
+      "name": "Release payload: PenImc_cor3.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: PresentationNative_cor3.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: README.md",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\_FoundationICU.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\BlocksRuntime.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\concrt140.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\dispatch.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\Foundation.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\FoundationEssentials.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\FoundationInternationalization.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\FoundationNetworking.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\FoundationXML.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\msvcp140_1.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\msvcp140_2.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\msvcp140_atomic_wait.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\msvcp140_codecvt_ids.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\msvcp140.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swift_Concurrency.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swift_Differentiation.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swift_RegexParser.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swift_StringProcessing.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swiftCore.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swiftCRT.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swiftDispatch.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swiftDistributed.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swiftObservation.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swiftRegexBuilder.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swiftRemoteMirror.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swiftSwiftOnoneSupport.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swiftSynchronization.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\swiftWinSDK.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\typeswitcher_rules.json",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\TypeSwitcherCABI.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\vccorlib140.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\vcruntime140_1.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\vcruntime140_threads.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Runtime\\vcruntime140.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: Switchcraft.exe",
+      "passed": true
+    },
+    {
+      "name": "Release payload: THIRD-PARTY.md",
+      "passed": true
+    },
+    {
+      "name": "Release payload: vcruntime140_cor3.dll",
+      "passed": true
+    },
+    {
+      "name": "Release payload: wpfgfx_cor3.dll",
+      "passed": true
+    },
+    {
+      "name": "Real uninstall registration is correct",
+      "passed": true
+    },
+    {
+      "name": "Real desktop shortcut is correct",
+      "passed": true
+    },
+    {
+      "name": "Real Start menu shortcut is correct",
+      "passed": true
+    },
+    {
+      "name": "Autostart remains disabled",
+      "passed": true
+    },
+    {
+      "name": "Uninstall target matches the verified sandbox",
+      "passed": true
+    },
+    {
+      "name": "Exact release uninstaller succeeds",
+      "passed": true
+    },
+    {
+      "name": "Release uninstall removes installed files and folder",
+      "passed": true
+    },
+    {
+      "name": "Release uninstall removes registration and shortcuts",
+      "passed": true
+    }
+  ]
+}

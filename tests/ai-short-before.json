@@ -1,0 +1,174 @@
+{
+  "synthetic_only": true,
+  "model": "jev-latest",
+  "results": [
+    {
+      "word": "\u044B",
+      "context": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439",
+      "candidates": {
+        "keep": "\u044B",
+        "en": "s",
+        "uk": "\u0456"
+      },
+      "local": {
+        "Original": "\u044B",
+        "Text": "\u044B",
+        "Changed": false,
+        "Confidence": 0,
+        "Target": "uk",
+        "Reason": "length_1_no_exact_pair"
+      },
+      "elapsed_ms": 369,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "uk",
+        "confidence": 0.48,
+        "probabilities": {
+          "keep": 0.31,
+          "en": 0.04,
+          "uk": 0.65
+        }
+      },
+      "accepted_decision": {
+        "Choice": "uk",
+        "Confidence": 0.48,
+        "Certain": false
+      },
+      "status": "TypeSafe \u043D\u0435 \u0432\u043F\u0435\u0432\u043D\u0435\u043D\u0438\u0439 \u00B7 \u043F\u0440\u0430\u0446\u044E\u0454 \u043B\u043E\u043A\u0430\u043B\u044C\u043D\u0438\u0439 \u0440\u0443\u0448\u0456\u0439"
+    },
+    {
+      "word": "\u044B",
+      "context": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439 \u0437\u0435\u043B\u0435\u043D\u0438\u0439",
+      "candidates": {
+        "keep": "\u044B",
+        "en": "s",
+        "uk": "\u0456"
+      },
+      "local": {
+        "Original": "\u044B",
+        "Text": "\u044B",
+        "Changed": false,
+        "Confidence": 0,
+        "Target": "uk",
+        "Reason": "length_1_no_exact_pair"
+      },
+      "elapsed_ms": 231,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "uk",
+        "confidence": 0.37,
+        "probabilities": {
+          "keep": 0.33,
+          "en": 0.09,
+          "uk": 0.58
+        }
+      },
+      "accepted_decision": {
+        "Choice": "uk",
+        "Confidence": 0.37,
+        "Certain": false
+      },
+      "status": "TypeSafe \u043D\u0435 \u0432\u043F\u0435\u0432\u043D\u0435\u043D\u0438\u0439 \u00B7 \u043F\u0440\u0430\u0446\u044E\u0454 \u043B\u043E\u043A\u0430\u043B\u044C\u043D\u0438\u0439 \u0440\u0443\u0448\u0456\u0439"
+    },
+    {
+      "word": "\u044B",
+      "context": "\u0411\u0443\u043A\u0432\u0430",
+      "candidates": {
+        "keep": "\u044B",
+        "en": "s",
+        "uk": "\u0456"
+      },
+      "local": {
+        "Original": "\u044B",
+        "Text": "\u044B",
+        "Changed": false,
+        "Confidence": 0,
+        "Target": "uk",
+        "Reason": "length_1_no_exact_pair"
+      },
+      "elapsed_ms": 272,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "keep",
+        "confidence": 0.85,
+        "probabilities": {
+          "keep": 0.9,
+          "en": 0.07,
+          "uk": 0.03
+        }
+      },
+      "accepted_decision": {
+        "Choice": "keep",
+        "Confidence": 0.85,
+        "Certain": true
+      },
+      "status": "TypeSafe \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E"
+    },
+    {
+      "word": "\u0456",
+      "context": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439",
+      "candidates": {
+        "keep": "\u0456",
+        "en": "s",
+        "ru": "\u044B"
+      },
+      "local": {
+        "Original": "\u0456",
+        "Text": "\u0456",
+        "Changed": false,
+        "Confidence": 0,
+        "Target": "uk",
+        "Reason": "known_original"
+      },
+      "elapsed_ms": 250,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "keep",
+        "confidence": 0.66,
+        "probabilities": {
+          "keep": 0.77,
+          "en": 0.07,
+          "ru": 0.16
+        }
+      },
+      "accepted_decision": {
+        "Choice": "keep",
+        "Confidence": 0.66,
+        "Certain": false
+      },
+      "status": "TypeSafe \u043D\u0435 \u0432\u043F\u0435\u0432\u043D\u0435\u043D\u0438\u0439 \u00B7 \u043F\u0440\u0430\u0446\u044E\u0454 \u043B\u043E\u043A\u0430\u043B\u044C\u043D\u0438\u0439 \u0440\u0443\u0448\u0456\u0439"
+    },
+    {
+      "word": "\u0438",
+      "context": "\u041A\u0440\u0430\u0441\u043D\u044B\u0439",
+      "candidates": {
+        "keep": "\u0438",
+        "en": "b"
+      },
+      "local": {
+        "Original": "\u0438",
+        "Text": "\u0438",
+        "Changed": false,
+        "Confidence": 0,
+        "Target": "ru",
+        "Reason": "known_original"
+      },
+      "elapsed_ms": 227,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "keep",
+        "confidence": 0.88,
+        "probabilities": {
+          "keep": 0.94,
+          "en": 0.06
+        }
+      },
+      "accepted_decision": {
+        "Choice": "keep",
+        "Confidence": 0.88,
+        "Certain": true
+      },
+      "status": "TypeSafe \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E"
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "timestamp": "2026-10-10T15:37:18.511242+03:00",
+  "total": 19,
+  "passed": 19,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "AI hook applies the selected candidate",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442 "
+    },
+    {
+      "name": "AI correction uses existing undo",
+      "passed": true,
+      "actual": "ghbdsn "
+    },
+    {
+      "name": "Input stays healthy while HTTP is pending",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "New input cancels pending AI replacement",
+      "passed": true,
+      "actual": "ghbdsn hello"
+    },
+    {
+      "name": "Idle retries the completed word with fresh text verification",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442 hello"
+    },
+    {
+      "name": "Mode off cancels in-flight AI work",
+      "passed": true,
+      "actual": "ghbdsn "
+    },
+    {
+      "name": "Mode off restores local correction with no HTTP",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442 "
+    },
+    {
+      "name": "Short mismatch corrected after continuous three-word typing",
+      "passed": true,
+      "actual": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439 \u0456 \u0437\u0435\u043B\u0435\u043D\u0438\u0439 "
+    },
+    {
+      "name": "Short retry undo preserves following text",
+      "passed": true,
+      "actual": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439 \u044B \u0437\u0435\u043B\u0435\u043D\u0438\u0439 "
+    },
+    {
+      "name": "Short retry learning uses only corrected word",
+      "passed": true,
+      "actual": "\u044B"
+    },
+    {
+      "name": "Short mismatch corrected at first pause",
+      "passed": true,
+      "actual": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439 \u0456 "
+    },
+    {
+      "name": "Letter discussion is preserved during live typing",
+      "passed": true,
+      "actual": "\u0423\u043A\u0440\u0430\u0457\u043D\u0441\u044C\u043A\u0430 \u0431\u0443\u043A\u0432\u0430 \u044B "
+    },
+    {
+      "name": "Valid Russian conjunction preserved during live typing",
+      "passed": true,
+      "actual": "\u041A\u0440\u0430\u0441\u043D\u044B\u0439 \u0438 \u0437\u0435\u043B\u0451\u043D\u044B\u0439 "
+    },
+    {
+      "name": "Valid Ukrainian conjunction preserved during live typing",
+      "passed": true,
+      "actual": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439 \u0456 \u0437\u0435\u043B\u0435\u043D\u0438\u0439 "
+    },
+    {
+      "name": "Moving caret invalidates delayed short retry",
+      "passed": true,
+      "actual": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439 \u044B \u0437\u0435\u043B\u0435\u043D\u0438\u0439 "
+    },
+    {
+      "name": "Changed editor suffix rejects delayed short retry",
+      "passed": true,
+      "actual": "\u0417\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u0438\u0439 \u0442\u0435\u043A\u0441\u0442 "
+    },
+    {
+      "name": "Backspace cancels delayed short retry",
+      "passed": true,
+      "actual": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439 \u044B \u0437\u0435\u043B\u0435\u043D\u0438\u0439"
+    },
+    {
+      "name": "AI mode never sends password-field input",
+      "passed": true,
+      "actual": "synthetic password untouched"
+    },
+    {
+      "name": "AI mode respects app exclusions before HTTP",
+      "passed": true,
+      "actual": "ghbdsn "
+    }
+  ],
+  "messages": [
+    "\u041E\u0441\u0442\u0430\u043D\u043D\u0454 \u0432\u0438\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043D\u044F \u0441\u043A\u0430\u0441\u043E\u0432\u0430\u043D\u043E.",
+    "\u041E\u0441\u0442\u0430\u043D\u043D\u0454 \u0432\u0438\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043D\u044F \u0441\u043A\u0430\u0441\u043E\u0432\u0430\u043D\u043E."
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "synthetic_only": true,
+  "model": "jev-latest",
+  "results": [
+    {
+      "word": "ghbdtn",
+      "candidates": {
+        "keep": "ghbdtn",
+        "uk": "\u043F\u0440\u0438\u0432\u0435\u0442",
+        "ru": "\u043F\u0440\u0438\u0432\u0435\u0442"
+      },
+      "elapsed_ms": 455,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "ru",
+        "confidence": 0.77,
+        "probabilities": {
+          "keep": 0.13,
+          "uk": 0.02,
+          "ru": 0.85
+        }
+      },
+      "accepted_decision": {
+        "Choice": "keep",
+        "Confidence": 0.77
+      },
+      "status": "TypeSafe \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E"
+    },
+    {
+      "word": "ghbdsn",
+      "candidates": {
+        "keep": "ghbdsn",
+        "uk": "\u043F\u0440\u0438\u0432\u0456\u0442",
+        "ru": "\u043F\u0440\u0438\u0432\u044B\u0442"
+      },
+      "elapsed_ms": 259,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "keep",
+        "confidence": 0.28,
+        "probabilities": {
+          "keep": 0.52,
+          "uk": 0.38,
+          "ru": 0.1
+        }
+      },
+      "accepted_decision": {
+        "Choice": "keep",
+        "Confidence": 0.28
+      },
+      "status": "TypeSafe \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E"
+    },
+    {
+      "word": "\u0440\u0443\u0434\u0434\u0449",
+      "candidates": {
+        "keep": "\u0440\u0443\u0434\u0434\u0449",
+        "en": "hello"
+      },
+      "elapsed_ms": 261,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "keep",
+        "confidence": 0.26,
+        "probabilities": {
+          "keep": 0.63,
+          "en": 0.37
+        }
+      },
+      "accepted_decision": {
+        "Choice": "keep",
+        "Confidence": 0.26
+      },
+      "status": "TypeSafe \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E"
+    },
+    {
+      "word": "hello",
+      "candidates": {
+        "keep": "hello",
+        "uk": "\u0440\u0443\u0434\u0434\u0449",
+        "ru": "\u0440\u0443\u0434\u0434\u0449"
+      },
+      "elapsed_ms": 276,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "keep",
+        "confidence": 0.94,
+        "probabilities": {
+          "keep": 0.96,
+          "uk": 0.01,
+          "ru": 0.03
+        }
+      },
+      "accepted_decision": {
+        "Choice": "keep",
+        "Confidence": 0.94
+      },
+      "status": "TypeSafe \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E"
+    },
+    {
+      "word": "\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439",
+      "candidates": {
+        "keep": "\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439",
+        "en": "rjcvfnsq",
+        "ru": "\u043A\u043E\u0441\u043C\u0430\u0442\u044B\u0439"
+      },
+      "elapsed_ms": 260,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "ru",
+        "confidence": 0.52,
+        "probabilities": {
+          "keep": 0.31,
+          "en": 0.01,
+          "ru": 0.68
+        }
+      },
+      "accepted_decision": {
+        "Choice": "keep",
+        "Confidence": 0.52
+      },
+      "status": "TypeSafe \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E"
+    }
+  ]
+}

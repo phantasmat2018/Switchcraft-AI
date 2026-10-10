@@ -1,0 +1,144 @@
+{
+  "synthetic_only": true,
+  "model": "jev-latest",
+  "results": [
+    {
+      "word": "\u0441\u0442\u043E\u044A\u0442\u044C",
+      "context": "\u043E\u0439 \u0447\u0438\u0439 \u0442\u043E \u043A\u0456\u043D\u044C",
+      "following": "",
+      "candidates": {
+        "keep": "\u0441\u0442\u043E\u044A\u0442\u044C",
+        "en": "cnj]nm",
+        "uk": "\u0441\u0442\u043E\u0457\u0442\u044C"
+      },
+      "local": {
+        "Original": "\u0441\u0442\u043E\u044A\u0442\u044C",
+        "Text": "\u0441\u0442\u043E\u0457\u0442\u044C",
+        "Changed": true,
+        "Confidence": 0.99,
+        "Target": "uk",
+        "Reason": "cyrillic_dictionary"
+      },
+      "elapsed_ms": 411,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "uk",
+        "confidence": 0.88,
+        "probabilities": {
+          "keep": 0.08,
+          "en": 0.0,
+          "uk": 0.92
+        }
+      },
+      "accepted_decision": {
+        "Choice": "uk",
+        "Confidence": 0.88,
+        "Certain": true
+      },
+      "status": "TypeSafe \u00B7 UK"
+    },
+    {
+      "word": "\u0441\u0442\u043E\u044A\u0442\u044C",
+      "context": "\u043E\u0439 \u0447\u0438\u0439 \u0442\u043E \u043A\u0456\u043D\u044C",
+      "following": "",
+      "candidates": {
+        "keep": "\u0441\u0442\u043E\u044A\u0442\u044C",
+        "en": "cnj]nm",
+        "uk": "\u0441\u0442\u043E\u0457\u0442\u044C"
+      },
+      "local": {
+        "Original": "\u0441\u0442\u043E\u044A\u0442\u044C",
+        "Text": "\u0441\u0442\u043E\u0457\u0442\u044C",
+        "Changed": true,
+        "Confidence": 0.99,
+        "Target": "uk",
+        "Reason": "cyrillic_dictionary"
+      },
+      "elapsed_ms": 246,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "uk",
+        "confidence": 0.91,
+        "probabilities": {
+          "keep": 0.06,
+          "en": 0.0,
+          "uk": 0.9400000000000001
+        }
+      },
+      "accepted_decision": {
+        "Choice": "uk",
+        "Confidence": 0.91,
+        "Certain": true
+      },
+      "status": "TypeSafe \u00B7 UK"
+    },
+    {
+      "word": "\u0441\u0442\u043E\u044A\u0442\u044C",
+      "context": "\u043E\u0439 \u0447\u0438\u0439 \u0442\u043E \u043A\u0456\u043D\u044C",
+      "following": "",
+      "candidates": {
+        "keep": "\u0441\u0442\u043E\u044A\u0442\u044C",
+        "uk": "\u0441\u0442\u043E\u0457\u0442\u044C"
+      },
+      "local": {
+        "Original": "\u0441\u0442\u043E\u044A\u0442\u044C",
+        "Text": "\u0441\u0442\u043E\u0457\u0442\u044C",
+        "Changed": true,
+        "Confidence": 0.99,
+        "Target": "uk",
+        "Reason": "cyrillic_dictionary"
+      },
+      "elapsed_ms": 273,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "uk",
+        "confidence": 0.88,
+        "probabilities": {
+          "keep": 0.06,
+          "uk": 0.94
+        }
+      },
+      "accepted_decision": {
+        "Choice": "uk",
+        "Confidence": 0.88,
+        "Certain": true
+      },
+      "status": "TypeSafe \u00B7 UK"
+    },
+    {
+      "word": "\u0441\u0442\u043E\u0457\u0442\u044C",
+      "context": "\u043E\u0439 \u0447\u0438\u0439 \u0442\u043E \u043A\u0456\u043D\u044C",
+      "following": "",
+      "candidates": {
+        "keep": "\u0441\u0442\u043E\u0457\u0442\u044C",
+        "en": "cnj]nm",
+        "ru": "\u0441\u0442\u043E\u044A\u0442\u044C"
+      },
+      "local": {
+        "Original": "\u0441\u0442\u043E\u0457\u0442\u044C",
+        "Text": "\u0441\u0442\u043E\u0457\u0442\u044C",
+        "Changed": false,
+        "Confidence": 0,
+        "Target": "uk",
+        "Reason": "known_original"
+      },
+      "elapsed_ms": 225,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "keep",
+        "confidence": 0.86,
+        "probabilities": {
+          "keep": 0.91,
+          "en": 0.01,
+          "ru": 0.08
+        }
+      },
+      "accepted_decision": {
+        "Choice": "keep",
+        "Confidence": 0.86,
+        "Certain": true
+      },
+      "status": "TypeSafe \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E"
+    }
+  ]
+}

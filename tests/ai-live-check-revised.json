@@ -1,0 +1,129 @@
+{
+  "synthetic_only": true,
+  "model": "jev-latest",
+  "results": [
+    {
+      "word": "ghbdtn",
+      "candidates": {
+        "keep": "ghbdtn",
+        "uk": "\u043F\u0440\u0438\u0432\u0435\u0442",
+        "ru": "\u043F\u0440\u0438\u0432\u0435\u0442"
+      },
+      "elapsed_ms": 382,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "ru",
+        "confidence": 0.94,
+        "probabilities": {
+          "keep": 0.02,
+          "uk": 0.02,
+          "ru": 0.96
+        }
+      },
+      "accepted_decision": {
+        "Choice": "ru",
+        "Confidence": 0.94,
+        "Certain": true
+      },
+      "status": "TypeSafe \u00B7 RU"
+    },
+    {
+      "word": "ghbdsn",
+      "candidates": {
+        "keep": "ghbdsn",
+        "uk": "\u043F\u0440\u0438\u0432\u0456\u0442",
+        "ru": "\u043F\u0440\u0438\u0432\u044B\u0442"
+      },
+      "elapsed_ms": 242,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "uk",
+        "confidence": 0.7,
+        "probabilities": {
+          "keep": 0.13,
+          "uk": 0.8,
+          "ru": 0.07
+        }
+      },
+      "accepted_decision": {
+        "Choice": "uk",
+        "Confidence": 0.7,
+        "Certain": false
+      },
+      "status": "TypeSafe \u043D\u0435 \u0432\u043F\u0435\u0432\u043D\u0435\u043D\u0438\u0439 \u00B7 \u043F\u0440\u0430\u0446\u044E\u0454 \u043B\u043E\u043A\u0430\u043B\u044C\u043D\u0438\u0439 \u0440\u0443\u0448\u0456\u0439"
+    },
+    {
+      "word": "\u0440\u0443\u0434\u0434\u0449",
+      "candidates": {
+        "keep": "\u0440\u0443\u0434\u0434\u0449",
+        "en": "hello"
+      },
+      "elapsed_ms": 228,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "en",
+        "confidence": 0.7,
+        "probabilities": {
+          "keep": 0.15,
+          "en": 0.85
+        }
+      },
+      "accepted_decision": {
+        "Choice": "en",
+        "Confidence": 0.7,
+        "Certain": false
+      },
+      "status": "TypeSafe \u043D\u0435 \u0432\u043F\u0435\u0432\u043D\u0435\u043D\u0438\u0439 \u00B7 \u043F\u0440\u0430\u0446\u044E\u0454 \u043B\u043E\u043A\u0430\u043B\u044C\u043D\u0438\u0439 \u0440\u0443\u0448\u0456\u0439"
+    },
+    {
+      "word": "hello",
+      "candidates": {
+        "keep": "hello",
+        "uk": "\u0440\u0443\u0434\u0434\u0449",
+        "ru": "\u0440\u0443\u0434\u0434\u0449"
+      },
+      "elapsed_ms": 227,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "keep",
+        "confidence": 0.98,
+        "probabilities": {
+          "keep": 0.99,
+          "uk": 0.01,
+          "ru": 0.0
+        }
+      },
+      "accepted_decision": {
+        "Choice": "keep",
+        "Confidence": 0.98,
+        "Certain": true
+      },
+      "status": "TypeSafe \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E"
+    },
+    {
+      "word": "\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439",
+      "candidates": {
+        "keep": "\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439",
+        "en": "rjcvfnsq",
+        "ru": "\u043A\u043E\u0441\u043C\u0430\u0442\u044B\u0439"
+      },
+      "elapsed_ms": 243,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "ru",
+        "confidence": 0.64,
+        "probabilities": {
+          "keep": 0.23,
+          "en": 0.01,
+          "ru": 0.76
+        }
+      },
+      "accepted_decision": {
+        "Choice": "ru",
+        "Confidence": 0.64,
+        "Certain": false
+      },
+      "status": "TypeSafe \u043D\u0435 \u0432\u043F\u0435\u0432\u043D\u0435\u043D\u0438\u0439 \u00B7 \u043F\u0440\u0430\u0446\u044E\u0454 \u043B\u043E\u043A\u0430\u043B\u044C\u043D\u0438\u0439 \u0440\u0443\u0448\u0456\u0439"
+    }
+  ]
+}

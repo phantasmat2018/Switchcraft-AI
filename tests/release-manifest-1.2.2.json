@@ -1,0 +1,18 @@
+{
+  "version": "1.2.2",
+  "build_time": "2026-10-10T15:03:13.0507300+03:00",
+  "executable_sha256": "D6F10A98E297E5E461AD8C61EFD98CDF5C6C37E312F3AB64D1C92D3411E1B978",
+  "engine_tests": 177,
+  "engine_report": "release-engine-1.2.2.json",
+  "focused_input_checks": 18,
+  "focused_input_report": "ai-short-input-results.json",
+  "live_api_verified": true,
+  "live_input_checks": 3,
+  "live_input_report": "release-live-short-1.2.2.json",
+  "full_input_report": "release-input-1.2.2.json",
+  "full_input_passed": 36,
+  "full_input_failed": 17,
+  "full_input_limitation": "Full run failed with clipboard-busy and unconfirmed-paste errors in the UIA test editor; fresh focused and live tests passed. Full suite is not verified.",
+  "changes": "Context-aware single-letter detection; retain typed context on cancellation; recheck ы with one following word and verify exact suffix before replacement; preserve letter mentions and undo.",
+  "runtime": "self-contained .NET 8 Windows x64"
+}

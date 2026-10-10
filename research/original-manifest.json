@@ -1,0 +1,197 @@
+[
+  {
+    "name": "_FoundationICU.dll",
+    "bytes": 37336576,
+    "sha256": "D0EAB0A521FC6F5A56385ABA3986F578886455C6102997B950340AD127A1769C"
+  },
+  {
+    "name": "BlocksRuntime.dll",
+    "bytes": 11776,
+    "sha256": "12BF4225F22B3407ED0EC5D458606D8C5EB8580895AA8BCA64D50BD99DE7C4E9"
+  },
+  {
+    "name": "concrt140.dll",
+    "bytes": 322640,
+    "sha256": "E2E4609C569C69F7B1686F6D0E81CE62187AC5DF05E0247954500053B3C3DE3F"
+  },
+  {
+    "name": "dispatch.dll",
+    "bytes": 234496,
+    "sha256": "C1056EE527FCD2EB36911D1B9DB69CCCAB20EF59C6C8654A1FD8D7D9A2BFD491"
+  },
+  {
+    "name": "Foundation.dll",
+    "bytes": 4742144,
+    "sha256": "190166905A9F6C43E9CA26E8BD73E1B2492E4B310C30CC5480EA4A2241BD45A1"
+  },
+  {
+    "name": "FoundationEssentials.dll",
+    "bytes": 5492224,
+    "sha256": "405B663E4139B3449A51110FD47F69F9BB8A86B2F917C54399B669997279FA24"
+  },
+  {
+    "name": "FoundationInternationalization.dll",
+    "bytes": 1546240,
+    "sha256": "AA0C31CE83B6230536B296FF1AABDCD467E08B60720C043A25139D1C8CF5ED57"
+  },
+  {
+    "name": "FoundationNetworking.dll",
+    "bytes": 1476608,
+    "sha256": "524669B0823B307063DB197ECF8ED6F5776FC7C2F4456E41D75A023FCEF8F45E"
+  },
+  {
+    "name": "FoundationXML.dll",
+    "bytes": 818688,
+    "sha256": "8A88E01565C321EB75334666D4125547F1D2DE5145E304AFF53524864B408D26"
+  },
+  {
+    "name": "msvcp140_1.dll",
+    "bytes": 35944,
+    "sha256": "A65249861238E1C18B84AE5D112617C438D83A76B67EDDC170AD82DBC2338665"
+  },
+  {
+    "name": "msvcp140_2.dll",
+    "bytes": 267880,
+    "sha256": "89E2E9A163165E20C540F9ADEA081E927DDFE4A556547B0F45F11586D4CCE165"
+  },
+  {
+    "name": "msvcp140_atomic_wait.dll",
+    "bytes": 50256,
+    "sha256": "FBF41E4B53F51BBF73FEE37B6120103FEA6B7D5AE29916F8EF50C50CFDEDEEAD"
+  },
+  {
+    "name": "msvcp140_codecvt_ids.dll",
+    "bytes": 31824,
+    "sha256": "0E1D3D76E899A89FB3893FB13ABAE232FF62AD4F573214DD2F02B8398166BCC6"
+  },
+  {
+    "name": "msvcp140.dll",
+    "bytes": 575592,
+    "sha256": "9057D39B36B6C7D054865EE2BF9CDE7A490FE3B01EC4E82514687E24F576269F"
+  },
+  {
+    "name": "swift_Concurrency.dll",
+    "bytes": 539136,
+    "sha256": "F9BA55296DC65C2D8ACA0258AAB8C0EB291A8F691A7ADC742941C058F4F4E7F3"
+  },
+  {
+    "name": "swift_Differentiation.dll",
+    "bytes": 357376,
+    "sha256": "B9A9E9A1E927208F1A46269B5431C3BC9374F04B71679861CDD71C6E6B45CC75"
+  },
+  {
+    "name": "swift_RegexParser.dll",
+    "bytes": 970240,
+    "sha256": "55D0BC032BFCD9612EAAB4602F6C1BC25C33F1A6DBC6DBB769BA3215A15C7662"
+  },
+  {
+    "name": "swift_StringProcessing.dll",
+    "bytes": 668672,
+    "sha256": "D5F864B489BA895D22D0F6AC8CBC137B113F98B82E0BEBDA7AE7D4F61FBC396F"
+  },
+  {
+    "name": "swiftCore.dll",
+    "bytes": 6124544,
+    "sha256": "979DD3B60DEC6EDB0CD18EA4A8BB7FE46F657C4CDD252229647887A7F6A00F56"
+  },
+  {
+    "name": "swiftCRT.dll",
+    "bytes": 39936,
+    "sha256": "38C0DC258FF72BBA50A834AD7E0F5CE9B059C08E58FC1DF2C2440029D30C18EC"
+  },
+  {
+    "name": "swiftDispatch.dll",
+    "bytes": 150528,
+    "sha256": "7C343592E4FD76E48716D81757D9800ACCDA7AE05D1659E2D5C855F17BF40D39"
+  },
+  {
+    "name": "swiftDistributed.dll",
+    "bytes": 100352,
+    "sha256": "D4AE894FB17388D8E1496C2EED43E74EE5E9B72A6D626371536A4A39253E93AB"
+  },
+  {
+    "name": "swiftObservation.dll",
+    "bytes": 77824,
+    "sha256": "092ACF7DCD245D463A00283C772BC904386FD21E8D0303175AFBAD6300BA8C00"
+  },
+  {
+    "name": "swiftRegexBuilder.dll",
+    "bytes": 78336,
+    "sha256": "54E8B95DA370ED24186163970094160848DDC230F8F28E8A6C8C34DF873229B7"
+  },
+  {
+    "name": "swiftRemoteMirror.dll",
+    "bytes": 863744,
+    "sha256": "CD0447723F99E07877BA41F264A4272F721A4B5C425C7467F0507917BCDABB44"
+  },
+  {
+    "name": "swiftSwiftOnoneSupport.dll",
+    "bytes": 218624,
+    "sha256": "087AA2AB730BA7A05B01743860067D910893C170739AC965E750BE5963C02408"
+  },
+  {
+    "name": "swiftSynchronization.dll",
+    "bytes": 54272,
+    "sha256": "CC64EFF717F2131EC61B10EE9B9D0BE4A3C3FDE8293554B4C17489AFE2BE78F7"
+  },
+  {
+    "name": "swiftWinSDK.dll",
+    "bytes": 32256,
+    "sha256": "0577821432DCC694DA5E87AB8FE5FD46806608839E162C834E511BB47F1F4AD0"
+  },
+  {
+    "name": "typeswitcher_rules.json",
+    "bytes": 3447066,
+    "sha256": "276E0EBE36E1E1DB54571B7C0C3E8D409FED4068AF15EAD49A69D5446ECF618E"
+  },
+  {
+    "name": "TypeSwitcher.exe",
+    "bytes": 492032,
+    "sha256": "2264F7BD3B21623F355CBD71328DF892FFF70EA91F42AB943CEE096CC1848C48"
+  },
+  {
+    "name": "TypeSwitcherCABI.dll",
+    "bytes": 1381376,
+    "sha256": "D145819FE7EEE4E98DE62859B6A60E61899D02AF874CA376F119A0941321BB6F"
+  },
+  {
+    "name": "unins000.dat",
+    "bytes": 11891,
+    "sha256": "BCE15F23C0DCFA3F677ED4BDFDA92D588940E02034A628C56BC5A9359720F5AE"
+  },
+  {
+    "name": "unins000.exe",
+    "bytes": 4598018,
+    "sha256": "4EC8517002B9F5EFFFA424BF1F20CF8E4B042D06A4E285C4D6022561945ED95A"
+  },
+  {
+    "name": "user_preferences.json",
+    "bytes": 37,
+    "sha256": "45BFB08A5E1A3998BB2B1FED0F6192210BB3C61093F604EFEF5068595C59142B"
+  },
+  {
+    "name": "vccorlib140.dll",
+    "bytes": 351824,
+    "sha256": "8903B5D88968791D2A93648A54A1AC3D1C708C579A72311FFE194F6D66903043"
+  },
+  {
+    "name": "vcruntime140_1.dll",
+    "bytes": 49744,
+    "sha256": "26E470B29BED3D873E0C328186E53F95E9EDBFE0B0FD0CDA44743A0B1A04A828"
+  },
+  {
+    "name": "vcruntime140_threads.dll",
+    "bytes": 38504,
+    "sha256": "326110C8C5CAC836CFED1643304CB6BDC4A8737A7A535D6B1EFF4D63878AEF9D"
+  },
+  {
+    "name": "vcruntime140.dll",
+    "bytes": 120432,
+    "sha256": "DA72E6677BD1BCD01C453C1998AAA19AEAF6659F4774CF6848409DA8232A95B2"
+  },
+  {
+    "name": "WinSparkle.dll",
+    "bytes": 2885632,
+    "sha256": "A69ACFCBCB2AF0EB4C3A27511401BAC56A157E6663C4B48D488EF2B659FC8B37"
+  }
+]

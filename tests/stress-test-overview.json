@@ -1,0 +1,29 @@
+{
+  "test": "Switchcraft 1.1.0 mixed UK/RU/EN input stress test",
+  "timestamp": "2026-10-10T13:26:48.6131818+03:00",
+  "final_report": "stress-3000-final/report.json",
+  "interpretation": "stress-3000-final/summary.json",
+  "corpus": "stress-corpus-3000.txt",
+  "characters_per_pass": 3000,
+  "completed_validated_passes": 5,
+  "total_characters_in_validated_passes": 15000,
+  "conclusions": [
+    "Paused control: exact 3000-character match at 91.35 characters/second.",
+    "Correct mixed-language prose: exact match in balanced and careful modes.",
+    "At 29.22 characters/second and 80 ms word pauses: all 13 ordinary wrong-layout tokens corrected; the separately mutated URL correctly preserved.",
+    "At 88.53 characters/second and no word pauses: all 13 ordinary errors missed, original input preserved exactly.",
+    "No lost characters, unwanted word changes, harness exceptions, or hook-health failures in the validated five passes.",
+    "Replacement confirmation defect: 13 words changed in the actual normal-speed result, only 2 Corrected events; 11 unconfirmed-paste status messages. The production fallback leaves temporary correction text on the clipboard."
+  ],
+  "inferred_causes": [
+    "KeyboardService Current requires an unchanged input sequence. At fast input, the next key can invalidate replacement before it starts.",
+    "After paste, confirmation also requires the same sequence; subsequent input can prevent confirmation despite successful insertion. Clipboard restoration depends on confirmation."
+  ],
+  "limitations": [
+    "The native automation helper did not type into Notepad++; these 3000-character runs use a dedicated WPF editor and the production KeyboardService/NativeEngine classes.",
+    "Layout is explicitly selected per token; 14 typographic characters use isolated Unicode fallback. This is a finite generated sample, not a universal accuracy score.",
+    "Preliminary unsynchronized Unicode and virtual-key control attempts failed even with correction paused; they were retained separately and excluded from final product conclusions."
+  ],
+  "production_app_changed": false,
+  "production_app_restarted": true
+}

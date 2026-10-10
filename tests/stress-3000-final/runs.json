@@ -1,0 +1,244 @@
+[
+  {
+    "name": "control-paused-fast",
+    "sensitivity": "balanced",
+    "paused": true,
+    "sentCharacters": 3000,
+    "actualCharacters": 3000,
+    "targetDelayMs": 2,
+    "wordPauseMs": 0,
+    "layoutChanges": 179,
+    "unicodeFallbacks": 14,
+    "typingSeconds": 32.8396236,
+    "actualCharactersPerSecond": 91.35305679934771,
+    "exactInputPreserved": true,
+    "exactExpectedText": true,
+    "sameCharacterCount": true,
+    "inputEditDistance": 0,
+    "expectedEditDistance": 0,
+    "expectedCorrections": 0,
+    "confirmedCorrections": 0,
+    "corrections": [],
+    "differences": [],
+    "messages": [],
+    "hookStillRunning": true,
+    "health": "",
+    "maxUiHeartbeatGapMs": 81.5229,
+    "cpuSeconds": 34.671875,
+    "workingSetBytes": 281112576
+  },
+  {
+    "name": "balanced-clean-normal",
+    "sensitivity": "balanced",
+    "paused": false,
+    "sentCharacters": 3000,
+    "actualCharacters": 3000,
+    "targetDelayMs": 10,
+    "wordPauseMs": 80,
+    "layoutChanges": 180,
+    "unicodeFallbacks": 14,
+    "typingSeconds": 101.781788,
+    "actualCharactersPerSecond": 29.474821173312456,
+    "exactInputPreserved": true,
+    "exactExpectedText": true,
+    "sameCharacterCount": true,
+    "inputEditDistance": 0,
+    "expectedEditDistance": 0,
+    "expectedCorrections": 0,
+    "confirmedCorrections": 0,
+    "corrections": [],
+    "differences": [],
+    "messages": [],
+    "hookStillRunning": true,
+    "health": "",
+    "maxUiHeartbeatGapMs": 96.7954,
+    "cpuSeconds": 79.21875,
+    "workingSetBytes": 285028352
+  },
+  {
+    "name": "balanced-wrong-layout-normal",
+    "sensitivity": "balanced",
+    "paused": false,
+    "sentCharacters": 3000,
+    "actualCharacters": 3000,
+    "targetDelayMs": 10,
+    "wordPauseMs": 80,
+    "layoutChanges": 174,
+    "unicodeFallbacks": 34,
+    "typingSeconds": 102.6685294,
+    "actualCharactersPerSecond": 29.220249063000605,
+    "exactInputPreserved": false,
+    "exactExpectedText": false,
+    "sameCharacterCount": true,
+    "inputEditDistance": 59,
+    "expectedEditDistance": 5,
+    "expectedCorrections": 14,
+    "confirmedCorrections": 2,
+    "corrections": [
+      {
+        "Original": "ghbdtn,",
+        "Text": "привет,",
+        "Target": "ru",
+        "Reason": "layout_dictionary"
+      },
+      {
+        "Original": "Ghbdsn",
+        "Text": "Привіт",
+        "Target": "uk",
+        "Reason": "layout_dictionary"
+      }
+    ],
+    "differences": [
+      {
+        "token": 121,
+        "expected": "https://example.com/docs?q=hello",
+        "actual": "https://example.com/docs?q=руддщ"
+      }
+    ],
+    "messages": [
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну."
+    ],
+    "hookStillRunning": true,
+    "health": "",
+    "maxUiHeartbeatGapMs": 151.7128,
+    "cpuSeconds": 79.015625,
+    "workingSetBytes": 290021376
+  },
+  {
+    "name": "balanced-wrong-layout-fast",
+    "sensitivity": "balanced",
+    "paused": false,
+    "sentCharacters": 3000,
+    "actualCharacters": 3000,
+    "targetDelayMs": 2,
+    "wordPauseMs": 0,
+    "layoutChanges": 173,
+    "unicodeFallbacks": 34,
+    "typingSeconds": 33.8885375,
+    "actualCharactersPerSecond": 88.52550807186648,
+    "exactInputPreserved": true,
+    "exactExpectedText": false,
+    "sameCharacterCount": true,
+    "inputEditDistance": 0,
+    "expectedEditDistance": 64,
+    "expectedCorrections": 14,
+    "confirmedCorrections": 0,
+    "corrections": [],
+    "differences": [
+      {
+        "token": 5,
+        "expected": "hello,",
+        "actual": "руддщ,"
+      },
+      {
+        "token": 7,
+        "expected": "привет,",
+        "actual": "ghbdtn,"
+      },
+      {
+        "token": 83,
+        "expected": "світ,",
+        "actual": "свыт,"
+      },
+      {
+        "token": 90,
+        "expected": "world",
+        "actual": "цщкдв"
+      },
+      {
+        "token": 95,
+        "expected": "Привіт",
+        "actual": "Ghbdsn"
+      },
+      {
+        "token": 97,
+        "expected": "привет",
+        "actual": "ghbdtn"
+      },
+      {
+        "token": 99,
+        "expected": "hello",
+        "actual": "руддщ"
+      },
+      {
+        "token": 121,
+        "expected": "https://example.com/docs?q=hello",
+        "actual": "https://example.com/docs?q=руддщ"
+      },
+      {
+        "token": 202,
+        "expected": "Кыргызстан",
+        "actual": "Кіргізстан"
+      },
+      {
+        "token": 395,
+        "expected": "Привіт,",
+        "actual": "Ghbdsn,"
+      },
+      {
+        "token": 396,
+        "expected": "привет,",
+        "actual": "ghbdtn,"
+      },
+      {
+        "token": 397,
+        "expected": "hello;",
+        "actual": "руддщ;"
+      },
+      {
+        "token": 398,
+        "expected": "світ,",
+        "actual": "свыт,"
+      },
+      {
+        "token": 400,
+        "expected": "world;",
+        "actual": "цщкдв;"
+      }
+    ],
+    "messages": [],
+    "hookStillRunning": true,
+    "health": "",
+    "maxUiHeartbeatGapMs": 86.2663,
+    "cpuSeconds": 34.21875,
+    "workingSetBytes": 297910272
+  },
+  {
+    "name": "careful-clean-normal",
+    "sensitivity": "careful",
+    "paused": false,
+    "sentCharacters": 3000,
+    "actualCharacters": 3000,
+    "targetDelayMs": 10,
+    "wordPauseMs": 80,
+    "layoutChanges": 180,
+    "unicodeFallbacks": 14,
+    "typingSeconds": 101.5355013,
+    "actualCharactersPerSecond": 29.546315934720262,
+    "exactInputPreserved": true,
+    "exactExpectedText": true,
+    "sameCharacterCount": true,
+    "inputEditDistance": 0,
+    "expectedEditDistance": 0,
+    "expectedCorrections": 0,
+    "confirmedCorrections": 0,
+    "corrections": [],
+    "differences": [],
+    "messages": [],
+    "hookStillRunning": true,
+    "health": "",
+    "maxUiHeartbeatGapMs": 94.1829,
+    "cpuSeconds": 79.84375,
+    "workingSetBytes": 294170624
+  }
+]

@@ -1,0 +1,292 @@
+{
+  "timestamp": "2026-10-10T17:38:56.9382767+03:00",
+  "total": 54,
+  "passed": 54,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "Actual hook auto-correction",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442 "
+    },
+    {
+      "name": "Undo restores word and boundary",
+      "passed": true,
+      "actual": "ghbdsn "
+    },
+    {
+      "name": "Russian correction from external virtual keys",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0435\u0442 "
+    },
+    {
+      "name": "Russian correction from external Unicode packets",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0435\u0442 "
+    },
+    {
+      "name": "Own tagged replacements are never reprocessed",
+      "passed": true,
+      "actual": "ghbdtn "
+    },
+    {
+      "name": "Valid English remains unchanged",
+      "passed": true,
+      "actual": "hello "
+    },
+    {
+      "name": "Valid Russian is not changed by a legacy seed",
+      "passed": true,
+      "actual": "\u041E\u043D \u0434\u0435\u0440\u0436\u0430\u043B \u043C\u043E\u044E \u0440\u0443\u043A\u0443 "
+    },
+    {
+      "name": "Programmatic caret move invalidates undo in same HWND",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442 "
+    },
+    {
+      "name": "Programmatic text change invalidates undo",
+      "passed": true,
+      "actual": "\u0432\u0430\u0436\u043B\u0438\u0432\u0438\u0439 \u0442\u0435\u043A\u0441\u0442 "
+    },
+    {
+      "name": "Rapid burst cancels stale replacements without losing text",
+      "passed": true,
+      "actual": "ghbdtn hello ghbdsn hello "
+    },
+    {
+      "name": "Paused hook leaves input unchanged",
+      "passed": true,
+      "actual": "ghbdsn "
+    },
+    {
+      "name": "Excluded app leaves input unchanged",
+      "passed": true,
+      "actual": "ghbdsn "
+    },
+    {
+      "name": "Typing invalidates stale undo",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442 a"
+    },
+    {
+      "name": "Password field skipped",
+      "passed": true,
+      "actual": "unchanged"
+    },
+    {
+      "name": "Selected text is converted",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442"
+    },
+    {
+      "name": "Clipboard text restored",
+      "passed": true,
+      "actual": "clipboard checked"
+    },
+    {
+      "name": "Concurrent conversion shortcuts run only once",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442"
+    },
+    {
+      "name": "Generic Enter is passed once without resubmitting",
+      "passed": true,
+      "actual": "ghbdsn\r\n"
+    },
+    {
+      "name": "Explicit selection conversion remains available while paused",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442"
+    },
+    {
+      "name": "System layout switches after correction",
+      "passed": true,
+      "actual": "uk"
+    },
+    {
+      "name": "Undo restores previous system layout",
+      "passed": true,
+      "actual": "en: ghbdsn "
+    },
+    {
+      "name": "Russian seed selects RU, not first Cyrillic layout",
+      "passed": true,
+      "actual": "ru: \u043F\u0440\u0438\u0432\u0435\u0442 "
+    },
+    {
+      "name": "Three independent Russian words confirm layout",
+      "passed": true,
+      "actual": "ru: \u043A\u043E\u0433\u0434\u0430 \u044F \u043D\u0430 \u043F\u043E\u0447\u0442\u0435 \u0441\u043B\u0443\u0436\u0438\u043B "
+    },
+    {
+      "name": "Live user\u0027s Russian phrase with Ukrainian letter",
+      "passed": true,
+      "actual": "\u041A\u043E\u0433\u0434\u0430 \u044F \u043D\u0430 \u043F\u043E\u0447\u0442\u0435 \u0441\u043B\u0443\u0436\u0438\u043B \u044F\u043C\u0449\u0438\u043A\u043E\u043C, \u043A\u043E \u043C\u043D\u0435 \u043F\u043E\u0441\u0442\u0443\u0447\u0430\u043B\u0441\u044F \u043A\u043E\u0441\u043C\u0430\u0442\u044B\u0439 "
+    },
+    {
+      "name": "Repeated long phrase 0",
+      "passed": true,
+      "actual": "\u041A\u043E\u0433\u0434\u0430 \u044F \u043D\u0430 \u043F\u043E\u0447\u0442\u0435 \u0441\u043B\u0443\u0436\u0438\u043B \u044F\u043C\u0449\u0438\u043A\u043E\u043C, \u043A\u043E \u043C\u043D\u0435 \u043F\u043E\u0441\u0442\u0443\u0447\u0430\u043B\u0441\u044F \u043A\u043E\u0441\u043C\u0430\u0442\u044B\u0439 "
+    },
+    {
+      "name": "Repeated long phrase 1",
+      "passed": true,
+      "actual": "\u041A\u043E\u0433\u0434\u0430 \u044F \u043D\u0430 \u043F\u043E\u0447\u0442\u0435 \u0441\u043B\u0443\u0436\u0438\u043B \u044F\u043C\u0449\u0438\u043A\u043E\u043C, \u043A\u043E \u043C\u043D\u0435 \u043F\u043E\u0441\u0442\u0443\u0447\u0430\u043B\u0441\u044F \u043A\u043E\u0441\u043C\u0430\u0442\u044B\u0439 "
+    },
+    {
+      "name": "Repeated long phrase 2",
+      "passed": true,
+      "actual": "\u041A\u043E\u0433\u0434\u0430 \u044F \u043D\u0430 \u043F\u043E\u0447\u0442\u0435 \u0441\u043B\u0443\u0436\u0438\u043B \u044F\u043C\u0449\u0438\u043A\u043E\u043C, \u043A\u043E \u043C\u043D\u0435 \u043F\u043E\u0441\u0442\u0443\u0447\u0430\u043B\u0441\u044F \u043A\u043E\u0441\u043C\u0430\u0442\u044B\u0439 "
+    },
+    {
+      "name": "Live user\u0027s country-name phrase",
+      "passed": true,
+      "actual": "\u0417\u0435\u043B\u0435\u043D\u043E\u0433\u043B\u0430\u0437\u043E\u0435 \u0442\u0430\u043A\u0441\u0438 \u043F\u0440\u0438\u0442\u043E\u0440\u043C\u043E\u0437\u0438 \u043F\u0440\u0438\u0442\u043E\u0440\u043C\u043E\u0437\u0438 \u041A\u044B\u0440\u0433\u044B\u0437\u0441\u0442\u0430\u043D "
+    },
+    {
+      "name": "Live reverse Russian to Ukrainian correction",
+      "passed": true,
+      "actual": "\u0441\u0432\u0456\u0442 "
+    },
+    {
+      "name": "Live valid Ukrainian phrase is preserved",
+      "passed": true,
+      "actual": "\u0412\u043E\u043D\u0430 \u0441\u0442\u043E\u0457\u0442\u044C \u0443 \u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439 \u0448\u0430\u043F\u0446\u0456 "
+    },
+    {
+      "name": "Live language switch inside quotation preserved",
+      "passed": true,
+      "actual": "\u041A\u043E\u0433\u0434\u0430 \u0441\u043B\u0443\u0436\u0438\u043B, \u0437\u0430\u043F\u0438\u0441\u0430\u043B: \u00AB\u0412\u043E\u043D\u0430 \u0443 \u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439 \u0448\u0430\u043F\u0446\u0456\u00BB. "
+    },
+    {
+      "name": "Paragraph boundary clears language context",
+      "passed": true,
+      "actual": "\u041A\u043E\u0433\u0434\u0430 \u0441\u043B\u0443\u0436\u0438\u043B \r\n\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439 "
+    },
+    {
+      "name": "Learning mode receives only undone word",
+      "passed": true,
+      "actual": "ghbdsn"
+    },
+    {
+      "name": "System hotkey registers",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "System hotkey dispatches",
+      "passed": true,
+      "actual": "True"
+    },
+    {
+      "name": "AI hook applies the selected candidate",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442 "
+    },
+    {
+      "name": "AI correction uses existing undo",
+      "passed": true,
+      "actual": "ghbdsn "
+    },
+    {
+      "name": "Input stays healthy while HTTP is pending",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "New input cancels pending AI replacement",
+      "passed": true,
+      "actual": "ghbdsn hello"
+    },
+    {
+      "name": "Idle retries the completed word with fresh text verification",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442 hello"
+    },
+    {
+      "name": "Mode off cancels in-flight AI work",
+      "passed": true,
+      "actual": "ghbdsn "
+    },
+    {
+      "name": "Mode off restores local correction with no HTTP",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442 "
+    },
+    {
+      "name": "Short mismatch corrected after continuous three-word typing",
+      "passed": true,
+      "actual": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439 \u0456 \u0437\u0435\u043B\u0435\u043D\u0438\u0439 "
+    },
+    {
+      "name": "Short retry undo preserves following text",
+      "passed": true,
+      "actual": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439 \u044B \u0437\u0435\u043B\u0435\u043D\u0438\u0439 "
+    },
+    {
+      "name": "Short retry learning uses only corrected word",
+      "passed": true,
+      "actual": "\u044B"
+    },
+    {
+      "name": "Short mismatch corrected at first pause",
+      "passed": true,
+      "actual": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439 \u0456 "
+    },
+    {
+      "name": "Letter discussion is preserved during live typing",
+      "passed": true,
+      "actual": "\u0423\u043A\u0440\u0430\u0457\u043D\u0441\u044C\u043A\u0430 \u0431\u0443\u043A\u0432\u0430 \u044B "
+    },
+    {
+      "name": "Valid Russian conjunction preserved during live typing",
+      "passed": true,
+      "actual": "\u041A\u0440\u0430\u0441\u043D\u044B\u0439 \u0438 \u0437\u0435\u043B\u0451\u043D\u044B\u0439 "
+    },
+    {
+      "name": "Valid Ukrainian conjunction preserved during live typing",
+      "passed": true,
+      "actual": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439 \u0456 \u0437\u0435\u043B\u0435\u043D\u0438\u0439 "
+    },
+    {
+      "name": "Moving caret invalidates delayed short retry",
+      "passed": true,
+      "actual": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439 \u044B \u0437\u0435\u043B\u0435\u043D\u0438\u0439 "
+    },
+    {
+      "name": "Changed editor suffix rejects delayed short retry",
+      "passed": true,
+      "actual": "\u0417\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u0438\u0439 \u0442\u0435\u043A\u0441\u0442 "
+    },
+    {
+      "name": "Backspace cancels delayed short retry",
+      "passed": true,
+      "actual": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439 \u044B \u0437\u0435\u043B\u0435\u043D\u0438\u0439"
+    },
+    {
+      "name": "AI mode never sends password-field input",
+      "passed": true,
+      "actual": "synthetic password untouched"
+    },
+    {
+      "name": "AI mode respects app exclusions before HTTP",
+      "passed": true,
+      "actual": "ghbdsn "
+    }
+  ],
+  "messages": [
+    "\u041E\u0441\u0442\u0430\u043D\u043D\u0454 \u0432\u0438\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043D\u044F \u0441\u043A\u0430\u0441\u043E\u0432\u0430\u043D\u043E.",
+    "\u0422\u0435\u043A\u0441\u0442 \u0430\u0431\u043E \u043F\u043E\u0437\u0438\u0446\u0456\u044F \u043A\u0443\u0440\u0441\u043E\u0440\u0430 \u0437\u043C\u0456\u043D\u0438\u043B\u0438\u0441\u044F \u2014 \u0441\u043A\u0430\u0441\u0443\u0432\u0430\u043D\u043D\u044F \u043F\u0440\u043E\u043F\u0443\u0449\u0435\u043D\u043E.",
+    "\u0422\u0435\u043A\u0441\u0442 \u0430\u0431\u043E \u043F\u043E\u0437\u0438\u0446\u0456\u044F \u043A\u0443\u0440\u0441\u043E\u0440\u0430 \u0437\u043C\u0456\u043D\u0438\u043B\u0438\u0441\u044F \u2014 \u0441\u043A\u0430\u0441\u0443\u0432\u0430\u043D\u043D\u044F \u043F\u0440\u043E\u043F\u0443\u0449\u0435\u043D\u043E.",
+    "\u041D\u0435\u043C\u0430\u0454 \u0432\u0438\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043D\u044F \u0434\u043B\u044F \u0441\u043A\u0430\u0441\u0443\u0432\u0430\u043D\u043D\u044F.",
+    "\u0412\u0438\u0434\u0456\u043B\u0435\u043D\u0438\u0439 \u0442\u0435\u043A\u0441\u0442 \u043F\u0435\u0440\u0435\u0442\u0432\u043E\u0440\u0435\u043D\u043E.",
+    "\u041F\u043E\u043F\u0435\u0440\u0435\u0434\u043D\u0454 \u043F\u0435\u0440\u0435\u0442\u0432\u043E\u0440\u0435\u043D\u043D\u044F \u0449\u0435 \u0442\u0440\u0438\u0432\u0430\u0454.",
+    "\u0412\u0438\u0434\u0456\u043B\u0435\u043D\u0438\u0439 \u0442\u0435\u043A\u0441\u0442 \u043F\u0435\u0440\u0435\u0442\u0432\u043E\u0440\u0435\u043D\u043E.",
+    "\u0412\u0438\u0434\u0456\u043B\u0435\u043D\u0438\u0439 \u0442\u0435\u043A\u0441\u0442 \u043F\u0435\u0440\u0435\u0442\u0432\u043E\u0440\u0435\u043D\u043E.",
+    "\u041E\u0441\u0442\u0430\u043D\u043D\u0454 \u0432\u0438\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043D\u044F \u0441\u043A\u0430\u0441\u043E\u0432\u0430\u043D\u043E.",
+    "\u041E\u0441\u0442\u0430\u043D\u043D\u0454 \u0432\u0438\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043D\u044F \u0441\u043A\u0430\u0441\u043E\u0432\u0430\u043D\u043E.",
+    "\u041E\u0441\u0442\u0430\u043D\u043D\u0454 \u0432\u0438\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043D\u044F \u0441\u043A\u0430\u0441\u043E\u0432\u0430\u043D\u043E.",
+    "\u041E\u0441\u0442\u0430\u043D\u043D\u0454 \u0432\u0438\u043F\u0440\u0430\u0432\u043B\u0435\u043D\u043D\u044F \u0441\u043A\u0430\u0441\u043E\u0432\u0430\u043D\u043E."
+  ]
+}

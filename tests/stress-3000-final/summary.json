@@ -1,0 +1,312 @@
+[
+  {
+    "run": "control-paused-fast",
+    "sent_characters": 3000,
+    "actual_characters": 3000,
+    "exact_expected_text": true,
+    "expected_edit_distance": 0,
+    "token_counts_match": true,
+    "comparison_note": "Raw edit distance compares to the original prose. The mutation generator also changed hello inside a URL; preserving that input URL is expected protection and is counted separately, not as a missed word correction.",
+    "corrected_words": 0,
+    "missed_words": 0,
+    "protected_urls_preserved": 0,
+    "wrongly_changed_error_words": 0,
+    "changed_correct_words": 0,
+    "hook_healthy": true,
+    "seconds": 32.84,
+    "characters_per_second": 91.35,
+    "ui_heartbeat_max_gap_ms": 81.52,
+    "messages": [],
+    "details": []
+  },
+  {
+    "run": "balanced-clean-normal",
+    "sent_characters": 3000,
+    "actual_characters": 3000,
+    "exact_expected_text": true,
+    "expected_edit_distance": 0,
+    "token_counts_match": true,
+    "comparison_note": "Raw edit distance compares to the original prose. The mutation generator also changed hello inside a URL; preserving that input URL is expected protection and is counted separately, not as a missed word correction.",
+    "corrected_words": 0,
+    "missed_words": 0,
+    "protected_urls_preserved": 0,
+    "wrongly_changed_error_words": 0,
+    "changed_correct_words": 0,
+    "hook_healthy": true,
+    "seconds": 101.78,
+    "characters_per_second": 29.47,
+    "ui_heartbeat_max_gap_ms": 96.8,
+    "messages": [],
+    "details": []
+  },
+  {
+    "run": "balanced-wrong-layout-normal",
+    "sent_characters": 3000,
+    "actual_characters": 3000,
+    "exact_expected_text": false,
+    "expected_edit_distance": 5,
+    "token_counts_match": true,
+    "comparison_note": "Raw edit distance compares to the original prose. The mutation generator also changed hello inside a URL; preserving that input URL is expected protection and is counted separately, not as a missed word correction.",
+    "corrected_words": 13,
+    "missed_words": 0,
+    "protected_urls_preserved": 1,
+    "wrongly_changed_error_words": 0,
+    "changed_correct_words": 0,
+    "hook_healthy": true,
+    "seconds": 102.67,
+    "characters_per_second": 29.22,
+    "ui_heartbeat_max_gap_ms": 151.71,
+    "messages": [
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну.",
+      "Вставлення не підтверджене; виправлений текст залишено в буфері обміну."
+    ],
+    "details": [
+      {
+        "index": 5,
+        "kind": "corrected",
+        "input": "руддщ,",
+        "expected": "hello,",
+        "actual": "hello,"
+      },
+      {
+        "index": 7,
+        "kind": "corrected",
+        "input": "ghbdtn,",
+        "expected": "привет,",
+        "actual": "привет,"
+      },
+      {
+        "index": 83,
+        "kind": "corrected",
+        "input": "свыт,",
+        "expected": "світ,",
+        "actual": "світ,"
+      },
+      {
+        "index": 90,
+        "kind": "corrected",
+        "input": "цщкдв",
+        "expected": "world",
+        "actual": "world"
+      },
+      {
+        "index": 95,
+        "kind": "corrected",
+        "input": "Ghbdsn",
+        "expected": "Привіт",
+        "actual": "Привіт"
+      },
+      {
+        "index": 97,
+        "kind": "corrected",
+        "input": "ghbdtn",
+        "expected": "привет",
+        "actual": "привет"
+      },
+      {
+        "index": 99,
+        "kind": "corrected",
+        "input": "руддщ",
+        "expected": "hello",
+        "actual": "hello"
+      },
+      {
+        "index": 121,
+        "kind": "protected_url_preserved",
+        "input": "https://example.com/docs?q=руддщ",
+        "expected": "https://example.com/docs?q=hello",
+        "actual": "https://example.com/docs?q=руддщ"
+      },
+      {
+        "index": 202,
+        "kind": "corrected",
+        "input": "Кіргізстан",
+        "expected": "Кыргызстан",
+        "actual": "Кыргызстан"
+      },
+      {
+        "index": 395,
+        "kind": "corrected",
+        "input": "Ghbdsn,",
+        "expected": "Привіт,",
+        "actual": "Привіт,"
+      },
+      {
+        "index": 396,
+        "kind": "corrected",
+        "input": "ghbdtn,",
+        "expected": "привет,",
+        "actual": "привет,"
+      },
+      {
+        "index": 397,
+        "kind": "corrected",
+        "input": "руддщ;",
+        "expected": "hello;",
+        "actual": "hello;"
+      },
+      {
+        "index": 398,
+        "kind": "corrected",
+        "input": "свыт,",
+        "expected": "світ,",
+        "actual": "світ,"
+      },
+      {
+        "index": 400,
+        "kind": "corrected",
+        "input": "цщкдв;",
+        "expected": "world;",
+        "actual": "world;"
+      }
+    ]
+  },
+  {
+    "run": "balanced-wrong-layout-fast",
+    "sent_characters": 3000,
+    "actual_characters": 3000,
+    "exact_expected_text": false,
+    "expected_edit_distance": 64,
+    "token_counts_match": true,
+    "comparison_note": "Raw edit distance compares to the original prose. The mutation generator also changed hello inside a URL; preserving that input URL is expected protection and is counted separately, not as a missed word correction.",
+    "corrected_words": 0,
+    "missed_words": 13,
+    "protected_urls_preserved": 1,
+    "wrongly_changed_error_words": 0,
+    "changed_correct_words": 0,
+    "hook_healthy": true,
+    "seconds": 33.89,
+    "characters_per_second": 88.53,
+    "ui_heartbeat_max_gap_ms": 86.27,
+    "messages": [],
+    "details": [
+      {
+        "index": 5,
+        "kind": "missed",
+        "input": "руддщ,",
+        "expected": "hello,",
+        "actual": "руддщ,"
+      },
+      {
+        "index": 7,
+        "kind": "missed",
+        "input": "ghbdtn,",
+        "expected": "привет,",
+        "actual": "ghbdtn,"
+      },
+      {
+        "index": 83,
+        "kind": "missed",
+        "input": "свыт,",
+        "expected": "світ,",
+        "actual": "свыт,"
+      },
+      {
+        "index": 90,
+        "kind": "missed",
+        "input": "цщкдв",
+        "expected": "world",
+        "actual": "цщкдв"
+      },
+      {
+        "index": 95,
+        "kind": "missed",
+        "input": "Ghbdsn",
+        "expected": "Привіт",
+        "actual": "Ghbdsn"
+      },
+      {
+        "index": 97,
+        "kind": "missed",
+        "input": "ghbdtn",
+        "expected": "привет",
+        "actual": "ghbdtn"
+      },
+      {
+        "index": 99,
+        "kind": "missed",
+        "input": "руддщ",
+        "expected": "hello",
+        "actual": "руддщ"
+      },
+      {
+        "index": 121,
+        "kind": "protected_url_preserved",
+        "input": "https://example.com/docs?q=руддщ",
+        "expected": "https://example.com/docs?q=hello",
+        "actual": "https://example.com/docs?q=руддщ"
+      },
+      {
+        "index": 202,
+        "kind": "missed",
+        "input": "Кіргізстан",
+        "expected": "Кыргызстан",
+        "actual": "Кіргізстан"
+      },
+      {
+        "index": 395,
+        "kind": "missed",
+        "input": "Ghbdsn,",
+        "expected": "Привіт,",
+        "actual": "Ghbdsn,"
+      },
+      {
+        "index": 396,
+        "kind": "missed",
+        "input": "ghbdtn,",
+        "expected": "привет,",
+        "actual": "ghbdtn,"
+      },
+      {
+        "index": 397,
+        "kind": "missed",
+        "input": "руддщ;",
+        "expected": "hello;",
+        "actual": "руддщ;"
+      },
+      {
+        "index": 398,
+        "kind": "missed",
+        "input": "свыт,",
+        "expected": "світ,",
+        "actual": "свыт,"
+      },
+      {
+        "index": 400,
+        "kind": "missed",
+        "input": "цщкдв;",
+        "expected": "world;",
+        "actual": "цщкдв;"
+      }
+    ]
+  },
+  {
+    "run": "careful-clean-normal",
+    "sent_characters": 3000,
+    "actual_characters": 3000,
+    "exact_expected_text": true,
+    "expected_edit_distance": 0,
+    "token_counts_match": true,
+    "comparison_note": "Raw edit distance compares to the original prose. The mutation generator also changed hello inside a URL; preserving that input URL is expected protection and is counted separately, not as a missed word correction.",
+    "corrected_words": 0,
+    "missed_words": 0,
+    "protected_urls_preserved": 0,
+    "wrongly_changed_error_words": 0,
+    "changed_correct_words": 0,
+    "hook_healthy": true,
+    "seconds": 101.54,
+    "characters_per_second": 29.55,
+    "ui_heartbeat_max_gap_ms": 94.18,
+    "messages": [],
+    "details": []
+  }
+]

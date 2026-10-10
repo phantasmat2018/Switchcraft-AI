@@ -1,0 +1,36 @@
+{
+  "version": "1.3.0",
+  "timestamp": "2026-10-10T15:53:58.7270425+03:00",
+  "build": "Debug, same production source as following release publish",
+  "application": "Notepad++",
+  "mode": "typesafe",
+  "method": "Physical key chords through computer-use API; no clipboard text insertion",
+  "test_tab": "новый 4",
+  "checks": [
+    {
+      "input": "руддщ",
+      "source": "uk",
+      "actual": "hello",
+      "target": "en",
+      "passed": true
+    },
+    {
+      "input": "ghbdtn",
+      "source": "en",
+      "actual": "привет",
+      "target": "ru",
+      "passed": true
+    },
+    {
+      "input": "стоъть",
+      "source": "ru",
+      "actual": "стоїть",
+      "target": "uk",
+      "passed": true
+    }
+  ],
+  "autocomplete_popup_verified": true,
+  "diagnosis": "Owned ListBox virtual focus kept Scintilla focused. Before fix this reset the word after each key. After fix all three typed words were corrected and layout switched.",
+  "diagnostics_contain_typed_text": false,
+  "diagnostics": "notepad-diagnostics-1.3.0.json"
+}

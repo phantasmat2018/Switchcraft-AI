@@ -1,0 +1,27 @@
+﻿17:29:07 OS: Microsoft Windows NT 10.0.26100.0 user=WDAGUtilityAccount cpu=16 ram=6GB
+17:29:07 VC++ redist registered: False
+17:29:07 System32 msvcp140=False vcruntime140=False vcruntime140_1=False
+17:29:08 python command: 
+17:29:09 Defender real-time: False
+17:29:11 Known folder in a new process: C:\Users\Олександр Тест\AppData\Local
+17:29:20 Installer exit=0 installed=True
+17:29:20 Install marker: [Install] | Id=Switchcraft.Desktop.7BD48B5B-9D61-42B0-B1FA-C40726DCD83E | Directory=C:\Users\Олександр Тест\AppData\Local\Programs\Switchcraft | Version=1.6.0 | DesktopShortcut=1 | LayaRequested=1
+17:30:21   setup 1,0 min · app=1 · 2026-10-10T17:29:24.0200811+03:00 Завантажуємо модель Laya · приблизно 600 МБ…
+17:31:21   setup 2,0 min · app=1 · 2026-10-10T17:29:24.0200811+03:00 Завантажуємо модель Laya · приблизно 600 МБ…
+17:32:21   setup 3,0 min · app=1 · 2026-10-10T17:32:08.1762950+03:00 Встановлюємо зафіксовані компоненти Laya…
+17:32:41 Setup result: ready after 3,3 min
+17:33:02   Laya\cache: 660 MB
+17:33:02   Laya\download: 0 MB
+17:33:02   Laya\model: 647 MB
+17:33:02   Laya\python: 63 MB
+17:33:02   Laya\uv: 65 MB
+17:33:04   Laya\venv: 678 MB
+17:33:04   Laya\setup-install.log: 0 MB
+17:33:04   Laya\setup-progress.log: 0 MB
+17:33:04   Laya\setup.lock: 0 MB
+17:33:04   download\: laya-requirements-r3.txt, torch-cpu.txt
+17:33:04 Laya server process present after 0s: True
+17:34:08 torch import (warm): 2.14.1+cpu 1.8 cpu
+17:34:41 Laya input test exit=0 in 33s
+17:34:50 Engine self-test exit=0
+17:34:50 Total 5,7 min

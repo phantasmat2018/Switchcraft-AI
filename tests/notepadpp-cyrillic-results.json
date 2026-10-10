@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-10-10T12:31:12.9646840+03:00",
+  "application": "Notepad++",
+  "switchcraft_version": "1.0.2",
+  "executable_sha256": "A58B5BBC5EB8E5BBB62F3C4684C428D362DE6749575D5F6C9BDD631738658C9A",
+  "method": "Production executable, real key presses via Computer Use in a fresh tab; observed Ukrainian letters before Space and corrected Russian text afterward.",
+  "total": 1,
+  "passed": 1,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "UA to RU automatic correction in Notepad++",
+      "actual": "Кыргызстан ",
+      "expected": "Кыргызстан ",
+      "passed": true,
+      "input": "Кіргізстан "
+    }
+  ]
+}

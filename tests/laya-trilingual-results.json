@@ -1,0 +1,1012 @@
+{
+  "synthetic_only": true,
+  "provider": "laya",
+  "model_ready": true,
+  "warmup_ms": 17891,
+  "total": 50,
+  "passed": 50,
+  "failed": 0,
+  "requests": 0,
+  "results": [
+    {
+      "fixture": {
+        "Name": "English keys for Russian greeting",
+        "Word": "ghbdtn",
+        "Source": "en",
+        "Preceding": "\u0421\u043A\u0430\u0436\u0438",
+        "Following": "\u0434\u0440\u0443\u0433\u0443",
+        "Expected": "\u043F\u0440\u0438\u0432\u0435\u0442",
+        "Category": "layout"
+      },
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0435\u0442",
+      "Target": "ru",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 235,
+      "decision": null,
+      "provider_status": "Laya \u00B7 RU \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "English keys for Ukrainian greeting",
+        "Word": "ghbdsn",
+        "Source": "en",
+        "Preceding": "\u0421\u043A\u0430\u0436\u0438",
+        "Following": "\u0434\u0440\u0443\u0433\u043E\u0432\u0456",
+        "Expected": "\u043F\u0440\u0438\u0432\u0456\u0442",
+        "Category": "layout"
+      },
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442",
+      "Target": "uk",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 270,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Ukrainian target remains available after layout switch",
+        "Word": "ghbdsn",
+        "Source": "uk",
+        "Preceding": "\u0421\u043A\u0430\u0436\u0438",
+        "Following": "\u0434\u0440\u0443\u0433\u043E\u0432\u0456",
+        "Expected": "\u043F\u0440\u0438\u0432\u0456\u0442",
+        "Category": "layout_hint"
+      },
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442",
+      "Target": "uk",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Russian target remains available after layout switch",
+        "Word": "ghbdtn",
+        "Source": "ru",
+        "Preceding": "\u0421\u043A\u0430\u0436\u0438",
+        "Following": "\u0434\u0440\u0443\u0433\u0443",
+        "Expected": "\u043F\u0440\u0438\u0432\u0435\u0442",
+        "Category": "layout_hint"
+      },
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0435\u0442",
+      "Target": "ru",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Period key is part of Ukrainian word",
+        "Word": "lzre.",
+        "Source": "en",
+        "Preceding": "\u0429\u0438\u0440\u043E",
+        "Following": "\u0437\u0430 \u0434\u043E\u043F\u043E\u043C\u043E\u0433\u0443",
+        "Expected": "\u0434\u044F\u043A\u0443\u044E",
+        "Category": "punctuation"
+      },
+      "passed": true,
+      "actual": "\u0434\u044F\u043A\u0443\u044E",
+      "Target": "uk",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 263,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Semicolon key is part of Russian word",
+        "Word": "gj;fkeqcnf",
+        "Source": "en",
+        "Preceding": "\u041F\u043E\u043C\u043E\u0433\u0438",
+        "Following": "\u0441 \u043F\u0435\u0440\u0435\u0432\u043E\u0434\u043E\u043C",
+        "Expected": "\u043F\u043E\u0436\u0430\u043B\u0443\u0439\u0441\u0442\u0430",
+        "Category": "punctuation"
+      },
+      "passed": true,
+      "actual": "\u043F\u043E\u0436\u0430\u043B\u0443\u0439\u0441\u0442\u0430",
+      "Target": "ru",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 260,
+      "decision": null,
+      "provider_status": "Laya \u00B7 RU \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Comma key is part of Russian word",
+        "Word": "hf,jnftn",
+        "Source": "en",
+        "Preceding": "\u041F\u0440\u043E\u0433\u0440\u0430\u043C\u043C\u0430",
+        "Following": "\u0431\u044B\u0441\u0442\u0440\u043E",
+        "Expected": "\u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442",
+        "Category": "punctuation"
+      },
+      "passed": true,
+      "actual": "\u0440\u0430\u0431\u043E\u0442\u0430\u0435\u0442",
+      "Target": "ru",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 219,
+      "decision": null,
+      "provider_status": "Laya \u00B7 RU \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "English keys for Ukrainian adverb",
+        "Word": "cmjujlys",
+        "Source": "en",
+        "Preceding": "\u0417\u0443\u0441\u0442\u0440\u0456\u043D\u0435\u043C\u043E\u0441\u044F",
+        "Following": "\u0432\u0432\u0435\u0447\u0435\u0440\u0456",
+        "Expected": "\u0441\u044C\u043E\u0433\u043E\u0434\u043D\u0456",
+        "Category": "layout"
+      },
+      "passed": true,
+      "actual": "\u0441\u044C\u043E\u0433\u043E\u0434\u043D\u0456",
+      "Target": "uk",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 296,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Russian keys for English greeting",
+        "Word": "\u0440\u0443\u0434\u0434\u0449",
+        "Source": "ru",
+        "Preceding": "Say",
+        "Following": "to everyone",
+        "Expected": "hello",
+        "Category": "layout"
+      },
+      "passed": true,
+      "actual": "hello",
+      "Target": "en",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 247,
+      "decision": null,
+      "provider_status": "Laya \u00B7 EN \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Ukrainian keys for English noun",
+        "Word": "\u0435\u0443\u0456\u0435",
+        "Source": "uk",
+        "Preceding": "Run the",
+        "Following": "again",
+        "Expected": "test",
+        "Category": "layout"
+      },
+      "passed": true,
+      "actual": "test",
+      "Target": "en",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 238,
+      "decision": null,
+      "provider_status": "Laya \u00B7 EN \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Shared Cyrillic letters for English noun",
+        "Word": "\u0446\u0449\u043A\u0434\u0432",
+        "Source": "uk",
+        "Preceding": "Hello",
+        "Following": "from Ukraine",
+        "Expected": "world",
+        "Category": "layout"
+      },
+      "passed": true,
+      "actual": "world",
+      "Target": "en",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 257,
+      "decision": null,
+      "provider_status": "Laya \u00B7 EN \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Ukrainian greeting preserves case and exclamation",
+        "Word": "Ghbdsn!",
+        "Source": "en",
+        "Preceding": "",
+        "Following": "\u042F\u043A \u0441\u043F\u0440\u0430\u0432\u0438",
+        "Expected": "\u041F\u0440\u0438\u0432\u0456\u0442!",
+        "Category": "punctuation"
+      },
+      "passed": true,
+      "actual": "\u041F\u0440\u0438\u0432\u0456\u0442!",
+      "Target": "uk",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 236,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Russian greeting preserves terminal comma",
+        "Word": "ghbdtn,",
+        "Source": "en",
+        "Preceding": "",
+        "Following": "\u043A\u0430\u043A \u0434\u0435\u043B\u0430",
+        "Expected": "\u043F\u0440\u0438\u0432\u0435\u0442,",
+        "Category": "punctuation"
+      },
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0435\u0442,",
+      "Target": "ru",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 236,
+      "decision": null,
+      "provider_status": "Laya \u00B7 RU \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "English word preserves parentheses",
+        "Word": "(\u0440\u0443\u0434\u0434\u0449)",
+        "Source": "ru",
+        "Preceding": "The greeting",
+        "Following": "appears here",
+        "Expected": "(hello)",
+        "Category": "punctuation"
+      },
+      "passed": true,
+      "actual": "(hello)",
+      "Target": "en",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 247,
+      "decision": null,
+      "provider_status": "Laya \u00B7 EN \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "User white and black phrase",
+        "Word": "\u0411\u044B\u043B\u0438\u0439",
+        "Source": "ru",
+        "Preceding": "",
+        "Following": "\u0456 \u0447\u043E\u0440\u043D\u0438\u0439",
+        "Expected": "\u0411\u0456\u043B\u0438\u0439",
+        "Category": "cyrillic_repair"
+      },
+      "passed": true,
+      "actual": "\u0411\u0456\u043B\u0438\u0439",
+      "Target": "uk",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 236,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "White phrase with Ukrainian active layout",
+        "Word": "\u0411\u044B\u043B\u0438\u0439",
+        "Source": "uk",
+        "Preceding": "",
+        "Following": "\u0456 \u0447\u043E\u0440\u043D\u0438\u0439",
+        "Expected": "\u0411\u0456\u043B\u0438\u0439",
+        "Category": "layout_hint"
+      },
+      "passed": true,
+      "actual": "\u0411\u0456\u043B\u0438\u0439",
+      "Target": "uk",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "User horse phrase with Russian active layout",
+        "Word": "\u0441\u0442\u043E\u044A\u0442\u044C",
+        "Source": "ru",
+        "Preceding": "\u043E\u0439 \u0447\u0438\u0439 \u0442\u043E \u043A\u0456\u043D\u044C",
+        "Following": "",
+        "Expected": "\u0441\u0442\u043E\u0457\u0442\u044C",
+        "Category": "cyrillic_repair"
+      },
+      "passed": true,
+      "actual": "\u0441\u0442\u043E\u0457\u0442\u044C",
+      "Target": "uk",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 268,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Horse phrase with Ukrainian active layout",
+        "Word": "\u0441\u0442\u043E\u044A\u0442\u044C",
+        "Source": "uk",
+        "Preceding": "\u043E\u0439 \u0447\u0438\u0439 \u0442\u043E \u043A\u0456\u043D\u044C",
+        "Following": "",
+        "Expected": "\u0441\u0442\u043E\u0457\u0442\u044C",
+        "Category": "layout_hint"
+      },
+      "passed": true,
+      "actual": "\u0441\u0442\u043E\u0457\u0442\u044C",
+      "Target": "uk",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Horse phrase with English active layout",
+        "Word": "\u0441\u0442\u043E\u044A\u0442\u044C",
+        "Source": "en",
+        "Preceding": "\u043E\u0439 \u0447\u0438\u0439 \u0442\u043E \u043A\u0456\u043D\u044C",
+        "Following": "",
+        "Expected": "\u0441\u0442\u043E\u0457\u0442\u044C",
+        "Category": "layout_hint"
+      },
+      "passed": true,
+      "actual": "\u0441\u0442\u043E\u0457\u0442\u044C",
+      "Target": "uk",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Ambiguous inflection in Russian sentence",
+        "Word": "\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439",
+        "Source": "uk",
+        "Preceding": "\u043A\u043E \u043C\u043D\u0435 \u043F\u043E\u0441\u0442\u0443\u0447\u0430\u043B\u0441\u044F",
+        "Following": "\u043D\u0435\u0437\u043D\u0430\u043A\u043E\u043C\u0435\u0446",
+        "Expected": "\u043A\u043E\u0441\u043C\u0430\u0442\u044B\u0439",
+        "Category": "contextual_cyrillic"
+      },
+      "passed": true,
+      "actual": "\u043A\u043E\u0441\u043C\u0430\u0442\u044B\u0439",
+      "Target": "ru",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 275,
+      "decision": null,
+      "provider_status": "Laya \u00B7 RU \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Same valid inflection in Ukrainian sentence",
+        "Word": "\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439",
+        "Source": "ru",
+        "Preceding": "\u0412\u043E\u043D\u0430 \u0441\u0442\u043E\u0457\u0442\u044C \u0443",
+        "Following": "\u0448\u0430\u043F\u0446\u0456",
+        "Expected": "\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439",
+        "Category": "contextual_cyrillic"
+      },
+      "passed": true,
+      "actual": "\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439",
+      "Target": "uk",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 RU \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Country name typed on Ukrainian layout",
+        "Word": "\u041A\u0456\u0440\u0433\u0456\u0437\u0441\u0442\u0430\u043D",
+        "Source": "uk",
+        "Preceding": "\u041C\u044B \u0435\u0434\u0435\u043C \u0432",
+        "Following": "\u0437\u0430\u0432\u0442\u0440\u0430",
+        "Expected": "\u041A\u044B\u0440\u0433\u044B\u0437\u0441\u0442\u0430\u043D",
+        "Category": "cyrillic_repair"
+      },
+      "passed": true,
+      "actual": "\u041A\u044B\u0440\u0433\u044B\u0437\u0441\u0442\u0430\u043D",
+      "Target": "ru",
+      "Reason": "local_ai_uncertain",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 271,
+      "decision": null,
+      "provider_status": "Laya \u043D\u0435 \u0432\u043F\u0435\u0432\u043D\u0435\u043D\u0430 \u00B7 \u043F\u0440\u0430\u0446\u044E\u044E\u0442\u044C \u0441\u043B\u043E\u0432\u043D\u0438\u043A\u0438 \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Uppercase conjunction between Ukrainian colors",
+        "Word": "\u042B",
+        "Source": "ru",
+        "Preceding": "\u0427\u0415\u0420\u0412\u041E\u041D\u0418\u0419",
+        "Following": "\u0417\u0415\u041B\u0415\u041D\u0418\u0419",
+        "Expected": "\u0406",
+        "Category": "short_context"
+      },
+      "passed": true,
+      "actual": "\u0406",
+      "Target": "uk",
+      "Reason": "local_ai_uncertain",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 248,
+      "decision": null,
+      "provider_status": "Laya \u043D\u0435 \u0432\u043F\u0435\u0432\u043D\u0435\u043D\u0430 \u00B7 \u043F\u0440\u0430\u0446\u044E\u044E\u0442\u044C \u0441\u043B\u043E\u0432\u043D\u0438\u043A\u0438 \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "User conjunction between Ukrainian colors",
+        "Word": "\u044B",
+        "Source": "ru",
+        "Preceding": "\u0427\u0435\u0440\u0432\u043E\u043D\u0438\u0439",
+        "Following": "\u0437\u0435\u043B\u0435\u043D\u0438\u0439",
+        "Expected": "\u0456",
+        "Category": "short_context"
+      },
+      "passed": true,
+      "actual": "\u0456",
+      "Target": "uk",
+      "Reason": "laya_ai",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 234,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Valid English word embedded in Ukrainian",
+        "Word": "hello",
+        "Source": "uk",
+        "Preceding": "\u0412\u043E\u043D\u0430 \u0441\u043A\u0430\u0437\u0430\u043B\u0430",
+        "Following": "\u0456 \u0443\u0441\u043C\u0456\u0445\u043D\u0443\u043B\u0430\u0441\u044F",
+        "Expected": "hello",
+        "Category": "valid_mixed"
+      },
+      "passed": true,
+      "actual": "hello",
+      "Target": "",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Valid Russian word embedded in English",
+        "Word": "\u043F\u0440\u0438\u0432\u0435\u0442",
+        "Source": "en",
+        "Preceding": "She said",
+        "Following": "and smiled",
+        "Expected": "\u043F\u0440\u0438\u0432\u0435\u0442",
+        "Category": "valid_mixed"
+      },
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0435\u0442",
+      "Target": "ru",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Valid Ukrainian word embedded in Russian",
+        "Word": "\u043F\u0440\u0438\u0432\u0456\u0442",
+        "Source": "ru",
+        "Preceding": "\u041E\u043D\u0430 \u0441\u043A\u0430\u0437\u0430\u043B\u0430",
+        "Following": "\u0438 \u0443\u043B\u044B\u0431\u043D\u0443\u043B\u0430\u0441\u044C",
+        "Expected": "\u043F\u0440\u0438\u0432\u0456\u0442",
+        "Category": "valid_mixed"
+      },
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442",
+      "Target": "",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Product name inside Ukrainian sentence",
+        "Word": "Switchcraft",
+        "Source": "uk",
+        "Preceding": "\u041D\u0430\u043B\u0430\u0448\u0442\u0443\u0432\u0430\u043D\u043D\u044F \u043F\u0440\u043E\u0433\u0440\u0430\u043C\u0438",
+        "Following": "\u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E",
+        "Expected": "Switchcraft",
+        "Category": "name"
+      },
+      "passed": true,
+      "actual": "Switchcraft",
+      "Target": "uk",
+      "Reason": "candidate_score_too_low",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Ukrainian personal name with Russian layout hint",
+        "Word": "\u041E\u043B\u0435\u043A\u0441\u0456\u0439",
+        "Source": "ru",
+        "Preceding": "\u041D\u0430\u0448 \u043A\u043E\u043B\u0435\u0433\u0430",
+        "Following": "\u0432\u0436\u0435 \u043F\u0440\u0438\u0439\u0448\u043E\u0432",
+        "Expected": "\u041E\u043B\u0435\u043A\u0441\u0456\u0439",
+        "Category": "name"
+      },
+      "passed": true,
+      "actual": "\u041E\u043B\u0435\u043A\u0441\u0456\u0439",
+      "Target": "uk",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Russian personal name with Ukrainian layout hint",
+        "Word": "\u0421\u0435\u0440\u0433\u0435\u0439",
+        "Source": "uk",
+        "Preceding": "\u041D\u0430\u0448 \u043A\u043E\u043B\u043B\u0435\u0433\u0430",
+        "Following": "\u0443\u0436\u0435 \u043F\u0440\u0438\u0448\u0451\u043B",
+        "Expected": "\u0421\u0435\u0440\u0433\u0435\u0439",
+        "Category": "name"
+      },
+      "passed": true,
+      "actual": "\u0421\u0435\u0440\u0433\u0435\u0439",
+      "Target": "ru",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "English personal name with Ukrainian layout hint",
+        "Word": "Mary",
+        "Source": "uk",
+        "Preceding": "My colleague",
+        "Following": "arrived yesterday",
+        "Expected": "Mary",
+        "Category": "name"
+      },
+      "passed": true,
+      "actual": "Mary",
+      "Target": "",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Valid Ukrainian apostrophe word",
+        "Word": "\u043F\u0430\u043C\u0027\u044F\u0442\u044C",
+        "Source": "en",
+        "Preceding": "\u0417\u0431\u0435\u0440\u0435\u0436\u0438 \u0446\u0435 \u0443",
+        "Following": "\u043D\u0430\u0434\u043E\u0432\u0433\u043E",
+        "Expected": "\u043F\u0430\u043C\u0027\u044F\u0442\u044C",
+        "Category": "valid_mixed"
+      },
+      "passed": true,
+      "actual": "\u043F\u0430\u043C\u0027\u044F\u0442\u044C",
+      "Target": "uk",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Shared Ukrainian and Russian word",
+        "Word": "\u043C\u0438\u0440",
+        "Source": "uk",
+        "Preceding": "",
+        "Following": "",
+        "Expected": "\u043C\u0438\u0440",
+        "Category": "homograph"
+      },
+      "passed": true,
+      "actual": "\u043C\u0438\u0440",
+      "Target": "",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Valid Ukrainian cheese in Ukrainian context",
+        "Word": "\u0441\u0438\u0440",
+        "Source": "ru",
+        "Preceding": "\u042F \u043A\u0443\u043F\u0438\u0432",
+        "Following": "\u0434\u043E \u0441\u043D\u0456\u0434\u0430\u043D\u043A\u0443",
+        "Expected": "\u0441\u0438\u0440",
+        "Category": "homograph"
+      },
+      "passed": true,
+      "actual": "\u0441\u0438\u0440",
+      "Target": "",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Valid Russian cheese in Russian context",
+        "Word": "\u0441\u044B\u0440",
+        "Source": "uk",
+        "Preceding": "\u042F \u043A\u0443\u043F\u0438\u043B",
+        "Following": "\u043D\u0430 \u0437\u0430\u0432\u0442\u0440\u0430\u043A",
+        "Expected": "\u0441\u044B\u0440",
+        "Category": "homograph"
+      },
+      "passed": true,
+      "actual": "\u0441\u044B\u0440",
+      "Target": "ru",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Russian taxi remains Russian in mixed input",
+        "Word": "\u0442\u0430\u043A\u0441\u0438",
+        "Source": "uk",
+        "Preceding": "\u042F \u0432\u044B\u0437\u0432\u0430\u043B",
+        "Following": "\u043A \u0434\u043E\u043C\u0443",
+        "Expected": "\u0442\u0430\u043A\u0441\u0438",
+        "Category": "homograph"
+      },
+      "passed": true,
+      "actual": "\u0442\u0430\u043A\u0441\u0438",
+      "Target": "",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Valid short English word with foreign layout hint",
+        "Word": "on",
+        "Source": "uk",
+        "Preceding": "The light is",
+        "Following": "now",
+        "Expected": "on",
+        "Category": "homograph"
+      },
+      "passed": true,
+      "actual": "on",
+      "Target": "",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Literal Russian letter discussion",
+        "Word": "\u044B",
+        "Source": "ru",
+        "Preceding": "\u0411\u0443\u043A\u0432\u0430",
+        "Following": "\u0435\u0441\u0442\u044C \u0432 \u0440\u0443\u0441\u0441\u043A\u043E\u043C",
+        "Expected": "\u044B",
+        "Category": "literal_letter"
+      },
+      "passed": true,
+      "actual": "\u044B",
+      "Target": "uk",
+      "Reason": "length_1_no_exact_pair",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Quoted Russian letter in Ukrainian sentence",
+        "Word": "\u00AB\u044B\u00BB",
+        "Source": "ru",
+        "Preceding": "\u041D\u0430\u043F\u0438\u0448\u0438",
+        "Following": "\u0443 \u0437\u043E\u0448\u0438\u0442\u0456",
+        "Expected": "\u00AB\u044B\u00BB",
+        "Category": "literal_letter"
+      },
+      "passed": true,
+      "actual": "\u00AB\u044B\u00BB",
+      "Target": "uk",
+      "Reason": "length_2_no_exact_match",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Uppercase literal symbol discussion",
+        "Word": "\u042B",
+        "Source": "ru",
+        "Preceding": "\u0426\u0435\u0439 \u0441\u0438\u043C\u0432\u043E\u043B",
+        "Following": "\u043F\u043E\u0442\u0440\u0456\u0431\u043D\u043E \u0441\u043A\u043E\u043F\u0456\u044E\u0432\u0430\u0442\u0438",
+        "Expected": "\u042B",
+        "Category": "literal_letter"
+      },
+      "passed": true,
+      "actual": "\u042B",
+      "Target": "uk",
+      "Reason": "length_1_no_exact_pair",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Uncontextualized single Russian letter",
+        "Word": "\u044B",
+        "Source": "ru",
+        "Preceding": "",
+        "Following": "",
+        "Expected": "\u044B",
+        "Category": "short_ambiguous"
+      },
+      "passed": true,
+      "actual": "\u044B",
+      "Target": "uk",
+      "Reason": "length_1_no_exact_pair",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Valid Russian conjunction between Russian colors",
+        "Word": "\u0438",
+        "Source": "ru",
+        "Preceding": "\u041A\u0440\u0430\u0441\u043D\u044B\u0439",
+        "Following": "\u0437\u0435\u043B\u0451\u043D\u044B\u0439",
+        "Expected": "\u0438",
+        "Category": "short_ambiguous"
+      },
+      "passed": true,
+      "actual": "\u0438",
+      "Target": "ru",
+      "Reason": "known_original",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 UK \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "English variable name remains literal",
+        "Word": "s",
+        "Source": "uk",
+        "Preceding": "The variable",
+        "Following": "is unset",
+        "Expected": "s",
+        "Category": "short_ambiguous"
+      },
+      "passed": true,
+      "actual": "s",
+      "Target": "",
+      "Reason": "local_ai_keep",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 233,
+      "decision": null,
+      "provider_status": "Laya \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "URL containing layout-like token is protected",
+        "Word": "https://ghbdsn.dev",
+        "Source": "en",
+        "Preceding": "\u0412\u0456\u0434\u043A\u0440\u0438\u0439",
+        "Following": "\u0443 \u0431\u0440\u0430\u0443\u0437\u0435\u0440\u0456",
+        "Expected": "https://ghbdsn.dev",
+        "Category": "technical"
+      },
+      "passed": true,
+      "actual": "https://ghbdsn.dev",
+      "Target": "",
+      "Reason": "protected_pattern",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Email containing layout-like token is protected",
+        "Word": "ghbdtn@example.com",
+        "Source": "en",
+        "Preceding": "\u041D\u0430\u043F\u0438\u0448\u0438 \u043D\u0430",
+        "Following": "\u0441\u044C\u043E\u0433\u043E\u0434\u043D\u0456",
+        "Expected": "ghbdtn@example.com",
+        "Category": "technical"
+      },
+      "passed": true,
+      "actual": "ghbdtn@example.com",
+      "Target": "",
+      "Reason": "protected_pattern",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Windows path containing layout-like token is protected",
+        "Word": "C:\\ghbdsn\\file.txt",
+        "Source": "en",
+        "Preceding": "\u0412\u0456\u0434\u043A\u0440\u0438\u0439 \u0444\u0430\u0439\u043B",
+        "Following": "\u0434\u043B\u044F \u0447\u0438\u0442\u0430\u043D\u043D\u044F",
+        "Expected": "C:\\ghbdsn\\file.txt",
+        "Category": "technical"
+      },
+      "passed": true,
+      "actual": "C:\\ghbdsn\\file.txt",
+      "Target": "",
+      "Reason": "protected_pattern",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Identifier containing layout-like token is protected",
+        "Word": "ghbdsn_value",
+        "Source": "en",
+        "Preceding": "Rename",
+        "Following": "in the code",
+        "Expected": "ghbdsn_value",
+        "Category": "technical"
+      },
+      "passed": true,
+      "actual": "ghbdsn_value",
+      "Target": "ru",
+      "Reason": "candidate_score_too_low",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Dotted identifier is protected",
+        "Word": "api.token",
+        "Source": "ru",
+        "Preceding": "Read",
+        "Following": "from settings",
+        "Expected": "api.token",
+        "Category": "technical"
+      },
+      "passed": true,
+      "actual": "api.token",
+      "Target": "ru",
+      "Reason": "candidate_score_too_low",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Valid Russian adjective is not translated",
+        "Word": "\u043A\u0440\u0430\u0441\u043D\u044B\u0439",
+        "Source": "uk",
+        "Preceding": "\u0421\u043B\u043E\u0432\u043E",
+        "Following": "\u043D\u0430\u043F\u0438\u0441\u0430\u043D\u0435 \u0440\u043E\u0441\u0456\u0439\u0441\u044C\u043A\u043E\u044E",
+        "Expected": "\u043A\u0440\u0430\u0441\u043D\u044B\u0439",
+        "Category": "no_translation"
+      },
+      "passed": true,
+      "actual": "\u043A\u0440\u0430\u0441\u043D\u044B\u0439",
+      "Target": "",
+      "Reason": "local_ai_keep",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 259,
+      "decision": null,
+      "provider_status": "Laya \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E \u00B7 CPU"
+    },
+    {
+      "fixture": {
+        "Name": "Russian spelling mistake is not a layout repair",
+        "Word": "\u043F\u0440\u0435\u0432\u0435\u0442",
+        "Source": "ru",
+        "Preceding": "\u042F \u043D\u0430\u043F\u0438\u0441\u0430\u043B",
+        "Following": "\u0434\u0440\u0443\u0433\u0443",
+        "Expected": "\u043F\u0440\u0435\u0432\u0435\u0442",
+        "Category": "no_spelling_correction"
+      },
+      "passed": true,
+      "actual": "\u043F\u0440\u0435\u0432\u0435\u0442",
+      "Target": "uk",
+      "Reason": "no_mapping_change",
+      "context": "",
+      "cloud_requests": 0,
+      "elapsed_ms": 0,
+      "decision": null,
+      "provider_status": "Laya \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E \u00B7 CPU"
+    }
+  ]
+}

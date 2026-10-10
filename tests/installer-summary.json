@@ -1,0 +1,15 @@
+{
+  "version": "1.1.0",
+  "installer": "Switchcraft-Setup-1.1.0-win-x64.exe",
+  "bytes": 65295631,
+  "sha256": "502E2188F875246A6948DA3EAE47888CA9F8CE1D07046779EB09656579D3A464",
+  "signature": "NotSigned",
+  "isolated_installer_checks": 75,
+  "installed_engine_checks": 121,
+  "exact_release_installer_checks": 64,
+  "visual_review": "Ukrainian welcome, component selection and per-user destination pages inspected; review cancelled before installation.",
+  "distribution_mode": "per-user, Windows 10+ x64, self-contained .NET 8",
+  "settings_preserved_on_uninstall": true,
+  "cleanup": "Temporary test artifacts retained because automatic policy review rejected cleanup.",
+  "timestamp": "2026-10-10T13:47:22.0841856+03:00"
+}

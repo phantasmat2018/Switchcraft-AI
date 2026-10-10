@@ -1,0 +1,17 @@
+{
+  "version": "1.1.0",
+  "build_time": "2026-10-10T13:02:15.1142228+03:00",
+  "packaged_time": "2026-10-10T13:10:17.7179644+03:00",
+  "executable_sha256": "542899390323A29C1642A70FB3948B54F542762A68CFF795F9E0510F9A1D0EE2",
+  "archive_filename": "Switchcraft-1.1.0-win-x64.zip",
+  "archive_sha256": "D4262D361AD8B3DB8D3EB88CECBF3B95003BC9FC745B871C773A483960EA85E9",
+  "archive_executable_verified": true,
+  "archive_entries": 51,
+  "engine_tests": 121,
+  "input_tests": 35,
+  "notepadpp_smoke_checks": 5,
+  "runtime": "self-contained .NET 8 Windows x64",
+  "source_engine": "TypeSwitcher 1.1.31 C ABI + full Hunspell UK/RU candidate validation, guarded language context and asynchronous verified editor replacement",
+  "accuracy_audit": "accuracy-audit-1.1.0.json",
+  "accuracy_limitations": "Synthetic dictionary-derived diagnostic; not a general real-world accuracy estimate. Balanced mode can misresolve valid ambiguous UK/RU words under opposing context; careful mode preserves them."
+}

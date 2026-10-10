@@ -1,0 +1,18 @@
+{
+  "version": "1.1.1",
+  "verified_at": "2026-10-10T13:55:57.7528580+03:00",
+  "build": "passed",
+  "engine_tests": {
+    "passed": 121,
+    "failed": 0,
+    "total": 121
+  },
+  "visual_checks": [
+    "Home: new vector logo and darker hero key",
+    "Converter: dark primary button and dropdown badge",
+    "Dropdown: opens with reversed chevron and selected item highlighting",
+    "Escape: closes dropdown and restores down chevron",
+    "Dictionary: dark Add button with readable label"
+  ],
+  "installation": "Updated portable build launched for preview; installer provided separately"
+}

@@ -1,0 +1,12 @@
+{
+  "version": "1.2.1",
+  "build_time": "2026-10-10T14:49:39.4968474+03:00",
+  "executable_sha256": "B3F482D87EDD425AAC6F609A46CCFC8A86A4E959524182A1CB1A967C1CABAD7E",
+  "engine_tests": 155,
+  "engine_report": "release-engine-1.2.1.json",
+  "live_api_verified": true,
+  "live_api_cases": 5,
+  "live_api_report": "ai-live-check-revised.json",
+  "changes": "Explicit spelling comparison for TypeSafe; uncertain answers delegate to local engine instead of blocking correction; connection status distinguishes uncertainty",
+  "runtime": "self-contained .NET 8 Windows x64"
+}

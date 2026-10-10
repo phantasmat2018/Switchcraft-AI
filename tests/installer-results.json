@@ -1,0 +1,400 @@
+﻿{
+    "timestamp":  "2026-10-10T17:45:15.6115174+03:00",
+    "version":  "1.6.0",
+    "total":  78,
+    "passed":  78,
+    "failed":  0,
+    "error":  null,
+    "checks":  [
+                   {
+                       "name":  "Installation refuses an active app",
+                       "passed":  true,
+                       "details":  "Exit code 1618"
+                   },
+                   {
+                       "name":  "Blocked installation creates no payload",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Silent per-user installation succeeds",
+                       "passed":  true,
+                       "details":  "Exit code 0"
+                   },
+                   {
+                       "name":  "Silent install without /LAYA does not request Laya",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: D3DCompiler_47_cor3.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Dictionaries\\MPL-1.1.txt",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Dictionaries\\NOTICE.md",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Dictionaries\\README_ru_RU.txt",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Dictionaries\\README_uk_UA.txt",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Dictionaries\\ru_RU.aff",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Dictionaries\\ru_RU.dic",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Dictionaries\\uk_UA.aff",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Dictionaries\\uk_UA.dic",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Dictionaries\\WeCantSpell.Hunspell-LICENSE.txt",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Licenses\\dotnet-runtime-LICENSE.txt",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Licenses\\dotnet-runtime-THIRD-PARTY-NOTICES.txt",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Licenses\\dotnet-windowsdesktop-LICENSE.txt",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: PenImc_cor3.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: PresentationNative_cor3.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: README.md",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\_FoundationICU.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\BlocksRuntime.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\concrt140.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\dispatch.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\Foundation.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\FoundationEssentials.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\FoundationInternationalization.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\FoundationNetworking.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\FoundationXML.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\msvcp140.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\msvcp140_1.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\msvcp140_2.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\msvcp140_atomic_wait.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\msvcp140_codecvt_ids.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swift_Concurrency.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swift_Differentiation.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swift_RegexParser.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swift_StringProcessing.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swiftCore.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swiftCRT.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swiftDispatch.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swiftDistributed.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swiftObservation.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swiftRegexBuilder.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swiftRemoteMirror.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swiftSwiftOnoneSupport.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swiftSynchronization.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\swiftWinSDK.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\typeswitcher_rules.json",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\TypeSwitcherCABI.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\vccorlib140.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\vcruntime140.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\vcruntime140_1.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Runtime\\vcruntime140_threads.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: Switchcraft.exe",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: THIRD-PARTY.md",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: vcruntime140_cor3.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Payload SHA256: wpfgfx_cor3.dll",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Registered version and installation path are correct",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Uninstall commands quote paths containing spaces",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Shortcut target: _test-shortcuts\\Switchcraft.lnk",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Shortcut target: _test-desktop\\Switchcraft.lnk",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Installed application passes engine self-tests",
+                       "passed":  true,
+                       "details":  "339/339"
+                   },
+                   {
+                       "name":  "Reinstall succeeds",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Silent /LAYA requests Laya only when it is not prepared yet",
+                       "passed":  true,
+                       "details":  "Laya prepared: True"
+                   },
+                   {
+                       "name":  "Installer test build never starts Switchcraft",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Reinstall preserves unrelated files",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Installer blocks version downgrade",
+                       "passed":  true,
+                       "details":  "Exit code 1638"
+                   },
+                   {
+                       "name":  "Uninstaller marker is tied to the verified test directory",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Uninstall refuses an active app",
+                       "passed":  true,
+                       "details":  "Exit code 1618"
+                   },
+                   {
+                       "name":  "Silent uninstall succeeds",
+                       "passed":  true,
+                       "details":  "Exit code 0"
+                   },
+                   {
+                       "name":  "Uninstall removes application payload",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Uninstall removes registration",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Uninstall removes its shortcuts",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Uninstall preserves unrelated user files",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Personal settings and user rules are unchanged",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Existing real installation registration is unchanged",
+                       "passed":  true,
+                       "details":  ""
+                   },
+                   {
+                       "name":  "Existing real desktop shortcut is unchanged",
+                       "passed":  true,
+                       "details":  ""
+                   }
+               ]
+}

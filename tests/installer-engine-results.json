@@ -1,0 +1,1703 @@
+{
+  "timestamp": "2026-10-10T17:45:02.8997747+03:00",
+  "total": 339,
+  "passed": 339,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "AI: key encrypted at rest",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: key reload through Windows protection",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: local default sends zero requests",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: enabled mode persists",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: AI candidate applies deterministic layout conversion",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: dictionary repair offered with active uk layout",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: AI accepts repair with active uk layout",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: dictionary repair offered with active ru layout",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: AI accepts repair with active ru layout",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: dictionary repair offered with active en layout",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: AI accepts repair with active en layout",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: native endpoint and bearer authentication",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: native choice request and explicit model",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: repeated decision is cached",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: Russian candidate",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: English candidate",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: AI keep vetoes local correction",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: email and technical tokens not sent",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: user exception bypasses network",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: explicit user rule precedes AI",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: careful mode preserves known original without request",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: context limited and technical tokens filtered",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: disabled mode persists and sends zero requests",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: HTTP 401 falls back locally",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: HTTP 401 backs off",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: HTTP 429 falls back locally",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: HTTP 429 backs off",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: HTTP 503 falls back locally",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: HTTP 503 backs off",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: malformed or unknown answer rejected: 2",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: malformed or unknown answer rejected: 8",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: malformed or unknown answer rejected: 77",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: malformed or unknown answer rejected: 124",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: low confidence uses verified local correction",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: uncertain keep does not veto the local dictionary",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: cancellation propagates to HTTP and returns no correction",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: timeout falls back without blocking input",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: disabled language cannot be selected by AI",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: key deletion persists",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: missing key uses local engine without network",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI: request rate has a hard upper bound",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI short: Ukrainian preceding context",
+      "passed": true,
+      "actual": "\u0456 / ai_uncertain"
+    },
+    {
+      "name": "AI short: Ukrainian following context",
+      "passed": true,
+      "actual": "\u0456 / ai_uncertain"
+    },
+    {
+      "name": "AI short: both sides of user\u0027s phrase",
+      "passed": true,
+      "actual": "\u0456 / ai_uncertain"
+    },
+    {
+      "name": "AI short: capitalization",
+      "passed": true,
+      "actual": "\u0406 / ai_uncertain"
+    },
+    {
+      "name": "AI short: punctuation",
+      "passed": true,
+      "actual": "\u0456, / ai_uncertain"
+    },
+    {
+      "name": "AI short: no evidence",
+      "passed": true,
+      "actual": "\u044B / length_1_no_exact_pair"
+    },
+    {
+      "name": "AI short: Russian context",
+      "passed": true,
+      "actual": "\u044B / ai_uncertain"
+    },
+    {
+      "name": "AI short: mixed-language context",
+      "passed": true,
+      "actual": "\u044B / ai_uncertain"
+    },
+    {
+      "name": "AI short: letter discussion",
+      "passed": true,
+      "actual": "\u044B / length_1_no_exact_pair"
+    },
+    {
+      "name": "AI short: following letter discussion",
+      "passed": true,
+      "actual": "\u044B / length_1_no_exact_pair"
+    },
+    {
+      "name": "AI short: quoted letter",
+      "passed": true,
+      "actual": "\u00AB\u044B\u00BB / length_2_no_exact_match"
+    },
+    {
+      "name": "AI short: correct Ukrainian conjunction",
+      "passed": true,
+      "actual": "\u0456 / known_original"
+    },
+    {
+      "name": "AI short: correct Russian conjunction",
+      "passed": true,
+      "actual": "\u0438 / known_original"
+    },
+    {
+      "name": "AI short: whole-word dictionary repair",
+      "passed": true,
+      "actual": "\u0411\u0456\u043B\u0438\u0439 / ai_uncertain"
+    },
+    {
+      "name": "AI short: whole-word with two following words",
+      "passed": true,
+      "actual": "\u0411\u0456\u043B\u0438\u0439 / ai_uncertain"
+    },
+    {
+      "name": "AI short: whole-word capitalization",
+      "passed": true,
+      "actual": "\u0411\u0406\u041B\u0418\u0419 / ai_uncertain"
+    },
+    {
+      "name": "AI short: valid Ukrainian adjective",
+      "passed": true,
+      "actual": "\u0411\u0456\u043B\u0438\u0439 / known_original"
+    },
+    {
+      "name": "AI short: valid Russian adjective",
+      "passed": true,
+      "actual": "\u0411\u0435\u043B\u044B\u0439 / known_original"
+    },
+    {
+      "name": "AI short: valid Russian word is not spelling-corrected",
+      "passed": true,
+      "actual": "\u0411\u044B\u043B\u043E\u0439 / known_original"
+    },
+    {
+      "name": "AI context: at most three following words",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI short: following context changes cache key",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI context: following words limited to 160 characters",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI short: confident keep veto",
+      "passed": true,
+      "actual": "\u044B / ai_keep"
+    },
+    {
+      "name": "AI short: disabled Ukrainian",
+      "passed": true,
+      "actual": "\u044B / length_1_no_exact_pair"
+    },
+    {
+      "name": "AI short: mode off",
+      "passed": true,
+      "actual": "\u044B / length_1_no_exact_pair"
+    },
+    {
+      "name": "AI short: mode off sends no request",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI short: offline contextual fallback",
+      "passed": true,
+      "actual": "\u0456 / ai_fallback"
+    },
+    {
+      "name": "AI short: user exception wins",
+      "passed": true,
+      "actual": "\u044B / user_exception"
+    },
+    {
+      "name": "AI short: exception sends no request",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI three languages: valid mixed-language word hello",
+      "passed": true,
+      "actual": "hello"
+    },
+    {
+      "name": "AI three languages: valid mixed-language word \u043F\u0440\u0438\u0432\u0435\u0442",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0435\u0442"
+    },
+    {
+      "name": "AI three languages: valid mixed-language word \u043F\u0440\u0438\u0432\u0456\u0442",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442"
+    },
+    {
+      "name": "AI three languages: valid mixed-language word \u0411\u0456\u043B\u0438\u0439",
+      "passed": true,
+      "actual": "\u0411\u0456\u043B\u0438\u0439"
+    },
+    {
+      "name": "AI three languages: valid mixed-language word \u0411\u0435\u043B\u044B\u0439",
+      "passed": true,
+      "actual": "\u0411\u0435\u043B\u044B\u0439"
+    },
+    {
+      "name": "AI three languages: valid mixed-language word \u043C\u0438\u0440",
+      "passed": true,
+      "actual": "\u043C\u0438\u0440"
+    },
+    {
+      "name": "AI three languages: valid mixed-language word \u0441\u0438\u0440",
+      "passed": true,
+      "actual": "\u0441\u0438\u0440"
+    },
+    {
+      "name": "AI three languages: valid mixed-language word \u0441\u044B\u0440",
+      "passed": true,
+      "actual": "\u0441\u044B\u0440"
+    },
+    {
+      "name": "AI three languages: valid mixed-language word on",
+      "passed": true,
+      "actual": "on"
+    },
+    {
+      "name": "AI three languages: valid mixed-language word \u0442\u0430\u043A\u0441\u0438",
+      "passed": true,
+      "actual": "\u0442\u0430\u043A\u0441\u0438"
+    },
+    {
+      "name": "AI three languages: layout punctuation eligible [jxe",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI three languages: layout punctuation candidate [jxe",
+      "passed": true,
+      "actual": "[jxe | \u0445\u043E\u0447\u0443"
+    },
+    {
+      "name": "AI three languages: layout punctuation eligible cfvs[",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI three languages: layout punctuation candidate cfvs[",
+      "passed": true,
+      "actual": "cfvs[ | \u0441\u0430\u043C\u044B\u0445"
+    },
+    {
+      "name": "AI three languages: layout punctuation eligible erhf]ycmrbq",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI three languages: layout punctuation candidate erhf]ycmrbq",
+      "passed": true,
+      "actual": "erhf]ycmrbq | \u0443\u043A\u0440\u0430\u0457\u043D\u0441\u044C\u043A\u0438\u0439"
+    },
+    {
+      "name": "AI three languages: canonical Unicode accepted",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI three languages: punctuation alone is never sent",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI three languages: short Latin acronym preserved RGB",
+      "passed": true,
+      "actual": "RGB"
+    },
+    {
+      "name": "AI three languages: short Latin acronym preserved RBC",
+      "passed": true,
+      "actual": "RBC"
+    },
+    {
+      "name": "AI three languages: short Latin acronym preserved RTL",
+      "passed": true,
+      "actual": "RTL"
+    },
+    {
+      "name": "AI three languages: short Latin acronym preserved VNC",
+      "passed": true,
+      "actual": "VNC"
+    },
+    {
+      "name": "AI three languages: short Latin acronym preserved (RGB)",
+      "passed": true,
+      "actual": "(RGB)"
+    },
+    {
+      "name": "AI three languages: short Latin acronym preserved API,",
+      "passed": true,
+      "actual": "API,"
+    },
+    {
+      "name": "AI three languages: unknown technical candidates are not offered",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI three languages: shared spelling does not force arbitrary layout",
+      "passed": true,
+      "actual": "\u0441\u043E\u0431\u0430\u043A\u0430/"
+    },
+    {
+      "name": "AI three languages: shared spelling offered only once",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI three languages: both lexical languages sent",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI three languages: shared spelling retains matching current layout",
+      "passed": true,
+      "actual": "\u0441\u043E\u0431\u0430\u043A\u0430/ru"
+    },
+    {
+      "name": "AI three languages: confident contextual ambiguity can be corrected",
+      "passed": true,
+      "actual": "\u043A\u043E\u0441\u043C\u0430\u0442\u044B\u0439"
+    },
+    {
+      "name": "AI three languages: uncertain AI preserves valid ambiguous original",
+      "passed": true,
+      "actual": "\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439"
+    },
+    {
+      "name": "AI three languages: offline preserves valid ambiguous original",
+      "passed": true,
+      "actual": "\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439"
+    },
+    {
+      "name": "AI three languages: unique verified fallback preserves parentheses",
+      "passed": true,
+      "actual": "(hello)"
+    },
+    {
+      "name": "AI three languages: nearby grammar allows AI to evaluate a valid inflection",
+      "passed": true,
+      "actual": "\u043A\u043E\u0441\u043C\u0430\u0442\u044B\u0439"
+    },
+    {
+      "name": "AI three languages: uncertain nearby grammar still preserves original",
+      "passed": true,
+      "actual": "\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439"
+    },
+    {
+      "name": "AI three languages: actual Ukrainian neighbors override stale Russian context",
+      "passed": true,
+      "actual": "\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439"
+    },
+    {
+      "name": "AI three languages: disabled language not offered",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "AI three languages: valid word in disabled language preserved",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: disabled neural mode uses no client",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: local model mode persists",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: local model mode is distinct from cloud mode",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: local model selects a deterministic Ukrainian candidate",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442/laya_ai"
+    },
+    {
+      "name": "Laya: local inference sends no cloud credential",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: inference endpoint stays on loopback",
+      "passed": true,
+      "actual": "http://127.0.0.1:1/v1/systemone"
+    },
+    {
+      "name": "Laya: horse repair survives active layout en",
+      "passed": true,
+      "actual": "\u0441\u0442\u043E\u0457\u0442\u044C/laya_ai"
+    },
+    {
+      "name": "Laya: word question follows context position for en",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: trained criteria contain current word for en",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: horse repair survives active layout uk",
+      "passed": true,
+      "actual": "\u0441\u0442\u043E\u0457\u0442\u044C/laya_ai"
+    },
+    {
+      "name": "Laya: word question follows context position for uk",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: trained criteria contain current word for uk",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: horse repair survives active layout ru",
+      "passed": true,
+      "actual": "\u0441\u0442\u043E\u0457\u0442\u044C/laya_ai"
+    },
+    {
+      "name": "Laya: word question follows context position for ru",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: trained criteria contain current word for ru",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: Russian candidate",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0435\u0442/ru"
+    },
+    {
+      "name": "Laya: English candidate",
+      "passed": true,
+      "actual": "hello/en"
+    },
+    {
+      "name": "Laya: reading equal to original maps to keep",
+      "passed": true,
+      "actual": "ghbdsn"
+    },
+    {
+      "name": "Laya: protected or valid text remains literal: hello",
+      "passed": true,
+      "actual": "hello"
+    },
+    {
+      "name": "Laya: protected or valid text remains literal: \u043F\u0440\u0438\u0432\u0456\u0442",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442"
+    },
+    {
+      "name": "Laya: protected or valid text remains literal: RGB",
+      "passed": true,
+      "actual": "RGB"
+    },
+    {
+      "name": "Laya: protected or valid text remains literal: VNC",
+      "passed": true,
+      "actual": "VNC"
+    },
+    {
+      "name": "Laya: protected or valid text remains literal: ghbdsn@example.com",
+      "passed": true,
+      "actual": "ghbdsn@example.com"
+    },
+    {
+      "name": "Laya: protected or valid text remains literal: https://ghbdtn.dev",
+      "passed": true,
+      "actual": "https://ghbdtn.dev"
+    },
+    {
+      "name": "Laya: protected or valid text remains literal: api.token",
+      "passed": true,
+      "actual": "api.token"
+    },
+    {
+      "name": "Laya: protected or valid text remains literal: \u044B",
+      "passed": true,
+      "actual": "\u044B"
+    },
+    {
+      "name": "Laya: protected text bypasses model",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: malformed local reply falls back safely: 2",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442/local_ai_fallback"
+    },
+    {
+      "name": "Laya: malformed local reply falls back safely: 8",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442/local_ai_fallback"
+    },
+    {
+      "name": "Laya: malformed local reply falls back safely: 117",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442/local_ai_fallback"
+    },
+    {
+      "name": "Laya: malformed local reply falls back safely: 118",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442/local_ai_fallback"
+    },
+    {
+      "name": "Laya: local service failure has a dictionary fallback: 503",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442/local_ai_fallback"
+    },
+    {
+      "name": "Laya: local service failure has a dictionary fallback: 404",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442/local_ai_fallback"
+    },
+    {
+      "name": "Laya: uncertain local model preserves a valid ambiguous original",
+      "passed": true,
+      "actual": "\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439"
+    },
+    {
+      "name": "Laya: disabled Russian is not restored by local model",
+      "passed": true,
+      "actual": "ghbdtn"
+    },
+    {
+      "name": "Laya: turning model mode off stops both clients",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: in-flight reply is not applied after local-model mode is disabled",
+      "passed": true,
+      "actual": "layout_dictionary"
+    },
+    {
+      "name": "Laya: no cloud requests across local-model failure paths",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: environment preparation keeps dictionary corrections without neural traffic",
+      "passed": true,
+      "actual": "local_ai_fallback"
+    },
+    {
+      "name": "Laya: reset and hardware settings cannot restart inference during preparation",
+      "passed": true,
+      "actual": "local_ai_fallback"
+    },
+    {
+      "name": "Laya: ending preparation restores local inference",
+      "passed": true,
+      "actual": "laya_ai"
+    },
+    {
+      "name": "Laya: starting preparation rejects an older in-flight model answer",
+      "passed": true,
+      "actual": "local_ai_fallback"
+    },
+    {
+      "name": "Laya: identical RU/UK readings aggregate before confidence threshold",
+      "passed": true,
+      "actual": "AiDecision { Choice = uk, Confidence = 0,96, Certain = True }"
+    },
+    {
+      "name": "Laya: model cannot return a reading excluded from eligible candidates",
+      "passed": true,
+      "actual": "null"
+    },
+    {
+      "name": "Laya: truncated context cannot produce an accepted decision",
+      "passed": true,
+      "actual": "null"
+    },
+    {
+      "name": "Laya: caller cancellation cancels transport and yields no decision",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya: reset rejects a response that arrives after settings change",
+      "passed": true,
+      "actual": "null"
+    },
+    {
+      "name": "Laya setup: CPU thread profile stays bounded: 0/1",
+      "passed": true,
+      "actual": "1"
+    },
+    {
+      "name": "Laya setup: CPU thread profile stays bounded: 0/2",
+      "passed": true,
+      "actual": "1"
+    },
+    {
+      "name": "Laya setup: CPU thread profile stays bounded: 0/8",
+      "passed": true,
+      "actual": "4"
+    },
+    {
+      "name": "Laya setup: CPU thread profile stays bounded: 0/64",
+      "passed": true,
+      "actual": "4"
+    },
+    {
+      "name": "Laya setup: CPU thread profile stays bounded: -1/8",
+      "passed": true,
+      "actual": "4"
+    },
+    {
+      "name": "Laya setup: CPU thread profile stays bounded: 2147483647/8",
+      "passed": true,
+      "actual": "8"
+    },
+    {
+      "name": "Laya setup: CPU thread profile stays bounded: 2/64",
+      "passed": true,
+      "actual": "2"
+    },
+    {
+      "name": "Laya setup: CPU thread profile stays bounded: 1/0",
+      "passed": true,
+      "actual": "1"
+    },
+    {
+      "name": "Laya setup: GPU preference is explicit and invalid values use auto",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: CPU deadline adapts within bounded latency",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: invalid CPU timing cannot create an unbounded deadline",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: GPU and explicit diagnostics keep separate deadline budgets",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: CUDA setup accepts supported hardware at minimum bounds",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: old GPU, insufficient VRAM and old driver retain CPU fallback",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: newer GPU architectures unsupported by pinned cu126 retain CPU fallback",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: download is published only after hash verification",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: partial download resumes at its verified byte offset",
+      "passed": true,
+      "actual": "13"
+    },
+    {
+      "name": "Laya setup: checksum mismatch prevents final file publication",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: declared size mismatch prevents publication",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: download size limit is enforced",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: plain HTTP is rejected before transport",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: unapproved download host is rejected before transport",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: redirect cannot bypass the approved-host restriction",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: stream cancellation cannot publish a partial model",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: safe nested archive entry stays inside destination",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: unsafe archive path rejected: ../outside.txt",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: unsafe archive path rejected: ..\\outside.txt",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: unsafe archive path rejected: model/../../outside.txt",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: unsafe archive path rejected: /absolute.txt",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: unsafe archive path rejected: C:\\outside.txt",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: unsafe archive path rejected: \\\\server\\share\\file",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: unsafe archive path rejected: model.safetensors:stream",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: unsafe archive path rejected: encoder/file:stream",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: ordinary archive extracts intact",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: archive traversal leaves neighboring files unchanged",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: archive symbolic links are rejected",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: uncompressed archive size limit is enforced",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: extraction observes cancellation",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: existing model directory is never overwritten",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: existing destination file is never overwritten",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: staged model structure is recognized",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: verified model is committed intact to a new destination",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: setup plans select CPU, compatible CUDA and CPU fallback explicitly",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: viewing a setup plan creates no files or network requests",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: setup plan explicitly preserves an existing model",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: a model without a Python environment needs preparation",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: missing model always needs preparation",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: model-adjacent environment counts as prepared, as in the runtime lookup",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: Switchcraft ships every C\u002B\u002B runtime DLL PyTorch needs on a clean Windows",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: missing C\u002B\u002B runtime DLLs are placed next to the Laya interpreter",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: the interpreter\u0027s own runtime is kept when it is not older",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Laya setup: an incomplete runtime source is reported instead of leaving torch unloadable",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "reference: \u043F\u0440\u0438\u0432\u044B\u0442 / ru_to_uk_layout_mismatch",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442"
+    },
+    {
+      "name": "reference: \u043F\u0440\u0438\u0432\u0456\u0442 / real_uk_word_not_corrupted",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442"
+    },
+    {
+      "name": "reference: \u043F\u0440\u0438\u0432\u0435\u0442 / real_ru_word_not_corrupted",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0435\u0442"
+    },
+    {
+      "name": "reference: \u043F\u0440\u0438\u043C\u0435\u0440\u0456 / uk_to_ru_layout_mismatch",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u043C\u0435\u0440\u044B"
+    },
+    {
+      "name": "reference: \u043D\u043E\u0447\u044B / ru_to_uk_gibberish_source",
+      "passed": true,
+      "actual": "\u043D\u043E\u0447\u0456"
+    },
+    {
+      "name": "reference: \u043E\u0441\u043D\u043E\u0432\u044B / same_script_source_is_known_word",
+      "passed": true,
+      "actual": "\u043E\u0441\u043D\u043E\u0432\u044B"
+    },
+    {
+      "name": "reference: \u0441\u0435\u0437\u043E\u043D\u044B / same_script_source_is_inflected_word",
+      "passed": true,
+      "actual": "\u0441\u0435\u0437\u043E\u043D\u044B"
+    },
+    {
+      "name": "reference: \u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0442 / same_script_requires_known_word",
+      "passed": true,
+      "actual": "\u044D\u043A\u043E\u043D\u043E\u043C\u0438\u0442"
+    },
+    {
+      "name": "reference: \u043D\u044B / same_script_too_short",
+      "passed": true,
+      "actual": "\u043D\u044B"
+    },
+    {
+      "name": "reference: ghbdtn / common_ru_candidate",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0435\u0442"
+    },
+    {
+      "name": "reference: ghbdtn, / punctuation_preserved",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0435\u0442,"
+    },
+    {
+      "name": "reference: xnj,s / layout_mapping_with_punctuation_key",
+      "passed": true,
+      "actual": "\u0447\u0442\u043E\u0431\u044B"
+    },
+    {
+      "name": "reference: \u0440\u0443\u0434\u0434\u0449 / common_en_candidate",
+      "passed": true,
+      "actual": "hello"
+    },
+    {
+      "name": "reference: \u0435\u0440\u0448\u044B / corrected_legacy_mapping",
+      "passed": true,
+      "actual": "this"
+    },
+    {
+      "name": "reference: \u0446\u0440\u0443\u0442 / corrected_legacy_mapping",
+      "passed": true,
+      "actual": "when"
+    },
+    {
+      "name": "reference: \u0446\u0440\u0443\u043A\u0443 / corrected_legacy_mapping",
+      "passed": true,
+      "actual": "where"
+    },
+    {
+      "name": "reference: \u0440\u0443\u043A\u0443 / corrected_legacy_mapping",
+      "passed": true,
+      "actual": "\u0440\u0443\u043A\u0443"
+    },
+    {
+      "name": "reference: C# / protected_or_technical",
+      "passed": true,
+      "actual": "C#"
+    },
+    {
+      "name": "reference: WinAPI / camel_or_pascal_identifier",
+      "passed": true,
+      "actual": "WinAPI"
+    },
+    {
+      "name": "reference: RFC7231 / mixed_alnum_technical",
+      "passed": true,
+      "actual": "RFC7231"
+    },
+    {
+      "name": "reference: user@example.com / email",
+      "passed": true,
+      "actual": "user@example.com"
+    },
+    {
+      "name": "reference: https://example.com / url",
+      "passed": true,
+      "actual": "https://example.com"
+    },
+    {
+      "name": "reference: iPhone15 / mixed_alnum_technical",
+      "passed": true,
+      "actual": "iPhone15"
+    },
+    {
+      "name": "reference: some / never_correct_valid_english",
+      "passed": true,
+      "actual": "some"
+    },
+    {
+      "name": "reference: yfctktyyz / uk_common_word_corpus",
+      "passed": true,
+      "actual": "\u043D\u0430\u0441\u0435\u043B\u0435\u043D\u043D\u044F"
+    },
+    {
+      "name": "reference: cmjujlys / dictionary_tier_uk_word_beats_ru_pseudo_word",
+      "passed": true,
+      "actual": "\u0441\u044C\u043E\u0433\u043E\u0434\u043D\u0456"
+    },
+    {
+      "name": "reference: gjx\u0060nf / apostrophe_preserved_in_dictionary_tier_lookup",
+      "passed": true,
+      "actual": "\u043F\u043E\u0447\u0451\u0442\u0430"
+    },
+    {
+      "name": "reference: \u0446\u0449\u043A\u0434\u0432 / active_layout_tie_break_prefers_uk_source",
+      "passed": true,
+      "actual": "world"
+    },
+    {
+      "name": "reference: \u0446\u0449\u043A\u0434\u0432 / active_layout_tie_break_prefers_ru_source",
+      "passed": true,
+      "actual": "world"
+    },
+    {
+      "name": "reference: \u0446\u0449\u043A\u0434\u0432 / no_layout_hint_keeps_score_ranking",
+      "passed": true,
+      "actual": "world"
+    },
+    {
+      "name": "reference: cfqns / session_language_resolves_ambiguous_target_to_uk",
+      "passed": true,
+      "actual": "cfqns"
+    },
+    {
+      "name": "reference: cfqns / session_language_resolves_ambiguous_target_to_ru",
+      "passed": true,
+      "actual": "cfqns"
+    },
+    {
+      "name": "reference: cfqns / no_session_keeps_ambiguous_target_conservative",
+      "passed": true,
+      "actual": "cfqns"
+    },
+    {
+      "name": "reference: bundle / real_en_word_not_corrupted",
+      "passed": true,
+      "actual": "bundle"
+    },
+    {
+      "name": "reference: \u0438\u0433\u0442\u0432\u0434\u0443 / ru_layout_typed_as_en",
+      "passed": true,
+      "actual": "bundle"
+    },
+    {
+      "name": "reference: \u0438\u0433\u0442\u0432\u0434\u0443 / uk_layout_typed_as_en",
+      "passed": true,
+      "actual": "bundle"
+    },
+    {
+      "name": "reference: backend / real_en_word_not_corrupted",
+      "passed": true,
+      "actual": "backend"
+    },
+    {
+      "name": "reference: \u0438\u0444\u0441\u043B\u0443\u0442\u0432 / ru_layout_typed_as_en",
+      "passed": true,
+      "actual": "backend"
+    },
+    {
+      "name": "reference: \u0438\u0444\u0441\u043B\u0443\u0442\u0432 / uk_layout_typed_as_en",
+      "passed": true,
+      "actual": "backend"
+    },
+    {
+      "name": "reference: type / real_en_word_not_corrupted",
+      "passed": true,
+      "actual": "type"
+    },
+    {
+      "name": "reference: \u0435\u043D\u0437\u0443 / ru_layout_typed_as_en",
+      "passed": true,
+      "actual": "type"
+    },
+    {
+      "name": "reference: \u0435\u043D\u0437\u0443 / uk_layout_typed_as_en",
+      "passed": true,
+      "actual": "type"
+    },
+    {
+      "name": "reference: ghbdsn / en_layout_typed_as_uk",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442"
+    },
+    {
+      "name": "reference: \u043F\u0440\u0438\u0432\u044B\u0442 / ru_layout_typed_as_uk",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442"
+    },
+    {
+      "name": "reference: \u0441\u0445\u043E\u0436\u0430\u044F / real_ru_word_not_corrupted",
+      "passed": true,
+      "actual": "\u0441\u0445\u043E\u0436\u0430\u044F"
+    },
+    {
+      "name": "reference: c[j;fz / en_layout_typed_as_ru",
+      "passed": true,
+      "actual": "\u0441\u0445\u043E\u0436\u0430\u044F"
+    },
+    {
+      "name": "reference: \u043A\u0430\u0436\u0434\u044B\u0439 / real_ru_word_not_corrupted",
+      "passed": true,
+      "actual": "\u043A\u0430\u0436\u0434\u044B\u0439"
+    },
+    {
+      "name": "reference: rf;lsq / en_layout_typed_as_ru",
+      "passed": true,
+      "actual": "\u043A\u0430\u0436\u0434\u044B\u0439"
+    },
+    {
+      "name": "reference: \u043A\u0430\u0436\u0434\u0456\u0439 / uk_layout_typed_as_ru",
+      "passed": true,
+      "actual": "\u043A\u0430\u0436\u0434\u044B\u0439"
+    },
+    {
+      "name": "reference: \u0441\u0430\u043C\u044B\u0445 / real_ru_word_not_corrupted",
+      "passed": true,
+      "actual": "\u0441\u0430\u043C\u044B\u0445"
+    },
+    {
+      "name": "reference: cfvs[ / en_layout_typed_as_ru",
+      "passed": true,
+      "actual": "\u0441\u0430\u043C\u044B\u0445"
+    },
+    {
+      "name": "reference: \u0441\u0430\u043C\u0456\u0445 / uk_layout_typed_as_ru",
+      "passed": true,
+      "actual": "\u0441\u0430\u043C\u044B\u0445"
+    },
+    {
+      "name": "reference: \u0432\u044B\u0434\u0435\u043B\u044F\u044E / real_ru_word_not_corrupted",
+      "passed": true,
+      "actual": "\u0432\u044B\u0434\u0435\u043B\u044F\u044E"
+    },
+    {
+      "name": "reference: dsltkz. / en_layout_typed_as_ru",
+      "passed": true,
+      "actual": "\u0432\u044B\u0434\u0435\u043B\u044F\u044E"
+    },
+    {
+      "name": "reference: \u0432\u0456\u0434\u0435\u043B\u044F\u044E / uk_layout_typed_as_ru",
+      "passed": true,
+      "actual": "\u0432\u044B\u0434\u0435\u043B\u044F\u044E"
+    },
+    {
+      "name": "reference: {jhjij / shifted_punctuation_key_recovers_capital_letter",
+      "passed": true,
+      "actual": "\u0425\u043E\u0440\u043E\u0448\u043E"
+    },
+    {
+      "name": "reference: :fkm / shifted_punctuation_key_recovers_capital_letter",
+      "passed": true,
+      "actual": "\u0416\u0430\u043B\u044C"
+    },
+    {
+      "name": "reference: dshekbdf. / ambiguous_trailing_unknown_stem_stays_conservative",
+      "passed": true,
+      "actual": "\u0432\u044B\u0440\u0443\u043B\u0438\u0432\u0430\u044E"
+    },
+    {
+      "name": "Win64 INPUT structure",
+      "passed": true,
+      "actual": "40"
+    },
+    {
+      "name": "Owned Scintilla autocomplete virtual focus preserves the word",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Real editor focus change resets the word",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Foreground window event always resets the word",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Generic UIA field focus is never deduplicated",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Expired editor permission rejects virtual focus deduplication",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Unpermitted editor rejects virtual focus deduplication",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Other-process popup cannot preserve Scintilla context",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Unowned popup cannot preserve Scintilla context",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Unknown popup class cannot preserve Scintilla context",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Non-client object event is not treated as autocomplete",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Repeated direct Scintilla client focus remains harmless",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Correction selects actual target layout: ghbdtn",
+      "passed": true,
+      "actual": "ru"
+    },
+    {
+      "name": "Correction selects actual target layout: rjulf",
+      "passed": true,
+      "actual": "ru"
+    },
+    {
+      "name": "Correction selects actual target layout: ghbdtn,",
+      "passed": true,
+      "actual": "ru"
+    },
+    {
+      "name": "Correction selects actual target layout: ghbdsn",
+      "passed": true,
+      "actual": "uk"
+    },
+    {
+      "name": "Cyrillic words in Russian context: \u041A\u0456\u0440\u0433\u0456\u0437\u0441\u0442\u0430\u043D",
+      "passed": true,
+      "actual": "\u041A\u044B\u0440\u0433\u044B\u0437\u0441\u0442\u0430\u043D"
+    },
+    {
+      "name": "Cyrillic words in Russian context: \u041A\u0406\u0420\u0413\u0406\u0417\u0421\u0422\u0410\u041D,",
+      "passed": true,
+      "actual": "\u041A\u042B\u0420\u0413\u042B\u0417\u0421\u0422\u0410\u041D,"
+    },
+    {
+      "name": "Cyrillic words in Russian context: \u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439",
+      "passed": true,
+      "actual": "\u043A\u043E\u0441\u043C\u0430\u0442\u044B\u0439"
+    },
+    {
+      "name": "Cyrillic words in Russian context: (\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439),",
+      "passed": true,
+      "actual": "(\u043A\u043E\u0441\u043C\u0430\u0442\u044B\u0439),"
+    },
+    {
+      "name": "Ambiguous Ukrainian word without context stays intact",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Ambiguous Ukrainian word in Ukrainian context stays intact",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Reverse RU to UK dictionary correction: \u0441\u0432\u044B\u0442",
+      "passed": true,
+      "actual": "\u0441\u0432\u0456\u0442"
+    },
+    {
+      "name": "Reverse RU to UK dictionary correction: \u0443\u043A\u0440\u0430\u044A\u043D\u0441\u044C\u043A\u0438\u0439",
+      "passed": true,
+      "actual": "\u0443\u043A\u0440\u0430\u0457\u043D\u0441\u044C\u043A\u0438\u0439"
+    },
+    {
+      "name": "Reverse RU to UK dictionary correction: \u0431\u044B\u043B\u0438\u0439",
+      "passed": true,
+      "actual": "\u0431\u0456\u043B\u0438\u0439"
+    },
+    {
+      "name": "User\u0027s full mixed-layout phrases",
+      "passed": true,
+      "actual": "\u041A\u043E\u0433\u0434\u0430 \u044F \u043D\u0430 \u043F\u043E\u0447\u0442\u0435 \u0441\u043B\u0443\u0436\u0438\u043B \u044F\u043C\u0449\u0438\u043A\u043E\u043C, \u043A\u043E \u043C\u043D\u0435 \u043F\u043E\u0441\u0442\u0443\u0447\u0430\u043B\u0441\u044F \u043A\u043E\u0441\u043C\u0430\u0442\u044B\u0439\n\u0417\u0435\u043B\u0435\u043D\u043E\u0433\u043B\u0430\u0437\u043E\u0435 \u0442\u0430\u043A\u0441\u0438 \u043F\u0440\u0438\u0442\u043E\u0440\u043C\u043E\u0437\u0438 \u043F\u0440\u0438\u0442\u043E\u0440\u043C\u043E\u0437\u0438 \u041A\u044B\u0440\u0433\u044B\u0437\u0441\u0442\u0430\u043D"
+    },
+    {
+      "name": "Valid bilingual text preserved: \u0412\u043E\u043D\u0430 \u0441\u0442\u043E\u0457\u0442\u044C \u0443 \u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439 \u0448\u0430\u043F\u0446\u0456",
+      "passed": true,
+      "actual": "\u0412\u043E\u043D\u0430 \u0441\u0442\u043E\u0457\u0442\u044C \u0443 \u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439 \u0448\u0430\u043F\u0446\u0456"
+    },
+    {
+      "name": "Valid bilingual text preserved: \u041A\u043E\u0433\u0434\u0430 \u044F \u043D\u0430 \u043F\u043E\u0447\u0442\u0435 \u0441\u043B\u0443\u0436\u0438\u043B \u044F\u043C\u0449\u0438\u043A\u043E\u043C",
+      "passed": true,
+      "actual": "\u041A\u043E\u0433\u0434\u0430 \u044F \u043D\u0430 \u043F\u043E\u0447\u0442\u0435 \u0441\u043B\u0443\u0436\u0438\u043B \u044F\u043C\u0449\u0438\u043A\u043E\u043C"
+    },
+    {
+      "name": "Valid bilingual text preserved: \u041F\u0440\u0438\u0432\u0456\u0442, \u0441\u044C\u043E\u0433\u043E\u0434\u043D\u0456 \u0433\u0430\u0440\u043D\u0438\u0439 \u0434\u0435\u043D\u044C!",
+      "passed": true,
+      "actual": "\u041F\u0440\u0438\u0432\u0456\u0442, \u0441\u044C\u043E\u0433\u043E\u0434\u043D\u0456 \u0433\u0430\u0440\u043D\u0438\u0439 \u0434\u0435\u043D\u044C!"
+    },
+    {
+      "name": "Valid bilingual text preserved: \u043C\u0438\u0440 \u0441\u0438\u0440 \u0442\u0430\u043A\u0441\u0438",
+      "passed": true,
+      "actual": "\u043C\u0438\u0440 \u0441\u0438\u0440 \u0442\u0430\u043A\u0441\u0438"
+    },
+    {
+      "name": "Valid bilingual text preserved: \u041A\u043E\u0433\u0434\u0430 \u0441\u043B\u0443\u0436\u0438\u043B\n\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439",
+      "passed": true,
+      "actual": "\u041A\u043E\u0433\u0434\u0430 \u0441\u043B\u0443\u0436\u0438\u043B\n\u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439"
+    },
+    {
+      "name": "Valid bilingual text preserved: \u041A\u043E\u0433\u0434\u0430 \u0441\u043B\u0443\u0436\u0438\u043B \u043F\u0440\u0438\u0432\u0456\u0442 \u0441\u044C\u043E\u0433\u043E\u0434\u043D\u0456 \u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439",
+      "passed": true,
+      "actual": "\u041A\u043E\u0433\u0434\u0430 \u0441\u043B\u0443\u0436\u0438\u043B \u043F\u0440\u0438\u0432\u0456\u0442 \u0441\u044C\u043E\u0433\u043E\u0434\u043D\u0456 \u043A\u043E\u0441\u043C\u0430\u0442\u0456\u0439"
+    },
+    {
+      "name": "Standalone proper noun repair",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Lowercase proper noun repair",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Canonical Unicode is recognized",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Known Cyrillic word overrides shipped hint",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Full dictionaries rank Ukrainian Latin-key input",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Full dictionaries rank Russian Latin-key input",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Valid mixed-language quotation",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Careful mode preserves an ambiguous valid word",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Careful mode keeps definite dictionary corrections",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Explicit user override has priority",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Valid country name is not translated",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Disabled Russian language is not selected",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "One word cannot force ambiguous context",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Two observations do not force an ambiguous word",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Three independent observations establish context",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Automatic layout switch retains context",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Manual layout switch clears context",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Context expires after unrelated words",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Quotation resets language evidence",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Sentence boundary resets language evidence",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Ukrainian manual conversion",
+      "passed": true,
+      "actual": "\u043F\u0440\u0438\u0432\u0456\u0442"
+    },
+    {
+      "name": "English manual conversion",
+      "passed": true,
+      "actual": "hello"
+    },
+    {
+      "name": "Case preserved",
+      "passed": true,
+      "actual": "\u041F\u0440\u0438\u0432\u0456\u0442"
+    },
+    {
+      "name": "Multiline preserved",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Sentence punctuation preserved",
+      "passed": true,
+      "actual": "\u041F\u0440\u0438\u0432\u0456\u0442, \u0441\u0432\u0456\u0442\u0435!"
+    },
+    {
+      "name": "Punctuation key used as letter retained",
+      "passed": true,
+      "actual": "\u0432\u044B\u0434\u0435\u043B\u044F\u044E"
+    },
+    {
+      "name": "Bracket key used as letter retained",
+      "passed": true,
+      "actual": "\u0441\u0430\u043C\u044B\u0445"
+    },
+    {
+      "name": "Long text bounded",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Email protected",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "URL protected",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Windows path protected",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Keyboard shortcut parsed",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Bare shortcut rejected",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Custom rule applied after reload",
+      "passed": true,
+      "actual": "Switchcraft"
+    },
+    {
+      "name": "Never-correct overrides detection",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Never-correct overrides expanded dictionaries",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Export and import round trip",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Invalid import is atomic",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Settings persist",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Slow accessibility provider has a bounded wait",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Expired accessibility requests cannot execute later",
+      "passed": true,
+      "actual": ""
+    },
+    {
+      "name": "Accessibility queue recovers when provider returns",
+      "passed": true,
+      "actual": ""
+    }
+  ]
+}

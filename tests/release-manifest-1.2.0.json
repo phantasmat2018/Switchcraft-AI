@@ -1,0 +1,13 @@
+{
+  "version": "1.2.0",
+  "build_time": "2026-10-10T14:41:59.7912895+03:00",
+  "executable_sha256": "0B722991991CC42AD62560E2C48F0D1B5E8198BFBDBC2115088FA28EDEBDD876",
+  "engine_tests": 154,
+  "engine_report": "release-engine-1.2.0.json",
+  "ai_input_tests": 8,
+  "ai_input_report": "ai-input-results.json",
+  "live_api_verified": false,
+  "validation_note": "TypeSafe contract and faults tested with fake HTTP transport. Full input test interrupted by focus changes/clipboard contention; dedicated AI input checks passed.",
+  "changes": "Optional TypeSafe AI detection with persisted on/off toggle, protected API key and cancellable bounded requests",
+  "runtime": "self-contained .NET 8 Windows x64"
+}

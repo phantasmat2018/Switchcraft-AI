@@ -1,0 +1,12 @@
+{
+  "version": "1.2.1",
+  "verified_at": "2026-10-10T14:50:14.5478135+03:00",
+  "live_api_verified": true,
+  "synthetic_only": true,
+  "ui_checks": [
+    "Saved key and enabled mode retained after restart",
+    "ghbdsn -> привіт through local fallback when AI is uncertain",
+    "ghbdtn -> привет through TypeSafe AI, displayed confidence 97%"
+  ],
+  "key_disclosed": false
+}

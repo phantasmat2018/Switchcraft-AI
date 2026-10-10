@@ -1,0 +1,63 @@
+﻿{
+    "version":  "1.6.0",
+    "build_time":  "2026-10-10T17:26:50.7773055+03:00",
+    "executable_sha256":  "4F5D893D8EC81576FF35C392E4994CDD7DB8D5B77ADFF15AF9FE9758CBD1F2DE",
+    "engine_tests":  339,
+    "engine_report":  "release-engine-1.6.0.json",
+    "full_input_verified":  true,
+    "verification_pending":  false,
+    "laya_input_report":  "release-laya-input-1.6.0.json",
+    "clean_pc_verified":  true,
+    "known_limitations":  [
+                              "Ambiguous correct UK/RU words are preserved when the API is uncertain; corpus case косматій remained unchanged.",
+                              "Clipboard interference or OS failures can still cause a safe skipped or unconfirmed replacement; no universal clipboard recovery guarantee.",
+                              "Real CUDA acceleration has not been verified separately.",
+                              "The clean-PC check ran in Windows Sandbox with Defender real-time protection off; a first Laya start under antivirus scanning may take longer (startup and probe deadlines are 180 s, dictionaries work meanwhile).",
+                              "Clipboard-based replacement can intermittently paste ANSI text (??????) on this host; the app detects it and reports an unconfirmed paste. Seen once in two full input runs of this build."
+                          ],
+    "changes":  "Local Laya detection mode (mmBERT / Laya 0.4.1). Installer component \"Local Laya model\" (and /S /LAYA) hands off to the app, which downloads and prepares Laya r3 with progress and cancel. Fixes for clean PCs: app-local MSVC C++ runtime next to the Laya interpreter (torch failed without Visual C++ Redistributable), uv --constraint path without spaces (failed for profiles such as \"C:\\Users\\Name Surname\"), 180 s first-start deadlines, setup failures logged, archives removed after success.",
+    "runtime":  "self-contained .NET 8 Windows x64",
+    "verification_completed":  "2026-10-10T17:39:13.0596040+03:00",
+    "reports":  [
+                    {
+                        "report":  "release-engine-1.6.0.json",
+                        "total":  339,
+                        "passed":  339,
+                        "failed":  0
+                    },
+                    {
+                        "report":  "release-input-1.6.0.json",
+                        "total":  54,
+                        "passed":  54,
+                        "failed":  0
+                    },
+                    {
+                        "report":  "release-laya-input-1.6.0.json",
+                        "total":  10,
+                        "passed":  10,
+                        "failed":  0
+                    },
+                    {
+                        "report":  "release-cleanpc-laya-input-1.6.0.json",
+                        "total":  10,
+                        "passed":  10,
+                        "failed":  0
+                    },
+                    {
+                        "report":  "release-cleanpc-engine-1.6.0.json",
+                        "total":  339,
+                        "passed":  339,
+                        "failed":  0
+                    }
+                ],
+    "input_attempts":  [
+                           {
+                               "report":  "release-input-1.6.0-attempt1.json",
+                               "total":  54,
+                               "passed":  53,
+                               "failed":  1,
+                               "note":  "Russian correction from external Unicode packets pasted ??????; unconfirmed paste was reported by the app. Rerun passed 54/54."
+                           }
+                       ],
+    "clean_pc_check":  "Windows Sandbox 10.0.26100 without Visual C++ Redistributable or Python, profile \"C:\\Users\\Олександр Тест\": Setup /S /LAYA exit 0, Laya prepared in 3.3 min, Laya live input 10/10, engine 339/339 (release-cleanpc-*.json/.log)."
+}

@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-10-10T12:16:46.5871227+03:00",
+  "application": "Notepad++",
+  "application_version": "8.8.5",
+  "switchcraft_version": "1.0.1",
+  "executable_sha256": "601B1DF80B63373DE4769CF7DF8DEF0C9A3D11C76F30E45DF14979D6061AA218",
+  "method": "Computer Use: real key presses in a dedicated new unsaved tab, visually verified after each action. Production executable and user settings, no input-test mode.",
+  "total": 3,
+  "passed": 3,
+  "failed": 0,
+  "checks": [
+    {
+      "input": "ghbdtn ",
+      "expected": "привет ",
+      "actual": "привет ",
+      "passed": true,
+      "name": "Russian automatic correction on Space"
+    },
+    {
+      "expected": "ghbdtn ",
+      "actual": "ghbdtn ",
+      "passed": true,
+      "name": "Ctrl+Alt+Backspace restores original"
+    },
+    {
+      "input": "ghbdtn ",
+      "expected": "привет ",
+      "actual": "привет ",
+      "passed": true,
+      "name": "Ctrl+Alt+3 converts selected text"
+    }
+  ]
+}

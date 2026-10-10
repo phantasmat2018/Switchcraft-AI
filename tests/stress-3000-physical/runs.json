@@ -1,0 +1,1356 @@
+[
+  {
+    "name": "control-paused-fast",
+    "sensitivity": "balanced",
+    "paused": true,
+    "sentCharacters": 3000,
+    "actualCharacters": 3000,
+    "targetDelayMs": 2,
+    "wordPauseMs": 0,
+    "layoutChanges": 179,
+    "unicodeFallbacks": 14,
+    "typingSeconds": 15.580223,
+    "actualCharactersPerSecond": 192.5518010878278,
+    "exactInputPreserved": false,
+    "exactExpectedText": false,
+    "sameCharacterCount": true,
+    "inputEditDistance": 1161,
+    "expectedEditDistance": 1161,
+    "expectedCorrections": 0,
+    "confirmedCorrections": 0,
+    "corrections": [],
+    "differences": [
+      {
+        "token": 0,
+        "expected": "Сьогодні",
+        "actual": "Сьогодны"
+      },
+      {
+        "token": 2,
+        "expected": "команда",
+        "actual": "коvfylf"
+      },
+      {
+        "token": 3,
+        "expected": "перевіряє",
+        "actual": "gtревіряэ"
+      },
+      {
+        "token": 4,
+        "expected": "Switchcraft:",
+        "actual": "ЫwitchскфаеЖ"
+      },
+      {
+        "token": 5,
+        "expected": "hello,",
+        "actual": "руддщб"
+      },
+      {
+        "token": 7,
+        "expected": "привет,",
+        "actual": "приdtn?"
+      },
+      {
+        "token": 8,
+        "expected": "colleagues!",
+        "actual": "colleaпгуы!"
+      },
+      {
+        "token": 13,
+        "expected": "короткую",
+        "actual": "rjhjnre."
+      },
+      {
+        "token": 14,
+        "expected": "заметку",
+        "actual": "pfvtnre"
+      },
+      {
+        "token": 15,
+        "expected": "і",
+        "actual": "s"
+      },
+      {
+        "token": 16,
+        "expected": "натиснув",
+        "actual": "yfnbcyed"
+      },
+      {
+        "token": 17,
+        "expected": "space.",
+        "actual": "ызфсую"
+      },
+      {
+        "token": 18,
+        "expected": "The",
+        "actual": "Еру"
+      },
+      {
+        "token": 19,
+        "expected": "morning",
+        "actual": "ьщктштп"
+      },
+      {
+        "token": 20,
+        "expected": "is",
+        "actual": "ші"
+      },
+      {
+        "token": 21,
+        "expected": "quiet,",
+        "actual": "йгшуеб"
+      },
+      {
+        "token": 25,
+        "expected": "складніше:",
+        "actual": "складныше:"
+      },
+      {
+        "token": 26,
+        "expected": "поезд",
+        "actual": "поеpl"
+      },
+      {
+        "token": 27,
+        "expected": "прибудет",
+        "actual": "ghb,eltn"
+      },
+      {
+        "token": 28,
+        "expected": "о",
+        "actual": "j"
+      },
+      {
+        "token": 29,
+        "expected": "07:45,",
+        "actual": "07^45?"
+      },
+      {
+        "token": 30,
+        "expected": "meeting",
+        "actual": "meetштп"
+      },
+      {
+        "token": 31,
+        "expected": "starts",
+        "actual": "ыефкеы"
+      },
+      {
+        "token": 32,
+        "expected": "at",
+        "actual": "фе"
+      },
+      {
+        "token": 33,
+        "expected": "08:30,",
+        "actual": "08Ж30б"
+      },
+      {
+        "token": 36,
+        "expected": "коштує",
+        "actual": "коштуэ"
+      },
+      {
+        "token": 40,
+        "expected": "кишені",
+        "actual": "кишены"
+      },
+      {
+        "token": 41,
+        "expected": "лежить",
+        "actual": "kt;bnm"
+      },
+      {
+        "token": 42,
+        "expected": "ключ,",
+        "actual": "rk.x?"
+      },
+      {
+        "token": 43,
+        "expected": "на",
+        "actual": "yf"
+      },
+      {
+        "token": 44,
+        "expected": "столе",
+        "actual": "cnjkt"
+      },
+      {
+        "token": 45,
+        "expected": "книга,",
+        "actual": "rybuf?"
+      },
+      {
+        "token": 47,
+        "expected": "the",
+        "actual": "еру"
+      },
+      {
+        "token": 48,
+        "expected": "window",
+        "actual": "цштвщц"
+      },
+      {
+        "token": 49,
+        "expected": "stands",
+        "actual": "ыефтвы"
+      },
+      {
+        "token": 50,
+        "expected": "a",
+        "actual": "ф"
+      },
+      {
+        "token": 51,
+        "expected": "green",
+        "actual": "пкуут"
+      },
+      {
+        "token": 52,
+        "expected": "chair.",
+        "actual": "срфшкю"
+      },
+      {
+        "token": 57,
+        "expected": "допомогу,",
+        "actual": "дjgjvjue?"
+      },
+      {
+        "token": 60,
+        "expected": "here».",
+        "actual": "here»ю"
+      },
+      {
+        "token": 67,
+        "expected": "see",
+        "actual": "ыуу"
+      },
+      {
+        "token": 68,
+        "expected": "you",
+        "actual": "нщг"
+      },
+      {
+        "token": 70,
+        "expected": "Після",
+        "actual": "Gісля"
+      },
+      {
+        "token": 73,
+        "expected": "обговорили",
+        "actual": "обговоhbkb"
+      },
+      {
+        "token": 74,
+        "expected": "новий",
+        "actual": "yjdbq"
+      },
+      {
+        "token": 75,
+        "expected": "проєкт,",
+        "actual": "ghj'rn?"
+      },
+      {
+        "token": 79,
+        "expected": "fresh",
+        "actual": "акуір"
+      },
+      {
+        "token": 80,
+        "expected": "ideas.",
+        "actual": "швуфію"
+      },
+      {
+        "token": 83,
+        "expected": "світ,",
+        "actual": "свыт,"
+      },
+      {
+        "token": 84,
+        "expected": "русское",
+        "actual": "русcrjt"
+      },
+      {
+        "token": 85,
+        "expected": "слово",
+        "actual": "ckjdj"
+      },
+      {
+        "token": 86,
+        "expected": "мир",
+        "actual": "vbh"
+      },
+      {
+        "token": 88,
+        "expected": "English",
+        "actual": "Утпдшір"
+      },
+      {
+        "token": 89,
+        "expected": "word",
+        "actual": "цщкв"
+      },
+      {
+        "token": 90,
+        "expected": "world",
+        "actual": "цщкдв"
+      },
+      {
+        "token": 92,
+        "expected": "залишитися",
+        "actual": "заkbibnbcz"
+      },
+      {
+        "token": 93,
+        "expected": "на",
+        "actual": "yf"
+      },
+      {
+        "token": 94,
+        "expected": "місці.",
+        "actual": "vысцы."
+      },
+      {
+        "token": 95,
+        "expected": "Привіт",
+        "actual": "Привыт"
+      },
+      {
+        "token": 96,
+        "expected": "усім,",
+        "actual": "усыv?"
+      },
+      {
+        "token": 97,
+        "expected": "привет",
+        "actual": "ghbdtn"
+      },
+      {
+        "token": 98,
+        "expected": "каждому,",
+        "actual": "rf;ljve?"
+      },
+      {
+        "token": 99,
+        "expected": "hello",
+        "actual": "руддщ"
+      },
+      {
+        "token": 100,
+        "expected": "again;",
+        "actual": "фпфштж"
+      },
+      {
+        "token": 104,
+        "expected": "ночи,",
+        "actual": "ноxb?"
+      },
+      {
+        "token": 107,
+        "expected": "Коли",
+        "actual": "Rоли"
+      },
+      {
+        "token": 109,
+        "expected": "бачить",
+        "actual": ",fxbnm"
+      },
+      {
+        "token": 110,
+        "expected": "файл",
+        "actual": "afqk"
+      },
+      {
+        "token": 111,
+        "expected": "report_2026.txt,",
+        "actual": "report_2026юечеб"
+      },
+      {
+        "token": 112,
+        "expected": "він",
+        "actual": "вын"
+      },
+      {
+        "token": 115,
+        "expected": "змінювати",
+        "actual": "змsy.dfnb"
+      },
+      {
+        "token": 116,
+        "expected": "назву.",
+        "actual": "yfpde/"
+      },
+      {
+        "token": 117,
+        "expected": "Адреса",
+        "actual": "Flhtcf"
+      },
+      {
+        "token": 119,
+        "expected": "та",
+        "actual": "nf"
+      },
+      {
+        "token": 120,
+        "expected": "посилання",
+        "actual": "посилаyyz"
+      },
+      {
+        "token": 121,
+        "expected": "https://example.com/docs?q=hello",
+        "actual": "hеезыЖ..учфmple.com/вщсі,й=руддщ"
+      },
+      {
+        "token": 127,
+        "expected": "version",
+        "actual": "мукішщт"
+      },
+      {
+        "token": 128,
+        "expected": "1.1.0,",
+        "actual": "1ю1ю0б"
+      },
+      {
+        "token": 129,
+        "expected": "retry",
+        "actual": "куекн"
+      },
+      {
+        "token": 130,
+        "expected": "3,",
+        "actual": "3б"
+      },
+      {
+        "token": 131,
+        "expected": "timeout",
+        "actual": "ешьущге"
+      },
+      {
+        "token": 133,
+        "expected": "ms.",
+        "actual": "ьыю"
+      },
+      {
+        "token": 135,
+        "expected": "читаємо",
+        "actual": "читаэмо"
+      },
+      {
+        "token": 136,
+        "expected": "README,",
+        "actual": "КУФВЬУб"
+      },
+      {
+        "token": 139,
+        "expected": "save",
+        "actual": "ыфму"
+      },
+      {
+        "token": 140,
+        "expected": "the",
+        "actual": "еру"
+      },
+      {
+        "token": 141,
+        "expected": "document,",
+        "actual": "вщсгьутеб"
+      },
+      {
+        "token": 143,
+        "expected": "потім",
+        "actual": "потым"
+      },
+      {
+        "token": 149,
+        "expected": "поспіху",
+        "actual": "поспыхe"
+      },
+      {
+        "token": 150,
+        "expected": "й",
+        "actual": "q"
+      },
+      {
+        "token": 151,
+        "expected": "без",
+        "actual": ",tp"
+      },
+      {
+        "token": 152,
+        "expected": "втрати",
+        "actual": "dnhfnb"
+      },
+      {
+        "token": 153,
+        "expected": "літер.",
+        "actual": "лытер."
+      },
+      {
+        "token": 160,
+        "expected": "ко",
+        "actual": "rj"
+      },
+      {
+        "token": 161,
+        "expected": "мне",
+        "actual": "vyt"
+      },
+      {
+        "token": 162,
+        "expected": "постучался",
+        "actual": "gjcnexfkcz"
+      },
+      {
+        "token": 163,
+        "expected": "косматый",
+        "actual": "rjсматый"
+      },
+      {
+        "token": 170,
+        "expected": "шапці",
+        "actual": "шапцы"
+      },
+      {
+        "token": 174,
+        "expected": "welcome",
+        "actual": "цудсщьу"
+      },
+      {
+        "token": 175,
+        "expected": "home.",
+        "actual": "рщьую"
+      },
+      {
+        "token": 176,
+        "expected": "Зеленоглазое",
+        "actual": "Ptktyjukfpjt"
+      },
+      {
+        "token": 177,
+        "expected": "такси",
+        "actual": "nfrcb"
+      },
+      {
+        "token": 178,
+        "expected": "притормозило",
+        "actual": "ghитормозило"
+      },
+      {
+        "token": 180,
+        "expected": "будинку;",
+        "actual": "будинre$"
+      },
+      {
+        "token": 182,
+        "expected": "driver",
+        "actual": "вкшмук"
+      },
+      {
+        "token": 183,
+        "expected": "smiled,",
+        "actual": "ыьшдувб"
+      },
+      {
+        "token": 189,
+        "expected": "Він",
+        "actual": "Вын"
+      },
+      {
+        "token": 195,
+        "expected": "and",
+        "actual": "фтв"
+      },
+      {
+        "token": 196,
+        "expected": "everybody",
+        "actual": "умукнищвн"
+      },
+      {
+        "token": 197,
+        "expected": "waited.",
+        "actual": "цфшеувю"
+      },
+      {
+        "token": 198,
+        "expected": "Київ,",
+        "actual": "Киъв,"
+      },
+      {
+        "token": 199,
+        "expected": "Львів,",
+        "actual": "Львыв,"
+      },
+      {
+        "token": 201,
+        "expected": "London,",
+        "actual": "Дщтdon,"
+      },
+      {
+        "token": 202,
+        "expected": "Кыргызстан",
+        "actual": "Rshuspcnfy"
+      },
+      {
+        "token": 204,
+        "expected": "п'ять",
+        "actual": "g'ять"
+      },
+      {
+        "token": 207,
+        "expected": "нотатці.",
+        "actual": "нотатцы."
+      },
+      {
+        "token": 208,
+        "expected": "Її",
+        "actual": "Ъї"
+      },
+      {
+        "token": 219,
+        "expected": "We",
+        "actual": "Цу"
+      },
+      {
+        "token": 220,
+        "expected": "compare",
+        "actual": "сщьзфку"
+      },
+      {
+        "token": 221,
+        "expected": "letters:",
+        "actual": "дуееукыЖ"
+      },
+      {
+        "token": 222,
+        "expected": "і,",
+        "actual": "ы,"
+      },
+      {
+        "token": 225,
+        "expected": "ї,",
+        "actual": "ъ,"
+      },
+      {
+        "token": 226,
+        "expected": "є,",
+        "actual": "э,"
+      },
+      {
+        "token": 228,
+        "expected": "ґ,",
+        "actual": "ґ?"
+      },
+      {
+        "token": 229,
+        "expected": "г,",
+        "actual": "u?"
+      },
+      {
+        "token": 230,
+        "expected": "ё,",
+        "actual": "`?"
+      },
+      {
+        "token": 231,
+        "expected": "е.",
+        "actual": "t/"
+      },
+      {
+        "token": 232,
+        "expected": "Пам'ять,",
+        "actual": "Gfv'znm?"
+      },
+      {
+        "token": 233,
+        "expected": "об'єкт,",
+        "actual": "j,`'rn?"
+      },
+      {
+        "token": 234,
+        "expected": "зв'язок;",
+        "actual": "pd'zpjк;"
+      },
+      {
+        "token": 235,
+        "expected": "подъезд,",
+        "actual": "подїезд,"
+      },
+      {
+        "token": 238,
+        "expected": "don't",
+        "actual": "вщтэе"
+      },
+      {
+        "token": 239,
+        "expected": "stop,",
+        "actual": "ыещзб"
+      },
+      {
+        "token": 240,
+        "expected": "I'm",
+        "actual": "Шэь"
+      },
+      {
+        "token": 241,
+        "expected": "ready,",
+        "actual": "куфвy,"
+      },
+      {
+        "token": 244,
+        "expected": "Сім'я",
+        "actual": "Csv`z"
+      },
+      {
+        "token": 245,
+        "expected": "прийшла",
+        "actual": "ghbqikf"
+      },
+      {
+        "token": 246,
+        "expected": "додому,",
+        "actual": "ljдому,"
+      },
+      {
+        "token": 251,
+        "expected": "the",
+        "actual": "еру"
+      },
+      {
+        "token": 252,
+        "expected": "children",
+        "actual": "сршдвкут"
+      },
+      {
+        "token": 253,
+        "expected": "opened",
+        "actual": "щзутув"
+      },
+      {
+        "token": 254,
+        "expected": "a",
+        "actual": "ф"
+      },
+      {
+        "token": 255,
+        "expected": "book.",
+        "actual": "ищщлю"
+      },
+      {
+        "token": 264,
+        "expected": "(like",
+        "actual": "(liлу"
+      },
+      {
+        "token": 265,
+        "expected": "this)",
+        "actual": "ерші)"
+      },
+      {
+        "token": 267,
+        "expected": "повинні",
+        "actual": "повинны"
+      },
+      {
+        "token": 268,
+        "expected": "ламати",
+        "actual": "kfvfnb"
+      },
+      {
+        "token": 269,
+        "expected": "текст.",
+        "actual": "ntrcn/"
+      },
+      {
+        "token": 270,
+        "expected": "Please",
+        "actual": "Plуфіу"
+      },
+      {
+        "token": 271,
+        "expected": "check",
+        "actual": "срусл"
+      },
+      {
+        "token": 272,
+        "expected": "the",
+        "actual": "еру"
+      },
+      {
+        "token": 273,
+        "expected": "keyboard,",
+        "actual": "лунищфквб"
+      },
+      {
+        "token": 274,
+        "expected": "перевір",
+        "actual": "переdsh"
+      },
+      {
+        "token": 275,
+        "expected": "розкладку,",
+        "actual": "hjprkflre?"
+      },
+      {
+        "token": 278,
+        "expected": "One",
+        "actual": "Щту"
+      },
+      {
+        "token": 279,
+        "expected": "small",
+        "actual": "ыьфдд"
+      },
+      {
+        "token": 280,
+        "expected": "step,",
+        "actual": "ыеузб"
+      },
+      {
+        "token": 288,
+        "expected": "говоримо",
+        "actual": "гjdjhbvj"
+      },
+      {
+        "token": 289,
+        "expected": "про",
+        "actual": "ghj"
+      },
+      {
+        "token": 290,
+        "expected": "воду,",
+        "actual": "djle?"
+      },
+      {
+        "token": 291,
+        "expected": "он",
+        "actual": "jy"
+      },
+      {
+        "token": 292,
+        "expected": "рассказывает",
+        "actual": "hfccказівает"
+      },
+      {
+        "token": 295,
+        "expected": "she",
+        "actual": "ыру"
+      },
+      {
+        "token": 296,
+        "expected": "describes",
+        "actual": "вуыскшиуы"
+      },
+      {
+        "token": 297,
+        "expected": "the",
+        "actual": "еру"
+      },
+      {
+        "token": 298,
+        "expected": "rain.",
+        "actual": "кфin."
+      },
+      {
+        "token": 299,
+        "expected": "Уранці",
+        "actual": "Ehfyws"
+      },
+      {
+        "token": 300,
+        "expected": "буде",
+        "actual": ",elt"
+      },
+      {
+        "token": 301,
+        "expected": "сонце,",
+        "actual": "cjywt?"
+      },
+      {
+        "token": 302,
+        "expected": "вечером",
+        "actual": "dtчером"
+      },
+      {
+        "token": 305,
+        "expected": "tomorrow",
+        "actual": "ещьщккщц"
+      },
+      {
+        "token": 306,
+        "expected": "may",
+        "actual": "ьфн"
+      },
+      {
+        "token": 307,
+        "expected": "be",
+        "actual": "иу"
+      },
+      {
+        "token": 308,
+        "expected": "cloudy.",
+        "actual": "сдщгвню"
+      },
+      {
+        "token": 310,
+        "expected": "є",
+        "actual": "э"
+      },
+      {
+        "token": 317,
+        "expected": "відсоток",
+        "actual": "выдсоток"
+      },
+      {
+        "token": 321,
+        "expected": "і",
+        "actual": "ы"
+      },
+      {
+        "token": 325,
+        "expected": "читає",
+        "actual": "читf'"
+      },
+      {
+        "token": 326,
+        "expected": "код,",
+        "actual": "rjl?"
+      },
+      {
+        "token": 327,
+        "expected": "инженер",
+        "actual": "by;tyth"
+      },
+      {
+        "token": 328,
+        "expected": "проверяет",
+        "actual": "ghjdthztn"
+      },
+      {
+        "token": 329,
+        "expected": "журнал,",
+        "actual": ";ehyfk?"
+      },
+      {
+        "token": 330,
+        "expected": "the",
+        "actual": "еру"
+      },
+      {
+        "token": 331,
+        "expected": "tester",
+        "actual": "еуіеук"
+      },
+      {
+        "token": 332,
+        "expected": "watches",
+        "actual": "цфесруы"
+      },
+      {
+        "token": 333,
+        "expected": "the",
+        "actual": "еру"
+      },
+      {
+        "token": 334,
+        "expected": "screen.",
+        "actual": "ыскуутю"
+      },
+      {
+        "token": 335,
+        "expected": "Enter",
+        "actual": "Утеук"
+      },
+      {
+        "token": 336,
+        "expected": "створює",
+        "actual": "створюэ"
+      },
+      {
+        "token": 337,
+        "expected": "новий",
+        "actual": "yjdbq"
+      },
+      {
+        "token": 338,
+        "expected": "рядок,",
+        "actual": "hzljr?"
+      },
+      {
+        "token": 339,
+        "expected": "пробел",
+        "actual": "ghj,tk"
+      },
+      {
+        "token": 340,
+        "expected": "разделяет",
+        "actual": "hfpltkztn"
+      },
+      {
+        "token": 341,
+        "expected": "слова,",
+        "actual": "cлова,"
+      },
+      {
+        "token": 342,
+        "expected": "and",
+        "actual": "фтв"
+      },
+      {
+        "token": 343,
+        "expected": "punctuation",
+        "actual": "згтсегфешщт"
+      },
+      {
+        "token": 344,
+        "expected": "ends",
+        "actual": "утвы"
+      },
+      {
+        "token": 345,
+        "expected": "a",
+        "actual": "ф"
+      },
+      {
+        "token": 346,
+        "expected": "sentence.",
+        "actual": "ыутеутсую"
+      },
+      {
+        "token": 349,
+        "expected": "правильне",
+        "actual": "прfdbkmyt"
+      },
+      {
+        "token": 350,
+        "expected": "слово",
+        "actual": "ckjdj"
+      },
+      {
+        "token": 351,
+        "expected": "руку?",
+        "actual": "here&"
+      },
+      {
+        "token": 352,
+        "expected": "Останется",
+        "actual": "Jcnfytncz"
+      },
+      {
+        "token": 353,
+        "expected": "ли",
+        "actual": "kb"
+      },
+      {
+        "token": 354,
+        "expected": "слово",
+        "actual": "ckjво"
+      },
+      {
+        "token": 356,
+        "expected": "Will",
+        "actual": "Цшдд"
+      },
+      {
+        "token": 357,
+        "expected": "the",
+        "actual": "еру"
+      },
+      {
+        "token": 358,
+        "expected": "word",
+        "actual": "цщкв"
+      },
+      {
+        "token": 359,
+        "expected": "here",
+        "actual": "руку"
+      },
+      {
+        "token": 360,
+        "expected": "stay",
+        "actual": "ыефн"
+      },
+      {
+        "token": 361,
+        "expected": "unchanged?",
+        "actual": "гтсрфтпув,"
+      },
+      {
+        "token": 362,
+        "expected": "Дорога",
+        "actual": "Ljhjuf"
+      },
+      {
+        "token": 363,
+        "expected": "веде",
+        "actual": "dtlt"
+      },
+      {
+        "token": 364,
+        "expected": "до",
+        "actual": "lj"
+      },
+      {
+        "token": 365,
+        "expected": "міста,",
+        "actual": "vscnf?"
+      },
+      {
+        "token": 367,
+        "expected": "была",
+        "actual": "біла"
+      },
+      {
+        "token": 369,
+        "expected": "this",
+        "actual": "ершы"
+      },
+      {
+        "token": 371,
+        "expected": "is",
+        "actual": "iы"
+      },
+      {
+        "token": 372,
+        "expected": "familiar.",
+        "actual": "афьшдшфк."
+      },
+      {
+        "token": 373,
+        "expected": "Ми",
+        "actual": "Vb"
+      },
+      {
+        "token": 377,
+        "expected": "yes,",
+        "actual": "нуыб"
+      },
+      {
+        "token": 380,
+        "expected": "no,",
+        "actual": "тщб"
+      },
+      {
+        "token": 386,
+        "expected": "кілька",
+        "actual": "кылька"
+      },
+      {
+        "token": 387,
+        "expected": "простих",
+        "actual": "простb["
+      },
+      {
+        "token": 388,
+        "expected": "фраз:",
+        "actual": "ahfp^"
+      },
+      {
+        "token": 389,
+        "expected": "добрий",
+        "actual": "lj,hbq"
+      },
+      {
+        "token": 394,
+        "expected": "evening.",
+        "actual": "evутштпю"
+      },
+      {
+        "token": 395,
+        "expected": "Привіт,",
+        "actual": "Привыт?"
+      },
+      {
+        "token": 396,
+        "expected": "привет,",
+        "actual": "ghbdtn,"
+      },
+      {
+        "token": 397,
+        "expected": "hello;",
+        "actual": "руддщж"
+      },
+      {
+        "token": 398,
+        "expected": "світ,",
+        "actual": "свыт,"
+      },
+      {
+        "token": 399,
+        "expected": "мир,",
+        "actual": "мbh?"
+      },
+      {
+        "token": 400,
+        "expected": "world;",
+        "actual": "worдвж"
+      },
+      {
+        "token": 403,
+        "expected": "work.",
+        "actual": "цщклю"
+      },
+      {
+        "token": 408,
+        "expected": "набір,",
+        "actual": "набыр,"
+      },
+      {
+        "token": 412,
+        "expected": "новый",
+        "actual": "новій"
+      },
+      {
+        "token": 414,
+        "expected": "Після",
+        "actual": "Пысля"
+      },
+      {
+        "token": 415,
+        "expected": "перевірки",
+        "actual": "перевырки"
+      },
+      {
+        "token": 416,
+        "expected": "звіримо",
+        "actual": "pdshbvj"
+      },
+      {
+        "token": 417,
+        "expected": "кожну",
+        "actual": "rj;ye"
+      },
+      {
+        "token": 418,
+        "expected": "літеру,",
+        "actual": "ksnthe?"
+      },
+      {
+        "token": 421,
+        "expected": "every",
+        "actual": "умукн"
+      },
+      {
+        "token": 422,
+        "expected": "single",
+        "actual": "іштпду"
+      },
+      {
+        "token": 423,
+        "expected": "space.",
+        "actual": "ызфсую"
+      },
+      {
+        "token": 426,
+        "expected": "зберігаємо",
+        "actual": "p,thsuf'vj"
+      },
+      {
+        "token": 427,
+        "expected": "результат,",
+        "actual": "htpekmnfn?"
+      },
+      {
+        "token": 428,
+        "expected": "записываем",
+        "actual": "pаписіваем"
+      },
+      {
+        "token": 430,
+        "expected": "finish",
+        "actual": "аштшыр"
+      },
+      {
+        "token": 431,
+        "expected": "the",
+        "actual": "еру"
+      },
+      {
+        "token": 432,
+        "expected": "test",
+        "actual": "еуіе"
+      },
+      {
+        "token": 433,
+        "expected": "safely.",
+        "actual": "іфаудню"
+      },
+      {
+        "token": 434,
+        "expected": "Фінальна",
+        "actual": "Фынальна"
+      },
+      {
+        "token": 435,
+        "expected": "перевірка:",
+        "actual": "перевырка^"
+      },
+      {
+        "token": 436,
+        "expected": "ми",
+        "actual": "vb"
+      },
+      {
+        "token": 437,
+        "expected": "зберегли",
+        "actual": "p,thtukb"
+      },
+      {
+        "token": 438,
+        "expected": "зміст,",
+        "actual": "змыст,"
+      },
+      {
+        "token": 442,
+        "expected": "kept",
+        "actual": "лузе"
+      },
+      {
+        "token": 443,
+        "expected": "every",
+        "actual": "умукн"
+      },
+      {
+        "token": 444,
+        "expected": "letter.",
+        "actual": "дуееуr."
+      },
+      {
+        "token": 445,
+        "expected": "Курсор",
+        "actual": "Rehcjh"
+      },
+      {
+        "token": 446,
+        "expected": "стоїть",
+        "actual": "cnj]nm"
+      },
+      {
+        "token": 447,
+        "expected": "у",
+        "actual": "e"
+      },
+      {
+        "token": 448,
+        "expected": "кінці,",
+        "actual": "rsyws?"
+      },
+      {
+        "token": 449,
+        "expected": "программа",
+        "actual": "ghjuhfvvf"
+      },
+      {
+        "token": 450,
+        "expected": "отвечает,",
+        "actual": "jndtxftn?"
+      }
+    ],
+    "messages": [],
+    "hookStillRunning": true,
+    "health": "",
+    "maxUiHeartbeatGapMs": 6320.9623,
+    "cpuSeconds": 18.59375,
+    "workingSetBytes": 281894912
+  }
+]

@@ -1,0 +1,306 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Automation;
+using Forms = System.Windows.Forms;
+
+namespace Switchcraft;
+
+/// <summary>Transient word buffer only; never records raw typing to disk.</summary>
+public sealed class KeyboardService : IDisposable
+{
+    private readonly NativeEngine engine;
+    private readonly SettingsStore settings;
+    private readonly object gate = new();
+    private readonly Thread thread;
+    private readonly Win32.HookProc keyboardProc, mouseProc;
+    private IntPtr keyboardHook, mouseHook;
+    private uint threadId;
+    private readonly StringBuilder word = new();
+    private readonly TypingContext languageContext = new();
+    private (IntPtr Window, IntPtr Focus) tracked;
+    private (IntPtr Window, IntPtr Focus) permitted;
+    private bool allowed;
+    private int probeBusy;
+    private long privacyEpoch;
+    private System.Threading.Timer? privacyTimer;
+    private AutomationFocusChangedEventHandler? focusHandler;
+    private UndoState? undo;
+    private bool disposed;
+    private readonly bool allowOwnProcess;
+    private string currentApp = "";
+    private readonly HashSet<string> passwordApps = new(StringComparer.OrdinalIgnoreCase) { "KeePass.exe", "KeePassXC.exe", "1Password.exe", "Bitwarden.exe", "CredentialUIBroker.exe", "LogonUI.exe", "consent.exe" };
+    public DateTime? PausedUntil { get; private set; }
+    public bool SessionPaused { get; private set; }
+    public bool Running => settings.Value.Enabled && !SessionPaused && !(PausedUntil > DateTime.Now);
+    public event Action<Correction, string>? Corrected;
+    public event Action<string>? Status;
+    public event Action<string>? LearnWord;
+    private sealed record UndoState(IntPtr Window, IntPtr Focus, string Original, string Replacement, int BoundaryLength, string SourceLanguage);
+    public KeyboardService(NativeEngine engine, SettingsStore settings, bool allowOwnProcess = false)
+    {
+        this.engine = engine; this.settings = settings; this.allowOwnProcess = allowOwnProcess;
+        keyboardProc = KeyboardHook; mouseProc = MouseHook;
+        thread = new Thread(Run) { Name = "Switchcraft input", IsBackground = true };
+        thread.SetApartmentState(ApartmentState.STA);
+    }
+    public void Start()
+    {
+        thread.Start();
+        privacyTimer = new System.Threading.Timer(_ => ProbeFocus(), null, 0, 180);
+        Task.Run(() =>
+        {
+            try
+            {
+                focusHandler = (_, _) => { Interlocked.Increment(ref privacyEpoch); lock (gate) { allowed = false; Reset(); } ProbeFocus(); };
+                Automation.AddAutomationFocusChangedEventHandler(focusHandler);
+            }
+            catch { /* Timer and Win32 password checks remain active. */ }
+        });
+    }
+    private void Run()
+    {
+        threadId = Win32.GetCurrentThreadId();
+        keyboardHook = Win32.SetWindowsHookEx(Win32.WH_KEYBOARD_LL, keyboardProc, Win32.GetModuleHandle(null), 0);
+        mouseHook = Win32.SetWindowsHookEx(Win32.WH_MOUSE_LL, mouseProc, Win32.GetModuleHandle(null), 0);
+        if (keyboardHook == IntPtr.Zero || mouseHook == IntPtr.Zero)
+        {
+            settings.Value.Enabled = false;
+            Status?.Invoke("Не вдалося підключити обробку клавіатури: " + Marshal.GetLastWin32Error());
+            if (keyboardHook != IntPtr.Zero) Win32.UnhookWindowsHookEx(keyboardHook);
+            if (mouseHook != IntPtr.Zero) Win32.UnhookWindowsHookEx(mouseHook);
+            return;
+        }
+        try { Forms.Application.Run(); }
+        finally { Win32.UnhookWindowsHookEx(keyboardHook); Win32.UnhookWindowsHookEx(mouseHook); }
+    }
+    private void ProbeFocus()
+    {
+        if (disposed || Interlocked.Exchange(ref probeBusy, 1) != 0) return;
+        try
+        {
+            var epoch = Interlocked.Read(ref privacyEpoch);
+            var focus = Win32.Focus();
+            var app = Win32.AppName(focus.Window);
+            bool safe = !passwordApps.Contains(app) && app.Length > 0;
+            var cls = new StringBuilder(128); Win32.GetClassName(focus.Focus, cls, cls.Capacity);
+            if (cls.ToString().Contains("Edit", StringComparison.OrdinalIgnoreCase) && (Win32.GetWindowLong(focus.Focus, -16) & 0x20) != 0) safe = false;
+            // Scintilla editors (including Notepad++) may expose only a UIA pane.
+            // A read-only, unresponsive or disabled editor must remain blocked.
+            if (cls.ToString() == "Scintilla") safe &= Win32.IsWritableScintilla(focus, cls.ToString());
+            else try
+            {
+                var element = AutomationElement.FocusedElement;
+                safe &= element != null && !element.Current.IsPassword && element.Current.IsEnabled;
+                if (element != null)
+                {
+                    var type = element.Current.ControlType;
+                    safe &= type == ControlType.Edit || type == ControlType.Document || type == ControlType.ComboBox || element.TryGetCurrentPattern(TextPattern.Pattern, out _);
+                }
+            }
+            catch { safe = false; }
+            lock (gate)
+            {
+                if (epoch == Interlocked.Read(ref privacyEpoch) && focus == Win32.Focus())
+                {
+                    if (permitted != focus) Reset();
+                    permitted = focus; allowed = safe; currentApp = app;
+                }
+            }
+        }
+        finally { Volatile.Write(ref probeBusy, 0); }
+    }
+    public void Reset() { lock (gate) { word.Clear(); undo = null; languageContext.Reset(); } }
+    private void SwitchLayout(IntPtr window, string language)
+    {
+        if (!settings.Value.SwitchLayout || !settings.Value.Languages.Contains(language) || Win32.LayoutFor(language) == IntPtr.Zero) return;
+        languageContext.ExpectLayout(language);
+        Win32.SwitchLayout(window, language);
+    }
+    public void Pause(int minutes = 0) { SessionPaused = minutes == 0; PausedUntil = minutes > 0 ? DateTime.Now.AddMinutes(minutes) : null; Reset(); }
+    public void Resume() { SessionPaused = false; PausedUntil = null; settings.Value.Enabled = true; Reset(); }
+    public bool IsExcluded(string app) => (!allowOwnProcess && app.Equals("Switchcraft.exe", StringComparison.OrdinalIgnoreCase)) || settings.Value.ExcludedApps.ToArray().Contains(app, StringComparer.OrdinalIgnoreCase);
+    private IntPtr MouseHook(int code, IntPtr message, IntPtr data)
+    {
+        if (code >= 0 && (message.ToInt32() is 0x0201 or 0x0204 or 0x0207 or 0x020A))
+        {
+            Interlocked.Increment(ref privacyEpoch);
+            lock (gate) { Reset(); allowed = false; }
+        }
+        return Win32.CallNextHookEx(mouseHook, code, message, data);
+    }
+    private IntPtr KeyboardHook(int code, IntPtr message, IntPtr data)
+    {
+        if (code < 0) return Win32.CallNextHookEx(keyboardHook, code, message, data);
+        try
+        {
+            var key = Marshal.PtrToStructure<Win32.KeyData>(data);
+            // Remote desktop and accessibility tools also use SendInput. Only our
+            // own replacements must be ignored, otherwise remote typing never works.
+            if (key.Extra == Win32.InjectionTag) return Win32.CallNextHookEx(keyboardHook, code, message, data);
+            if (message.ToInt32() is not (0x0100 or 0x0104)) return Win32.CallNextHookEx(keyboardHook, code, message, data);
+            if (key.Vk is 0x10 or 0x11 or 0x12 or 0xA0 or 0xA1 or 0xA2 or 0xA3 or 0xA4 or 0xA5) return Win32.CallNextHookEx(keyboardHook, code, message, data);
+            var focus = Win32.Focus();
+            lock (gate)
+            {
+                if (tracked != focus) { Reset(); tracked = focus; }
+                if (!Running || !allowed || permitted != focus || IsExcluded(currentApp)) { Reset(); return Win32.CallNextHookEx(keyboardHook, code, message, data); }
+                var source = Win32.LayoutLanguage(focus.Window);
+                if (!settings.Value.Languages.Contains(source)) { Reset(); return Win32.CallNextHookEx(keyboardHook, code, message, data); }
+                if (languageContext.ObserveLayout(source)) { word.Clear(); undo = null; }
+                if (Win32.Down(0x11) || Win32.Down(0x12) || Win32.Down(0x5B) || Win32.Down(0x5C))
+                {
+                    word.Clear();
+                    languageContext.Reset();
+                    // Preserve undo only for our configured shortcut. Other commands can change the caret or document.
+                    if (!HotkeyRegistry.Matches(settings.Value.Hotkeys["undo"], key.Vk)) undo = null;
+                    return Win32.CallNextHookEx(keyboardHook, code, message, data);
+                }
+                undo = null;
+                if (key.Vk == 8) { if (word.Length > 0) word.Length--; return Win32.CallNextHookEx(keyboardHook, code, message, data); }
+                uint boundary = key.Vk == 0xE7 ? key.Scan : key.Vk;
+                if (key.Vk == 0xE7 && boundary == 0x0A) boundary = 0x0D;
+                if (boundary is 0x20 or 0x0D or 0x09)
+                {
+                    var original = word.ToString(); word.Clear();
+                    if (original.Length == 0)
+                    {
+                        if (boundary != 0x20) languageContext.Reset();
+                        if (boundary == 0x09) { allowed = false; Interlocked.Increment(ref privacyEpoch); }
+                        return Win32.CallNextHookEx(keyboardHook, code, message, data);
+                    }
+                    var result = engine.Evaluate(original, source, languageContext.Language);
+                    if (result.Changed && !Win32.Down(0x10) && focus == Win32.Focus())
+                    {
+                        bool sent = Win32.Replace(original.Length, result.Text, (ushort)boundary);
+                        if (sent)
+                        {
+                            // Enter/Tab may submit or leave the field, so they are deliberately not undoable.
+                            if (boundary == 0x20) undo = new(focus.Window, focus.Focus, original, result.Text, 1, source);
+                            languageContext.Observe(result.Target);
+                            SwitchLayout(focus.Window, result.Target);
+                            if (boundary != 0x20) languageContext.Reset();
+                            Corrected?.Invoke(result, currentApp);
+                            return new IntPtr(1);
+                        }
+                        Status?.Invoke("Windows не дозволила заміну тексту в цьому застосунку.");
+                    }
+                    var identified = engine.IdentifyLanguage(original);
+                    languageContext.Observe(identified);
+                    // Most RU/UK keys are identical. Two unambiguous words can identify
+                    // the intended layout even when no character replacement is needed.
+                    if (source is "uk" or "ru" && identified.Length > 0 && identified == languageContext.Language && identified != source && focus == Win32.Focus())
+                        SwitchLayout(focus.Window, identified);
+                    if (boundary != 0x20) languageContext.Reset();
+                    if (boundary == 0x09) { allowed = false; Interlocked.Increment(ref privacyEpoch); }
+                    return Win32.CallNextHookEx(keyboardHook, code, message, data);
+                }
+                if (key.Vk is 0x1B or 0x21 or 0x22 or 0x23 or 0x24 or 0x25 or 0x26 or 0x27 or 0x28 or 0x2D or 0x2E || key.Vk >= 0x70 && key.Vk <= 0x87)
+                { Reset(); return Win32.CallNextHookEx(keyboardHook, code, message, data); }
+                if (key.Vk == 0xE7)
+                {
+                    // KEYEVENTF_UNICODE carries the UTF-16 character in scanCode;
+                    // ToUnicodeEx cannot translate VK_PACKET through a keyboard layout.
+                    var ch = (char)key.Scan;
+                    if (char.IsControl(ch) || char.IsSurrogate(ch) || word.Length >= 256) word.Clear();
+                    else word.Append(ch);
+                    return Win32.CallNextHookEx(keyboardHook, code, message, data);
+                }
+                if (key.Vk >= 256) { word.Clear(); return Win32.CallNextHookEx(keyboardHook, code, message, data); }
+                var state = new byte[256]; Win32.GetKeyboardState(state);
+                for (int k = 0; k < state.Length; k++) state[k] = (byte)((state[k] & 1) | (Win32.Down(k) ? 0x80 : 0));
+                state[key.Vk] |= 0x80;
+                var text = new StringBuilder(8);
+                int count = Win32.ToUnicodeEx(key.Vk, key.Scan, state, text, text.Capacity, 4, Win32.GetKeyboardLayout(Win32.GetWindowThreadProcessId(focus.Window, out _)));
+                if (count > 0)
+                {
+                    if (text.ToString().Any(char.IsControl) || word.Length + count > 256) word.Clear();
+                    else word.Append(text.ToString());
+                }
+                else if (count < 0) word.Clear(); // Dead-key composition: never guess an incomplete word.
+            }
+        }
+        catch (Exception ex) { Reset(); Status?.Invoke("Виправлення пропущено: " + ex.GetType().Name); }
+        return Win32.CallNextHookEx(keyboardHook, code, message, data);
+    }
+    public async Task UndoAsync()
+    {
+        UndoState? saved;
+        lock (gate) { saved = undo; undo = null; word.Clear(); }
+        if (saved == null) { Status?.Invoke("Немає виправлення для скасування. Скористайтеся клавішами відразу після заміни."); return; }
+        if (!await WaitModifiersAsync()) return;
+        if (Win32.Focus() != (saved.Window, saved.Focus)) { Status?.Invoke("Поле вводу змінилося — скасування пропущено."); return; }
+        if (Win32.Replace(saved.Replacement.Length + saved.BoundaryLength, saved.Original + " "))
+        {
+            if (settings.Value.SwitchLayout) Win32.SwitchLayout(saved.Window, saved.SourceLanguage);
+            if (settings.Value.LearningMode) LearnWord?.Invoke(saved.Original);
+            Status?.Invoke("Останнє виправлення скасовано.");
+        }
+    }
+    public static async Task<bool> WaitModifiersAsync()
+    {
+        for (int i = 0; i < 50; i++) { if (!Win32.ModifiersDown) return true; await Task.Delay(20); }
+        return false;
+    }
+    public async Task ConvertSelectionAsync(string? target)
+    {
+        var focus = Win32.Focus();
+        if (!await WaitModifiersAsync() || focus != Win32.Focus()) return;
+        lock (gate) { if (!allowed || permitted != focus) { Status?.Invoke("Перетворення недоступне в цьому полі вводу."); return; } }
+        Reset();
+        System.Windows.IDataObject? backup;
+        try
+        {
+            var original = System.Windows.Clipboard.GetDataObject();
+            var copy = new System.Windows.DataObject();
+            if (original != null)
+            {
+                foreach (var format in original.GetFormats(false))
+                {
+                    var item = original.GetData(format, false);
+                    if (item != null) copy.SetData(format, item, false);
+                }
+            }
+            backup = copy;
+        }
+        catch { Status?.Invoke("Буфер обміну зайнятий. Спробуйте ще раз."); return; }
+        uint before = Win32.GetClipboardSequenceNumber(), owned = 0;
+        try
+        {
+            if (!Win32.Chord(0x43)) { Status?.Invoke("Не вдалося скопіювати виділення."); return; }
+            for (int i = 0; i < 20 && Win32.GetClipboardSequenceNumber() == before; i++) await Task.Delay(20);
+            if (Win32.GetClipboardSequenceNumber() == before || !System.Windows.Clipboard.ContainsText()) { Status?.Invoke("Спочатку виділіть текст у потрібному застосунку."); return; }
+            owned = Win32.GetClipboardSequenceNumber();
+            var text = System.Windows.Clipboard.GetText();
+            if (text.Length == 0) return;
+            var result = engine.Convert(text, target, Win32.LayoutLanguage(focus.Window));
+            if (focus != Win32.Focus() || Win32.GetClipboardSequenceNumber() != owned) return;
+            System.Windows.Clipboard.SetText(result.Text);
+            owned = Win32.GetClipboardSequenceNumber();
+            if (!Win32.Chord(0x56)) { Status?.Invoke("Windows не дозволила вставлення тексту."); return; }
+            await Task.Delay(220);
+            if (settings.Value.SwitchLayout) Win32.SwitchLayout(focus.Window, target ?? result.Target);
+            Status?.Invoke("Виділений текст перетворено.");
+        }
+        catch (Exception ex) { Status?.Invoke("Не вдалося перетворити текст: " + ex.Message); }
+        finally
+        {
+            // A subsequent user copy always wins over restoring our snapshot.
+            if (owned != 0 && Win32.GetClipboardSequenceNumber() == owned)
+                try { System.Windows.Clipboard.SetDataObject(backup, true); } catch { Status?.Invoke("Не вдалося відновити попередній буфер обміну."); }
+        }
+    }
+    public void Dispose()
+    {
+        disposed = true; privacyTimer?.Dispose();
+        if (focusHandler != null) Task.Run(() => { try { Automation.RemoveAutomationFocusChangedEventHandler(focusHandler); } catch { } });
+        if (threadId != 0) Win32.PostThreadMessage(threadId, 0x0012, IntPtr.Zero, IntPtr.Zero);
+        if (thread.IsAlive) thread.Join(1500);
+    }
+}

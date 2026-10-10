@@ -1,0 +1,146 @@
+{
+  "synthetic_only": true,
+  "model": "jev-latest",
+  "results": [
+    {
+      "word": "\u0411\u044B\u043B\u0438\u0439",
+      "context": "",
+      "following": "",
+      "candidates": {
+        "keep": "\u0411\u044B\u043B\u0438\u0439",
+        "en": "\u003Cskbq",
+        "uk": "\u0411\u0456\u043B\u0438\u0439"
+      },
+      "local": {
+        "Original": "\u0411\u044B\u043B\u0438\u0439",
+        "Text": "\u0411\u0456\u043B\u0438\u0439",
+        "Changed": true,
+        "Confidence": 0.99,
+        "Target": "uk",
+        "Reason": "cyrillic_dictionary"
+      },
+      "elapsed_ms": 404,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "uk",
+        "confidence": 0.28,
+        "probabilities": {
+          "keep": 0.47,
+          "en": 0.01,
+          "uk": 0.52
+        }
+      },
+      "accepted_decision": {
+        "Choice": "uk",
+        "Confidence": 0.28,
+        "Certain": false
+      },
+      "status": "TypeSafe \u043D\u0435 \u0432\u043F\u0435\u0432\u043D\u0435\u043D\u0438\u0439 \u00B7 \u043F\u0440\u0430\u0446\u044E\u0454 \u043B\u043E\u043A\u0430\u043B\u044C\u043D\u0438\u0439 \u0440\u0443\u0448\u0456\u0439"
+    },
+    {
+      "word": "\u0411\u044B\u043B\u0438\u0439",
+      "context": "",
+      "following": "\u0456 \u0447\u043E\u0440\u043D\u0438\u0439",
+      "candidates": {
+        "keep": "\u0411\u044B\u043B\u0438\u0439",
+        "en": "\u003Cskbq",
+        "uk": "\u0411\u0456\u043B\u0438\u0439"
+      },
+      "local": {
+        "Original": "\u0411\u044B\u043B\u0438\u0439",
+        "Text": "\u0411\u0456\u043B\u0438\u0439",
+        "Changed": true,
+        "Confidence": 0.99,
+        "Target": "uk",
+        "Reason": "cyrillic_dictionary"
+      },
+      "elapsed_ms": 290,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "uk",
+        "confidence": 0.7,
+        "probabilities": {
+          "keep": 0.2,
+          "en": 0.0,
+          "uk": 0.8
+        }
+      },
+      "accepted_decision": {
+        "Choice": "uk",
+        "Confidence": 0.7,
+        "Certain": false
+      },
+      "status": "TypeSafe \u043D\u0435 \u0432\u043F\u0435\u0432\u043D\u0435\u043D\u0438\u0439 \u00B7 \u043F\u0440\u0430\u0446\u044E\u0454 \u043B\u043E\u043A\u0430\u043B\u044C\u043D\u0438\u0439 \u0440\u0443\u0448\u0456\u0439"
+    },
+    {
+      "word": "\u0411\u0456\u043B\u0438\u0439",
+      "context": "",
+      "following": "\u0456 \u0447\u043E\u0440\u043D\u0438\u0439",
+      "candidates": {
+        "keep": "\u0411\u0456\u043B\u0438\u0439",
+        "en": "\u003Cskbq",
+        "ru": "\u0411\u044B\u043B\u0438\u0439"
+      },
+      "local": {
+        "Original": "\u0411\u0456\u043B\u0438\u0439",
+        "Text": "\u0411\u0456\u043B\u0438\u0439",
+        "Changed": false,
+        "Confidence": 0,
+        "Target": "uk",
+        "Reason": "known_original"
+      },
+      "elapsed_ms": 256,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "keep",
+        "confidence": 0.91,
+        "probabilities": {
+          "keep": 0.94,
+          "en": 0.01,
+          "ru": 0.05
+        }
+      },
+      "accepted_decision": {
+        "Choice": "keep",
+        "Confidence": 0.91,
+        "Certain": true
+      },
+      "status": "TypeSafe \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E"
+    },
+    {
+      "word": "\u0411\u0435\u043B\u044B\u0439",
+      "context": "",
+      "following": "\u0438 \u0447\u0451\u0440\u043D\u044B\u0439",
+      "candidates": {
+        "keep": "\u0411\u0435\u043B\u044B\u0439",
+        "en": "\u003Ctksq",
+        "uk": "\u0411\u0435\u043B\u0456\u0439"
+      },
+      "local": {
+        "Original": "\u0411\u0435\u043B\u044B\u0439",
+        "Text": "\u0411\u0435\u043B\u044B\u0439",
+        "Changed": false,
+        "Confidence": 0,
+        "Target": "ru",
+        "Reason": "known_original"
+      },
+      "elapsed_ms": 226,
+      "http_status": 200,
+      "model_decision": {
+        "choice": "keep",
+        "confidence": 0.91,
+        "probabilities": {
+          "keep": 0.94,
+          "en": 0.0,
+          "uk": 0.06
+        }
+      },
+      "accepted_decision": {
+        "Choice": "keep",
+        "Confidence": 0.91,
+        "Certain": true
+      },
+      "status": "TypeSafe \u00B7 \u0442\u0435\u043A\u0441\u0442 \u0437\u0431\u0435\u0440\u0435\u0436\u0435\u043D\u043E"
+    }
+  ]
+}
