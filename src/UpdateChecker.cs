@@ -14,7 +14,7 @@ public sealed class UpdateChecker : IDisposable
 {
     private const string Owner = "phantasmat2018";
     private const string Repo = "Switchcraft-AI";
-    private static readonly Uri LatestReleaseApi = new($"https://api.github.com/repos/{Owner}/{Repo}/releases/latest");
+    private static readonly Uri ReleasesApi = new($"https://api.github.com/repos/{Owner}/{Repo}/releases?per_page=15");
 
     private readonly HttpClient http;
 
@@ -45,27 +45,33 @@ public sealed class UpdateChecker : IDisposable
     {
         try
         {
-            using var response = await http.GetAsync(LatestReleaseApi, cancellation).ConfigureAwait(false);
+            using var response = await http.GetAsync(ReleasesApi, cancellation).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
                 return new UpdateInfo(false, null, null, $"HTTP {(int)response.StatusCode}");
 
             var json = await response.Content.ReadAsStringAsync(cancellation).ConfigureAwait(false);
             using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
+            if (doc.RootElement.ValueKind != JsonValueKind.Array)
+                return new UpdateInfo(false, null, null, "Невірний формат відповіді GitHub.");
 
-            var tagName = root.GetProperty("tag_name").GetString() ?? "";
-            var versionStr = tagName.TrimStart('v', 'V');
-            if (!Version.TryParse(versionStr, out var latest))
-                return new UpdateInfo(false, null, null, $"Не вдалося розпізнати версію: {tagName}");
+            foreach (var release in doc.RootElement.EnumerateArray())
+            {
+                var tagName = release.TryGetProperty("tag_name", out var tagEl) ? tagEl.GetString() ?? "" : "";
+                var versionStr = tagName.TrimStart('v', 'V');
+                if (!Version.TryParse(versionStr, out var latest))
+                    continue;
 
-            var htmlUrl = root.GetProperty("html_url").GetString() ?? $"https://github.com/{Owner}/{Repo}/releases/latest";
-            var body = root.TryGetProperty("body", out var bodyEl) ? bodyEl.GetString() : null;
+                var htmlUrl = release.TryGetProperty("html_url", out var urlEl) ? urlEl.GetString() ?? $"https://github.com/{Owner}/{Repo}/releases/latest" : $"https://github.com/{Owner}/{Repo}/releases/latest";
+                var body = release.TryGetProperty("body", out var bodyEl) ? bodyEl.GetString() : null;
 
-            var current = CurrentVersion;
-            var updateAvailable = latest > current;
+                var current = CurrentVersion;
+                var updateAvailable = latest > current;
 
-            return new UpdateInfo(updateAvailable, latest, htmlUrl, body);
+                return new UpdateInfo(updateAvailable, latest, htmlUrl, body);
+            }
+
+            return new UpdateInfo(false, null, null, "Не знайдено релізів програми.");
         }
         catch (TaskCanceledException)
         {
