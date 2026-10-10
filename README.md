@@ -91,4 +91,4 @@ dotnet build src/Switchcraft.csproj -c Release
 
 ## 📄 Ліцензії та компоненти
 
-Докладну інформацію про сторонні бібліотеки, словники та відкриті компоненти дивіться у файлі [THIRD-PARTY.md](file:///c:/Users/Administrator/Desktop/Switchcraft/Switchcraft-AI/THIRD-PARTY.md).
+Докладну інформацію про сторонні бібліотеки та відкриті компоненти дивіться у файлі [THIRD-PARTY.md](THIRD-PARTY.md).
