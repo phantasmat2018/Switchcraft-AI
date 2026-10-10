@@ -9,11 +9,10 @@ using System.Text.RegularExpressions;
 
 namespace Switchcraft;
 
-/// <summary>C ABI recovered from the supplied PE imports, exports and disassembly.
-/// The original language engine is reused, not claimed as recovered source code.</summary>
+/// <summary>Native C ABI interop layer for Switchcraft layout engine.</summary>
 public sealed class NativeEngine : IDisposable
 {
-    private const string Library = "TypeSwitcherCABI.dll";
+    private const string Library = "SwitchcraftNative.dll";
     private readonly object gate = new();
     private IntPtr handle;
     private static IntPtr module;

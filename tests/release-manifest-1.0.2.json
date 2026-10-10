@@ -1,4 +1,4 @@
-{
+﻿{
   "version": "1.0.2",
   "build_time": "2026-10-10T12:31:13.0305571+03:00",
   "executable_sha256": "A58B5BBC5EB8E5BBB62F3C4684C428D362DE6749575D5F6C9BDD631738658C9A",
@@ -8,5 +8,6 @@
   "input_tests": 25,
   "notepadpp_cyrillic_checks": 1,
   "runtime": "self-contained .NET 8 Windows x64",
-  "source_engine": "TypeSwitcher 1.1.31 C ABI + local Hunspell RU/UK word validation"
+  "source_engine": "Switchcraft Native Engine + local Hunspell RU/UK word validation"
 }
+

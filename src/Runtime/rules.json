@@ -143317,9 +143317,9 @@
       "Short tokens are intentionally strict: false positives are worse than missed corrections.",
       "Regex syntax is intended for ICU/NSRegularExpression."
     ],
-    "target": "macOS TypeSwitcher MVP"
+    "target": "Switchcraft AI Windows"
   },
-  "name": "TypeSwitcher RU-EN conservative scoring rules",
+  "name": "Switchcraft AI conservative scoring rules",
   "protected_patterns": [
     {
       "action": "skip_auto",

@@ -247,12 +247,12 @@
                        "details":  ""
                    },
                    {
-                       "name":  "Payload SHA256: Runtime\\typeswitcher_rules.json",
+                       "name":  "Payload SHA256: Runtime\\rules.json",
                        "passed":  true,
                        "details":  ""
                    },
                    {
-                       "name":  "Payload SHA256: Runtime\\TypeSwitcherCABI.dll",
+                       "name":  "Payload SHA256: Runtime\\SwitchcraftNative.dll",
                        "passed":  true,
                        "details":  ""
                    },
@@ -398,3 +398,4 @@
                    }
                ]
 }
+

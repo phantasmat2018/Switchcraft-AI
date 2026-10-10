@@ -17,3 +17,5 @@ Thumbs.db
 Desktop.ini
 installer/*.exe
 *.exe
+*.zip
+*.log

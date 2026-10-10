@@ -1,4 +1,4 @@
-{
+﻿{
   "timestamp": "2026-10-10T13:44:52.4742277+03:00",
   "installer_sha256": "502E2188F875246A6948DA3EAE47888CA9F8CE1D07046779EB09656579D3A464",
   "total": 64,
@@ -191,11 +191,11 @@
       "passed": true
     },
     {
-      "name": "Release payload: Runtime\\typeswitcher_rules.json",
+      "name": "Release payload: Runtime\\rules.json",
       "passed": true
     },
     {
-      "name": "Release payload: Runtime\\TypeSwitcherCABI.dll",
+      "name": "Release payload: Runtime\\SwitchcraftNative.dll",
       "passed": true
     },
     {
@@ -264,3 +264,4 @@
     }
   ]
 }
+

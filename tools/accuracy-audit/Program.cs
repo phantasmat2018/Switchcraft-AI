@@ -145,7 +145,8 @@ foreach (var (input, expected) in new[]
     phrases.Add(new { input, expected, actual, passed = actual == expected });
 }
 elapsed.Sort();
-var hashes = new[] { "Runtime/typeswitcher_rules.json", "Runtime/TypeSwitcherCABI.dll", "Dictionaries/uk_UA.dic", "Dictionaries/uk_UA.aff", "Dictionaries/ru_RU.dic", "Dictionaries/ru_RU.aff" }
+var hashes = new[] { "Runtime/rules.json", "Runtime/SwitchcraftNative.dll" }
+    .Where(path => File.Exists(Path.Combine(data, path)))
     .ToDictionary(path => path, path => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(Path.Combine(data, path)))));
 var report = new
 {

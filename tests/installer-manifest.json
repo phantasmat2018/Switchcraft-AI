@@ -229,12 +229,12 @@
                               "sha256":  "0577821432DCC694DA5E87AB8FE5FD46806608839E162C834E511BB47F1F4AD0"
                           },
                           {
-                              "path":  "Runtime\\typeswitcher_rules.json",
+                              "path":  "Runtime\\rules.json",
                               "size":  3447066,
                               "sha256":  "276E0EBE36E1E1DB54571B7C0C3E8D409FED4068AF15EAD49A69D5446ECF618E"
                           },
                           {
-                              "path":  "Runtime\\TypeSwitcherCABI.dll",
+                              "path":  "Runtime\\SwitchcraftNative.dll",
                               "size":  1381376,
                               "sha256":  "D145819FE7EEE4E98DE62859B6A60E61899D02AF874CA376F119A0941321BB6F"
                           },
@@ -280,3 +280,4 @@
                           }
                       ]
 }
+
