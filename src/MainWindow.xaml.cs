@@ -25,11 +25,14 @@ public partial class MainWindow : Window
     private CancellationTokenSource? quickRequest, apiTest, localModelTest, localSetup, localPreparation;
     private readonly Dictionary<string, TextBox> hotkeyBoxes = new();
     private const string StartupValueName = "Switchcraft.Keyboard";
+    internal static string AppVersion => (System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>(typeof(MainWindow).Assembly)?.InformationalVersion ?? "").Split('+')[0];
     private sealed record LanguageRow(string Code, string Label);
     private sealed record PairRow(string Source, string Target) { public string Label => Source + "  →  " + Target; }
     public MainWindow()
     {
         InitializeComponent();
+        // The shown version always comes from the build itself, never from text typed into the layout.
+        SidebarVersion.Text = "SWITCHCRAFT  /  " + AppVersion; AboutTitle.Text += " " + AppVersion;
         UseLayoutRounding = true; SnapsToDevicePixels = true;
         System.Windows.Media.TextOptions.SetTextFormattingMode(this, System.Windows.Media.TextFormattingMode.Display);
         System.Windows.Media.TextOptions.SetTextRenderingMode(this, System.Windows.Media.TextRenderingMode.Grayscale);
