@@ -14,13 +14,15 @@ public sealed class UpdateChecker : IDisposable
 {
     private const string Owner = "phantasmat2018";
     private const string Repo = "Switchcraft-AI";
-    private static readonly Uri ReleasesApi = new($"https://api.github.com/repos/{Owner}/{Repo}/releases?per_page=15");
+    private static readonly Uri ReleasesApi = new($"https://api.github.com/repos/{Owner}/{Repo}/releases?per_page=30");
 
     private readonly HttpClient http;
 
-    public UpdateChecker()
+    public UpdateChecker() : this(new HttpClientHandler()) { }
+
+    internal UpdateChecker(HttpMessageHandler handler, TimeSpan? timeout = null)
     {
-        http = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
+        http = new HttpClient(handler) { Timeout = timeout ?? TimeSpan.FromSeconds(15) };
         http.DefaultRequestHeaders.UserAgent.ParseAdd("Switchcraft-UpdateCheck/1.6");
         http.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
     }
@@ -37,55 +39,55 @@ public sealed class UpdateChecker : IDisposable
         }
     }
 
-    /// <summary>Result of an update check.</summary>
-    public sealed record UpdateInfo(bool UpdateAvailable, Version? LatestVersion, string? ReleaseUrl, string? ReleaseNotes);
+    /// <summary>Result of an update check. <paramref name="Error"/> is set when the check itself failed, so a failure
+    /// is never reported as "up to date".</summary>
+    public sealed record UpdateInfo(bool UpdateAvailable, Version? LatestVersion, string? ReleaseUrl, string? ReleaseNotes, string? Error = null);
 
-    /// <summary>Queries the GitHub Releases API for the latest release.</summary>
-    public async Task<UpdateInfo> CheckAsync(CancellationToken cancellation = default)
+    /// <summary>Queries the GitHub Releases API for the newest application release.</summary>
+    public Task<UpdateInfo> CheckAsync(CancellationToken cancellation = default) => CheckAsync(CurrentVersion, cancellation);
+
+    internal async Task<UpdateInfo> CheckAsync(Version current, CancellationToken cancellation)
     {
+        static UpdateInfo Failed(string error) => new(false, null, null, null, error);
         try
         {
             using var response = await http.GetAsync(ReleasesApi, cancellation).ConfigureAwait(false);
-
             if (!response.IsSuccessStatusCode)
-                return new UpdateInfo(false, null, null, $"HTTP {(int)response.StatusCode}");
-
+                return Failed((int)response.StatusCode is 403 or 429
+                    ? $"GitHub тимчасово обмежив кількість запитів (HTTP {(int)response.StatusCode}), спробуйте пізніше."
+                    : $"GitHub відповів HTTP {(int)response.StatusCode}.");
             var json = await response.Content.ReadAsStringAsync(cancellation).ConfigureAwait(false);
-            using var doc = JsonDocument.Parse(json);
-            if (doc.RootElement.ValueKind != JsonValueKind.Array)
-                return new UpdateInfo(false, null, null, "Невірний формат відповіді GitHub.");
-
-            foreach (var release in doc.RootElement.EnumerateArray())
-            {
-                var tagName = release.TryGetProperty("tag_name", out var tagEl) ? tagEl.GetString() ?? "" : "";
-                var versionStr = tagName.TrimStart('v', 'V');
-                if (!Version.TryParse(versionStr, out var latest))
-                    continue;
-
-                var htmlUrl = release.TryGetProperty("html_url", out var urlEl) ? urlEl.GetString() ?? $"https://github.com/{Owner}/{Repo}/releases/latest" : $"https://github.com/{Owner}/{Repo}/releases/latest";
-                var body = release.TryGetProperty("body", out var bodyEl) ? bodyEl.GetString() : null;
-
-                var current = CurrentVersion;
-                var updateAvailable = latest > current;
-
-                return new UpdateInfo(updateAvailable, latest, htmlUrl, body);
-            }
-
-            return new UpdateInfo(false, null, null, "Не знайдено релізів програми.");
+            return Evaluate(json, current) ?? Failed("на GitHub не знайдено релізів програми.");
         }
-        catch (TaskCanceledException)
-        {
-            return new UpdateInfo(false, null, null, "Перевірку скасовано.");
-        }
-        catch (HttpRequestException ex)
-        {
-            return new UpdateInfo(false, null, null, $"Помилка мережі: {ex.Message}");
-        }
-        catch (Exception ex)
-        {
-            return new UpdateInfo(false, null, null, $"Помилка: {ex.Message}");
-        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { return Failed("перевірку скасовано."); }
+        catch (OperationCanceledException) { return Failed("GitHub не відповів вчасно."); }
+        catch (HttpRequestException) { return Failed("немає з’єднання з GitHub."); }
+        catch (JsonException) { return Failed("GitHub повернув відповідь у невідомому форматі."); }
+        catch (Exception ex) { return Failed(ex.Message); }
     }
+
+    /// <summary>Picks the highest stable application release. Model and asset tags (laya-r3), drafts and pre-releases
+    /// are skipped, and a hotfix published after a newer version does not hide that newer version.</summary>
+    internal static UpdateInfo? Evaluate(string json, Version current)
+    {
+        using var doc = JsonDocument.Parse(json);
+        if (doc.RootElement.ValueKind != JsonValueKind.Array) throw new JsonException("Expected a release list.");
+        static bool Flag(JsonElement release, string name) => release.TryGetProperty(name, out var value) && value.ValueKind == JsonValueKind.True;
+        UpdateInfo? best = null;
+        foreach (var release in doc.RootElement.EnumerateArray())
+        {
+            if (Flag(release, "draft") || Flag(release, "prerelease")) continue;
+            var tag = release.TryGetProperty("tag_name", out var tagElement) ? tagElement.GetString() ?? "" : "";
+            if (!Version.TryParse(tag.TrimStart('v', 'V'), out var version) || best != null && Normalize(best.LatestVersion!) >= Normalize(version)) continue;
+            var url = release.TryGetProperty("html_url", out var urlElement) ? urlElement.GetString() : null;
+            var body = release.TryGetProperty("body", out var bodyElement) ? bodyElement.GetString() : null;
+            best = new(Normalize(version) > Normalize(current), version, url ?? $"https://github.com/{Owner}/{Repo}/releases/latest", body);
+        }
+        return best;
+    }
+
+    // 1.6.2 and 1.6.2.0 are the same version.
+    private static Version Normalize(Version v) => new(v.Major, v.Minor, Math.Max(v.Build, 0), Math.Max(v.Revision, 0));
 
     /// <summary>Opens the release page in the default browser.</summary>
     public static void OpenReleasePage(string url)

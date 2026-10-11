@@ -41,6 +41,7 @@ internal static class AiTests
     }
     internal static async Task Run(Action<string, bool, string> check, string directory)
     {
+        await UpdateCheckerTests.Run(check);
         void Check(string name, bool value) => check("AI: " + name, value, "");
         var store = new SettingsStore(Path.Combine(directory, "ai"));
         using var engine = new NativeEngine(store);

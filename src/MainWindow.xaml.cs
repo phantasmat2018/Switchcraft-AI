@@ -511,7 +511,11 @@ public partial class MainWindow : Window
         {
             using var checker = new UpdateChecker();
             var info = await checker.CheckAsync();
-            if (info.UpdateAvailable && info.LatestVersion != null)
+            if (info.Error != null)
+            {
+                UpdateStatus.Text = "Не вдалося перевірити оновлення: " + info.Error;
+            }
+            else if (info.UpdateAvailable && info.LatestVersion != null)
             {
                 UpdateStatus.Text = $"Доступна нова версія: {info.LatestVersion}";
                 var result = MessageBox.Show(
@@ -519,10 +523,6 @@ public partial class MainWindow : Window
                     "Оновлення", MessageBoxButton.YesNo, MessageBoxImage.Information);
                 if (result == MessageBoxResult.Yes && info.ReleaseUrl != null)
                     UpdateChecker.OpenReleasePage(info.ReleaseUrl);
-            }
-            else if (info.ReleaseNotes != null && info.ReleaseNotes.StartsWith("HTTP"))
-            {
-                UpdateStatus.Text = "Не вдалося перевірити оновлення.";
             }
             else
             {

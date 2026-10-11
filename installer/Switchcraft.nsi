@@ -148,10 +148,12 @@ Section "Switchcraft AI (основні компоненти)" SecCore
   WriteRegDWORD HKCU "${REG_KEY}" "NoRepair" 1
   WriteRegDWORD HKCU "${REG_KEY}" "EstimatedSize" ${INSTALLED_KB}
   !ifndef INSTALLER_TEST
-    ; Preserve the user's existing autostart choice while updating its path.
-    ReadRegStr $0 HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "SwitchcraftAI.Keyboard"
-    ${If} $0 != ""
-      WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "SwitchcraftAI.Keyboard" '$\"$INSTDIR\Switchcraft.exe$\" --minimized'
+    ; Preserve the user's existing autostart choice while updating its path. The app stores it as
+    ; Switchcraft.Keyboard; only an entry that points at the previous installation of this edition is changed.
+    ReadRegStr $0 HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "Switchcraft.Keyboard"
+    ${If} $PreviousInstallDir != ""
+    ${AndIf} $0 == '$\"$PreviousInstallDir\Switchcraft.exe$\" --minimized'
+      WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "Switchcraft.Keyboard" '$\"$INSTDIR\Switchcraft.exe$\" --minimized'
     ${EndIf}
   !endif
 SectionEnd
@@ -243,9 +245,9 @@ Section "Uninstall"
   !ifdef INSTALLER_TEST
     RMDir "$INSTDIR\_test-desktop"
   !else
-    ReadRegStr $0 HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "SwitchcraftAI.Keyboard"
+    ReadRegStr $0 HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "Switchcraft.Keyboard"
     ${If} $0 == '$\"$INSTDIR\Switchcraft.exe$\" --minimized'
-      DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "SwitchcraftAI.Keyboard"
+      DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "Switchcraft.Keyboard"
     ${EndIf}
   !endif
   ; Delete only manifest-listed application files, never arbitrary user content.
