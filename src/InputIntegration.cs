@@ -297,6 +297,11 @@ internal static class InputIntegration
                 Check("Undo restores previous system layout", Win32.LayoutLanguage(hwnd) == "en" && field.Text == "ghbdsn ", Win32.LayoutLanguage(hwnd) + ": " + field.Text);
                 store.Value.SwitchLayout = false;
             }
+            if (Win32.LayoutFor("ru") != IntPtr.Zero)
+            {
+                await Reset(); Win32.SwitchLayout(hwnd, "ru"); await Task.Delay(300); await Type("hello ");
+                Check("English typed in the Russian layout is corrected", field.Text == "hello ", Win32.LayoutLanguage(hwnd) + ": " + field.Text);
+            }
             if (Win32.LayoutFor("uk") != IntPtr.Zero && Win32.LayoutFor("ru") != IntPtr.Zero)
             {
                 await Reset(); store.Value.SwitchLayout = true; await Type("ghbdtn ");

@@ -70,6 +70,27 @@ public static class SelfTests
                 Check("Web address typed in the Cyrillic layout: " + typed, engine.Evaluate(typed, layout) is { Changed: true, Reason: "web_address" } r && r.Text == address, engine.Evaluate(typed, layout).Text);
             Check("A real word whose keys spell no address stays", !engine.Evaluate("люди", "uk").Changed && engine.AddressReading("люди", "uk") == null);
             Check("A correctly typed address is not touched", !engine.Evaluate("google.com", "en").Changed && !engine.Evaluate("ukr.net", "en").Changed);
+            // The layout (high word of the HKL) decides the language, whatever input language it was added under.
+            foreach (var (hkl, expected, name) in new (long, string, string)[]
+            {
+                (0x04190419, "ru", "ru-RU"), (0x08190819, "ru", "ru-MD"), (0x04192000, "ru", "Russian (Ukraine), transient LANGID"),
+                (0x04220422, "uk", "uk-UA"), (unchecked((long)0xFFFFFFFFF0A80422), "uk", "Ukrainian (Enhanced)"),
+                (unchecked((long)0xFFFFFFFFF0A82000), "uk", "Ukrainian (Enhanced) under a transient LANGID"),
+                (0x04090409, "en", "en-US"), (0x08090809, "en", "en-GB"), (0x08090409, "en", "UK layout under en-US"),
+                (unchecked((long)0xFFFFFFFFF0020409), "en", "US-Dvorak"), (0x04092000, "en", "English (Ukraine), transient LANGID"),
+                (0x04220409, "uk", "Ukrainian layout under en-US"), (0x04090422, "en", "US layout under Ukrainian"),
+                (0x04230423, "", "be-BY"), (0x04070407, "", "de-DE"), (unchecked((long)0xFFFFFFFFE0010411), "", "Japanese IME"),
+            })
+                Check("Keyboard layout language: " + name, Win32.LanguageOf(new IntPtr(hkl)) == expected, Win32.LanguageOf(new IntPtr(hkl)));
+            // Every Cyrillic layout installed here is recognized by what it really types on the S key (ы / і).
+            var installed = new IntPtr[Win32.GetKeyboardLayoutList(0, null)]; Win32.GetKeyboardLayoutList(installed.Length, installed);
+            foreach (var layout in installed)
+            {
+                var typed = new System.Text.StringBuilder(4);
+                if (Win32.ToUnicodeEx(0x53, 0x1F, new byte[256], typed, typed.Capacity, 4, layout) != 1) continue;
+                var expected = typed[0] switch { 'ы' => "ru", 'і' => "uk", _ => "" };
+                if (expected.Length > 0) Check($"Installed layout 0x{layout.ToInt64() & 0xFFFFFFFF:X8} is recognized", Win32.LanguageOf(layout) == expected, Win32.LanguageOf(layout));
+            }
             Check("Full dictionaries rank Ukrainian Latin-key input", engine.Evaluate("ge,kswbcnbxybq", "en").Text == "публіцистичний");
             Check("Full dictionaries rank Russian Latin-key input", engine.Evaluate("ytdsgkfnf", "en").Text == "невыплата");
             Check("Valid mixed-language quotation", engine.CorrectText("Когда служил, записал: «Вона у косматій шапці».") == "Когда служил, записал: «Вона у косматій шапці».");

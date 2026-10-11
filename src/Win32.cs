@@ -100,16 +100,52 @@ internal static class Win32
         return SendMessageTimeout(focus.Focus, SCI_GETREADONLY, UIntPtr.Zero, IntPtr.Zero,
             SMTO_BLOCK | SMTO_ABORTIFHUNG, 100, out var readOnly) != IntPtr.Zero && readOnly == UIntPtr.Zero;
     }
-    public static string LayoutLanguage(IntPtr window)
-    {
-        var thread = GetWindowThreadProcessId(window, out _);
-        var id = (long)GetKeyboardLayout(thread) & 0xffff;
-        return id switch { 0x0422 => "uk", 0x0419 => "ru", _ => (id & 0x3ff) == 9 ? "en" : "" };
-    }
+    public static string LayoutLanguage(IntPtr window) => LanguageOf(GetKeyboardLayout(GetWindowThreadProcessId(window, out _)));
     public static IntPtr LayoutFor(string language)
     {
+        if (language.Length == 0) return IntPtr.Zero;
         int count = GetKeyboardLayoutList(0, null); var layouts = new IntPtr[count]; GetKeyboardLayoutList(count, layouts);
-        return layouts.FirstOrDefault(x => language switch { "uk" => ((long)x & 0xffff) == 0x0422, "ru" => ((long)x & 0xffff) == 0x0419, "en" => ((long)x & 0x3ff) == 9, _ => false });
+        return layouts.FirstOrDefault(x => LanguageOf(x) == language);
+    }
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)] private static extern int LCIDToLocaleName(uint locale, StringBuilder name, int size, uint flags);
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<IntPtr, string> layoutLanguages = new();
+    /// <summary>The language a keyboard layout types: "uk", "ru", "en" or "" (unsupported). The layout in the high word
+    /// of the HKL decides, not the input language in the low word: a layout can be added under any input language, and
+    /// locales without an LCID of their own, such as Russian (Ukraine), get a transient LANGID (0x2000, 0x2400…).
+    /// Cached, because the keyboard hook asks for every key.</summary>
+    public static string LanguageOf(IntPtr layout) => layoutLanguages.GetOrAdd(layout, static hkl =>
+    {
+        long value = hkl.ToInt64();
+        int device = (int)(value >> 16) & 0xFFFF, input = (int)value & 0xFFFF;
+        // A standard layout's high word is its own LANGID; 0xFxxx is a variant layout (Enhanced, Dvorak…) named by its
+        // registry "Layout Id", and 0xExxx is an IME, which types in its input language.
+        int typed = (device & 0xF000) switch { 0xF000 => VariantLanguage(device & 0x0FFF), 0xE000 => 0, _ => device };
+        var language = PrimaryLanguage(typed);
+        if (language.Length == 0) language = PrimaryLanguage(input);
+        if (language.Length == 0)
+        {
+            // Only Windows knows which locale a transient LANGID was assigned to for this user.
+            var name = new StringBuilder(85);
+            if (LCIDToLocaleName((uint)input, name, name.Capacity, 0x08000000 /* LOCALE_ALLOW_NEUTRAL_NAMES */) > 0)
+                language = name.ToString().Split('-')[0].ToLowerInvariant() switch { "uk" => "uk", "ru" => "ru", "en" => "en", _ => "" };
+        }
+        return language;
+    });
+    private static string PrimaryLanguage(int langId) => (langId & 0x3FF) switch { 0x22 => "uk", 0x19 => "ru", 0x09 => "en", _ => "" };
+    private static int VariantLanguage(int layoutId)
+    {
+        try
+        {
+            using var layouts = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Keyboard Layouts");
+            foreach (var klid in layouts?.GetSubKeyNames() ?? Array.Empty<string>())
+            {
+                using var key = layouts!.OpenSubKey(klid);
+                if (key?.GetValue("Layout Id") is string id && int.TryParse(id, System.Globalization.NumberStyles.HexNumber, null, out var found) && found == layoutId
+                    && int.TryParse(klid, System.Globalization.NumberStyles.HexNumber, null, out var code)) return code & 0xFFFF;
+            }
+        }
+        catch (Exception ex) when (ex is System.Security.SecurityException or UnauthorizedAccessException or System.IO.IOException) { }
+        return 0;
     }
     public static void SwitchLayout(IntPtr window, string language)
     {
