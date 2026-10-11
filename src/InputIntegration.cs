@@ -27,6 +27,9 @@ internal static class InputIntegration
         try
         {
             store = new SettingsStore(dir); store.Value.SwitchLayout = false;
+            // The core input checks run on the shared dictionary engine, exactly as in the full version;
+            // the TypeSafe and Laya paths below switch modes explicitly.
+            store.Value.DetectionMode = "local";
             engine = new NativeEngine(store);
             var aiHandler = new AiTests.FakeHandler();
             detection = new LanguageDetection(engine, store, new TypeSafeDetector(liveShort ? null : aiHandler));

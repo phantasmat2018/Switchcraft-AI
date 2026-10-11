@@ -49,6 +49,39 @@ public sealed class KeyboardService : IDisposable
         Trace(stage + ":" + code);
     }
     public object InputDiagnostics() { lock (gate) return new { running = Running, allowed, source = Win32.LayoutLanguage(tracked.Window), buffered = word.Length, incomplete, keys = diagnosticKeys, accepted = diagnosticAccepted, jobs = diagnosticJobs, captures = diagnosticCaptures, replacements = diagnosticReplacements, stages = diagnosticStages.ToArray() }; }
+    // From selecting a word until its paste is confirmed, user keys are held in order and replayed
+    // afterwards: otherwise a fast next keystroke lands between Select() and Ctrl+V and overwrites the
+    // selected word (Chromium applies UIA selections asynchronously, which widens that window).
+    private readonly object holdGate = new();
+    private readonly List<(Win32.KeyData Key, int Message)> heldKeys = new();
+    private bool holdingKeys;
+    private const int MaxHoldMs = 400;
+    // Replayed keys carry their own tag: processed as ordinary typing, never held again.
+    private static readonly UIntPtr ReplayTag = new(0x53574352);
+    private void HoldKeys() { lock (holdGate) { heldKeys.Clear(); holdingKeys = true; } }
+    /// <summary>Replays held keys in order and returns their count. Holding ends only when nothing is left:
+    /// a key typed while replaying is held too and sent after the earlier ones, so order is preserved.</summary>
+    private int ReleaseKeys()
+    {
+        int total = 0;
+        while (true)
+        {
+            (Win32.KeyData Key, int Message)[] keys;
+            lock (holdGate)
+            {
+                if (!holdingKeys) return total;
+                if (heldKeys.Count == 0) { holdingKeys = false; return total; }
+                keys = heldKeys.ToArray(); heldKeys.Clear();
+            }
+            Win32.Send(keys.Select(x =>
+            {
+                bool unicode = x.Key.Vk == 0xE7;
+                uint flags = (x.Message is 0x0101 or 0x0105 ? 2u : 0u) | ((x.Key.Flags & 1) != 0 ? 1u : 0u) | (unicode ? 4u : 0u);
+                return new Win32.Input { Type = 1, Data = new() { Keyboard = new() { Vk = unicode ? (ushort)0 : (ushort)x.Key.Vk, Scan = (ushort)x.Key.Scan, Flags = flags, Extra = ReplayTag } } };
+            }));
+            total += keys.Length;
+        }
+    }
     private System.Threading.Timer? privacyTimer;
     private UndoState? undo;
     private readonly List<PendingWord> pendingWords = new(4);
@@ -202,6 +235,8 @@ public sealed class KeyboardService : IDisposable
         try
         {
             var key = Marshal.PtrToStructure<Win32.KeyData>(data);
+            if (key.Extra != Win32.InjectionTag && key.Extra != ReplayTag && Volatile.Read(ref holdingKeys))
+                lock (holdGate) if (holdingKeys) { heldKeys.Add((key, message.ToInt32())); return (IntPtr)1; }
             if (key.Extra == Win32.InjectionTag || message.ToInt32() is not (0x0100 or 0x0104)) return Win32.CallNextHookEx(keyboardHook, code, message, data);
             if (DiagnosticsEnabled) Interlocked.Increment(ref diagnosticKeys);
             var focus = Win32.Focus();
@@ -429,7 +464,8 @@ public sealed class KeyboardService : IDisposable
                                 }
                                 // Earlier corrections must not change the layout of
                                 // the word the user is currently entering.
-                                if (!deferred) await SwitchLayout(job.Focus.Window, result.Target, job.Sequence);
+                                // Replayed keys were typed in the old layout and may still be queued: keep it.
+                                if (!deferred && Volatile.Read(ref lastReplayed) == 0) await SwitchLayout(job.Focus.Window, result.Target, job.Sequence);
                                 Corrected?.Invoke(result, job.App);
                             }
                             else if (!deferred)
@@ -452,7 +488,8 @@ public sealed class KeyboardService : IDisposable
     private async Task<EditorSnapshot?> ReplaceVerified(EditorSnapshot before, string replacement, long id, bool manual = false)
     {
         bool Valid() => Current(id, before.Focus, manual) && !Win32.ModifiersDown;
-        ClipboardLease? clipboard = null; bool submitted = false, confirmed = false;
+        ClipboardLease? clipboard = null; bool submitted = false, confirmed = false, selecting = false;
+        Volatile.Write(ref lastReplayed, 0);
         try
         {
             if (!Valid()) return null;
@@ -461,6 +498,7 @@ public sealed class KeyboardService : IDisposable
                 clipboard = await ClipboardLease.Acquire(replacement, Valid);
                 if (clipboard == null) { Status?.Invoke("Буфер обміну зайнятий — заміну пропущено."); return null; }
             }
+            HoldKeys(); long holdStart = Environment.TickCount64; selecting = true;
             if (!Valid() || !await editor.SelectIfCurrent(before, Valid)) return null;
             // Never hold the hook's gate during SendInput: external input can
             // otherwise wait for this lock while SendInput waits for the hook.
@@ -468,24 +506,40 @@ public sealed class KeyboardService : IDisposable
             submitted = true;
             bool sent = clipboard == null ? Win32.Send(Win32.TextInput(replacement)) : Win32.Chord(0x56);
             if (!sent) { Pause(); Status?.Invoke("Windows не завершила заміну. Автовиправлення призупинено; перевірте текст."); return null; }
+            // Chromium's address bar trims whitespace from pasted text, which would drop the user's space.
+            string trimmed = replacement.TrimEnd(' ');
+            bool boundaryTyped = clipboard == null || trimmed.Length == 0 || trimmed.Length == replacement.Length;
             for (int i = 0; i < 20 && Current(id, before.Focus, manual); i++)
             {
                 await Task.Delay(15);
+                // Keys typed after the paste are safe; never delay typing for long.
+                if (Environment.TickCount64 - holdStart > MaxHoldMs) Interlocked.Add(ref lastReplayed, ReleaseKeys());
                 var after = await editor.Capture(before.Focus, replacement);
                 if (after != null && (!before.Scintilla || after.Document == before.Document && after.Start == before.Start)) { confirmed = true; return after; }
+                // Only exactly our replacement without its trailing space qualifies; then type the space itself.
+                if (!boundaryTyped && await editor.Capture(before.Focus, trimmed) != null && Valid())
+                {
+                    boundaryTyped = true;
+                    if (!Win32.Send(Win32.TextInput(replacement[trimmed.Length..]))) break;
+                }
             }
             if (Current(id, before.Focus, manual)) { Pause(); Status?.Invoke("Редактор не підтвердив заміну. Автовиправлення призупинено; перевірте текст."); }
             return null;
         }
         finally
         {
+            // An aborted replacement must not leave a (late) selection for the next key to overwrite.
+            if (selecting && !submitted) await editor.CollapseIfSelected(before);
             if (clipboard != null)
             {
                 if (confirmed || !submitted) { if (!await clipboard.Restore()) Status?.Invoke("Буфер зайнятий — попередній вміст не вдалося відновити."); }
                 else Status?.Invoke("Вставлення не підтверджене; виправлений текст залишено в буфері обміну.");
             }
+            // After the clipboard is restored, so a held Ctrl+V pastes the user's own content.
+            Interlocked.Add(ref lastReplayed, ReleaseKeys());
         }
     }
+    private int lastReplayed;
     private async Task SwitchLayout(IntPtr window, string language, long id)
     {
         if (!settings.Value.SwitchLayout || !settings.Value.Languages.Contains(language) || Win32.LayoutFor(language) == IntPtr.Zero) return;

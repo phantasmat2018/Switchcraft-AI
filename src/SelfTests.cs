@@ -31,7 +31,7 @@ public static class SelfTests
                 // New policy preserves valid original words; the full dictionary now
                 // recognizes the old unknown-stem fixture including its final ю key.
                 if (input == "руку") expected = input;
-                if (input is "gjx`nf" or "c[j;fz" or "dshekbdf.") expected = input;
+                if (input == "dshekbdf.") expected = "выруливаю";
                 var result = engine.Evaluate(input, fixture["active_input_source"]?.GetValue<string>() ?? "");
                 Check("reference: " + input + " / " + fixture["reason"]!.GetValue<string>(), result.Text == expected, result.Text);
             }
@@ -48,13 +48,37 @@ public static class SelfTests
             Check("Unknown popup class cannot preserve Scintilla context", !KeyboardService.IgnoreScintillaFocus(autocompleteFocus with { EventIsListBox = false }));
             Check("Non-client object event is not treated as autocomplete", !KeyboardService.IgnoreScintillaFocus(autocompleteFocus with { Object = -8 }));
             Check("Repeated direct Scintilla client focus remains harmless", KeyboardService.IgnoreScintillaFocus(autocompleteFocus with { Child = 0, EventIsEditor = true, EventIsListBox = false }));
+            foreach (var (input, expected) in new[] { ("ghbdtn", "ru"), ("rjulf", "ru"), ("ghbdtn,", "ru"), ("ghbdsn", "uk") })
+                Check("Correction selects actual target layout: " + input, engine.Evaluate(input, "en").Target == expected, engine.Evaluate(input, "en").Target);
+            foreach (var (input, expected) in new[] { ("Кіргізстан", "Кыргызстан"), ("КІРГІЗСТАН,", "КЫРГЫЗСТАН,"), ("косматій", "косматый"), ("(косматій),", "(косматый),") })
+                Check("Cyrillic words in Russian context: " + input, engine.Evaluate(input, "uk", "ru").Text == expected, engine.Evaluate(input, "uk", "ru").Text);
+            Check("Ambiguous Ukrainian word without context stays intact", !engine.Evaluate("косматій", "uk").Changed);
+            Check("Ambiguous Ukrainian word in Ukrainian context stays intact", !engine.Evaluate("косматій", "uk", "uk").Changed);
+            foreach (var (input, expected) in new[] { ("свыт", "світ"), ("украънський", "український"), ("былий", "білий") })
+                Check("Reverse RU to UK dictionary correction: " + input, engine.Evaluate(input, "ru").Text == expected, engine.Evaluate(input, "ru").Text);
+            const string userPhrase = "Когда я на почте служил ямщиком, ко мне постучался косматій\nЗеленоглазое такси притормози притормози Кіргізстан";
+            string expectedPhrase = userPhrase.Replace("косматій", "косматый").Replace("Кіргізстан", "Кыргызстан");
+            Check("User's full mixed-layout phrases", engine.CorrectText(userPhrase) == expectedPhrase, engine.CorrectText(userPhrase));
+            foreach (var phrase in new[] { "Вона стоїть у косматій шапці", "Когда я на почте служил ямщиком", "Привіт, сьогодні гарний день!", "мир сир такси", "Когда служил\nкосматій", "Когда служил привіт сьогодні косматій" })
+                Check("Valid bilingual text preserved: " + phrase, engine.CorrectText(phrase) == phrase, engine.CorrectText(phrase));
+            Check("Standalone proper noun repair", engine.Evaluate("Кіргізстан", "uk").Text == "Кыргызстан");
+            Check("Lowercase proper noun repair", engine.Evaluate("кіргізстан", "uk").Text == "кыргызстан");
+            Check("Canonical Unicode is recognized", engine.Evaluate("косматій", "uk", "ru").Text == "косматый");
+            Check("Known Cyrillic word overrides shipped hint", engine.Evaluate("руку", "ru", "ru").Text == "руку");
+            Check("Browser contenteditable trailing NBSP matches the typed space", EditorAccess.Canonical("ghbdsn" + (char)0xA0) == EditorAccess.Canonical("ghbdsn "));
+            Check("Full dictionaries rank Ukrainian Latin-key input", engine.Evaluate("ge,kswbcnbxybq", "en").Text == "публіцистичний");
+            Check("Full dictionaries rank Russian Latin-key input", engine.Evaluate("ytdsgkfnf", "en").Text == "невыплата");
+            Check("Valid mixed-language quotation", engine.CorrectText("Когда служил, записал: «Вона у косматій шапці».") == "Когда служил, записал: «Вона у косматій шапці».");
+            store.Value.Sensitivity = "careful";
+            Check("Careful mode preserves an ambiguous valid word", !engine.Evaluate("косматій", "uk", "ru").Changed);
+            Check("Careful mode keeps definite dictionary corrections", engine.Evaluate("Кіргізстан", "uk", "ru").Text == "Кыргызстан");
             store.Value.Sensitivity = "balanced";
             store.Pairs["руку"] = "custom"; store.UserPairs["руку"] = "custom"; store.SaveRules(); engine.Reload();
             Check("Explicit user override has priority", engine.Evaluate("руку", "ru").Text == "custom");
             store.Pairs["руку"] = "here"; store.UserPairs.Remove("руку"); store.SaveRules(); engine.Reload();
             Check("Valid country name is not translated", engine.Evaluate("Киргизстан", "uk", "ru").Text == "Киргизстан");
             store.Value.Languages.Remove("ru"); store.Save(); engine.Reload();
-            Check("Disabled Russian language is not selected", !engine.Evaluate("Кіргізстан", "uk").Changed);
+            Check("Disabled Russian language is not selected", !engine.Evaluate("Кіргізстан", "uk").Changed && !engine.Evaluate("ghbdtn", "en").Changed);
             store.Value.Languages.Add("ru"); store.Save(); engine.Reload();
             var context = new TypingContext(); context.ObserveLayout("uk"); context.Observe("ru");
             Check("One word cannot force ambiguous context", context.Language == ""); context.Observe("ru");

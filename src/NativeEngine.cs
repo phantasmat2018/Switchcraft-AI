@@ -19,6 +19,7 @@ public sealed class NativeEngine : IDisposable
     private static IntPtr searchCookie;
     private readonly SettingsStore settings;
     private readonly Dictionary<string, HashSet<string>> dictionaries;
+    private readonly CyrillicLexicon cyrillic = CyrillicLexicon.Shared;
     private readonly Dictionary<string, Dictionary<char, char>> maps = new();
     private readonly Dictionary<string, string> shippedPairs;
     private Dictionary<string, string> pairs = new(), customPairs = new();
@@ -37,7 +38,6 @@ public sealed class NativeEngine : IDisposable
     {
         this.settings = settings;
         dictionaries = settings.Rules["languages"]!.AsObject().ToDictionary(x => x.Key, x => x.Value!["common_words"]!.AsArray().Select(w => w!.GetValue<string>()).ToHashSet(StringComparer.OrdinalIgnoreCase));
-        if (dictionaries.TryGetValue("uk", out var ukWords)) ukWords.Remove("привет");
         WordCount = settings.Rules["languages"]!.AsObject().Sum(x => x.Value!["common_words"]!.AsArray().Count);
         var shipped = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "Runtime", "rules.json")))!;
         shippedPairs = shipped["manual_overrides"]!["exact_pairs"]!.AsObject().ToDictionary(x => x.Key, x => x.Value!.GetValue<string>());
@@ -90,8 +90,13 @@ public sealed class NativeEngine : IDisposable
                 var value = normalized.Equals(core, StringComparison.Ordinal) ? explicitText : normalized.Replace(core, explicitText, StringComparison.Ordinal);
                 return new(input, value, value != input, 1, InferLanguage(explicitText), "user_pair");
             }
+            if (activeLanguages.Contains("uk") && activeLanguages.Contains("ru"))
+            {
+                var repair = cyrillic.Repair(normalized, context, careful);
+                if (repair != null) { LastElapsedMs = sw.Elapsed.TotalMilliseconds; return repair; }
+            }
             // Built-in examples are hints, never permission to overwrite an existing word.
-            if (IsKnown(normalized) || dictionaries.GetValueOrDefault("en")?.Contains(core) == true)
+            if (cyrillic.IsKnown(normalized) || dictionaries["en"].Contains(core))
                 return new(input, input, false, 0, IdentifyLanguage(normalized), "known_original");
             if (Regex.IsMatch(normalized, "[A-Za-z]"))
             {
@@ -99,7 +104,7 @@ public sealed class NativeEngine : IDisposable
                 foreach (var language in new[] { "uk", "ru" }.Where(activeLanguages.Contains))
                 {
                     var mapped = new string(normalized.Select(ch => maps[language].GetValueOrDefault(ch, ch)).ToArray());
-                    if (Known(mapped, language)) candidates.Add((mapped, language));
+                    if (cyrillic.Known(CyrillicLexicon.Core(mapped), language)) candidates.Add((mapped, language));
                     else
                     {
                         // A final comma may be punctuation or the key for б. Prefer a
@@ -107,7 +112,7 @@ public sealed class NativeEngine : IDisposable
                         for (int count = 1; count < normalized.Length && ".,!?;:…)]}\"»”.".Contains(normalized[^count]); count++)
                         {
                             var stem = mapped[..^count];
-                            if (Known(stem, language)) { candidates.Add((stem + normalized[^count..], language)); break; }
+                            if (cyrillic.Known(CyrillicLexicon.Core(stem), language)) { candidates.Add((stem + normalized[^count..], language)); break; }
                         }
                     }
                 }
@@ -138,7 +143,7 @@ public sealed class NativeEngine : IDisposable
                 }
                 var accept = changed != 0 && result.Length > 0 && result != input;
                 var resultCore = result.Trim('.', ',', '!', '?', ';', ':', '"', '«', '»', '(', ')');
-                bool verified = dictionaries.TryGetValue(language, out var dict) && dict.Contains(resultCore);
+                bool verified = language is "uk" or "ru" ? cyrillic.Known(CyrillicLexicon.Core(result), language) : language == "en" && dictionaries["en"].Contains(resultCore);
                 if (!verified || !activeLanguages.Contains(language)) accept = false;
                 if (careful && (confidence < .95 || core.Length < 3)) accept = false;
                 return new(input, accept ? result : input, accept, confidence, language, Utf8(reason));
@@ -163,16 +168,6 @@ public sealed class NativeEngine : IDisposable
             finally { if (ptr != IntPtr.Zero) Free(ptr); }
         }
     }
-    private static string TrimPunctuation(string input) =>
-        input.Normalize(NormalizationForm.FormC).Trim('«', '»', '“', '”', '"', '(', ')', '[', ']', '{', '}', '.', ',', '!', '?', ':', ';', '…');
-    public bool IsKnown(string input)
-    {
-        var core = TrimPunctuation(input);
-        return dictionaries.Values.Any(d => d.Contains(core));
-    }
-    public bool Known(string word, string language) =>
-        dictionaries.TryGetValue(language, out var dict) && dict.Contains(TrimPunctuation(word));
-
     private string PreserveWordPunctuation(string original, string converted, string language)
     {
         // The reference selection API maps every comma to a letter. Preserve a trailing
@@ -180,18 +175,18 @@ public sealed class NativeEngine : IDisposable
         // keys that form actual letters (e.g. dsltkz. -> выделяю, cfvs[ -> самых).
         var words = dictionaries.GetValueOrDefault(language);
         if (words == null) return converted;
-        bool KnownWord(string value) => words.Contains(TrimPunctuation(value));
+        bool Known(string value) => language is "uk" or "ru" ? cyrillic.Known(CyrillicLexicon.Core(value), language) : words.Contains(value);
         var originals = Regex.Matches(original, @"\S+"); int index = 0;
         const string punctuation = ".,;:!?[]{}<>\"«»…";
         return Regex.Replace(converted, @"\S+", match =>
         {
             if (index >= originals.Count) return match.Value;
             var source = originals[index++].Value; var value = match.Value;
-            if (source.Length != value.Length || KnownWord(value.Trim(punctuation.ToCharArray()))) return value;
+            if (source.Length != value.Length || Known(value.Trim(punctuation.ToCharArray()))) return value;
             for (int count = 1; count < source.Length; count++)
             {
                 if (!punctuation.Contains(source[^count])) break;
-                if (KnownWord(value[..^count])) return value[..^count] + source[^count..];
+                if (Known(value[..^count])) return value[..^count] + source[^count..];
             }
             return value;
         });
@@ -210,27 +205,18 @@ public sealed class NativeEngine : IDisposable
             return result.Text;
         }, RegexOptions.None, TimeSpan.FromSeconds(5));
     }
-    public string IdentifyLanguage(string text)
-    {
-        var core = TrimPunctuation(text);
-        if (dictionaries.TryGetValue("en", out var en) && en.Contains(core)) return "en";
-        if (Regex.IsMatch(text, "[іїєґІЇЄҐ]")) return "uk";
-        if (Regex.IsMatch(text, "[ыэёъЫЭЁЪ]")) return "ru";
-        bool uk = dictionaries.TryGetValue("uk", out var u) && u.Contains(core);
-        bool ru = dictionaries.TryGetValue("ru", out var r) && r.Contains(core);
-        return uk == ru ? "" : uk ? "uk" : "ru";
-    }
+    public string IdentifyLanguage(string text) => cyrillic.Identify(text);
     public string[] KnownLanguages(string text)
     {
-        var core = TrimPunctuation(text);
+        var normalized = text.Normalize(NormalizationForm.FormC);
+        var core = normalized.Trim('«', '»', '“', '”', '"', '(', ')', '[', ']', '{', '}', '.', ',', '!', '?', ':', ';', '…');
         var languages = new List<string>();
         lock (gate)
         {
-            foreach (var language in new[] { "en", "uk", "ru" })
-                if (dictionaries.TryGetValue(language, out var dict) && dict.Contains(core))
-                    languages.Add(language);
+            if (dictionaries["en"].Contains(core)) languages.Add("en");
+            foreach (var language in new[] { "uk", "ru" })
+                if (cyrillic.Known(CyrillicLexicon.Core(normalized), language)) languages.Add(language);
         }
-        if (core.Length > 1 && Regex.IsMatch(core, "[іїєґІЇЄҐ]") && !languages.Contains("uk")) languages.Add("uk");
         return languages.ToArray();
     }
     public string InferLanguage(string text)

@@ -45,7 +45,8 @@ internal sealed record EditorSnapshot((IntPtr Window, IntPtr Focus) Focus, strin
 internal sealed class EditorAccess : IDisposable
 {
     private readonly AutomationWorker automation = new();
-    internal static string Canonical(string text) => text.Replace("\r\n", "\n");
+    // Browsers store a typed trailing space in contenteditable fields (Gmail, Telegram Web…) as U+00A0.
+    internal static string Canonical(string text) => text.Replace("\r\n", "\n").Replace('\u00A0', ' ');
     private static bool Safe(AutomationElement? element)
     {
         if (element == null || element.Current.IsPassword || !element.Current.IsEnabled) return false;
@@ -125,11 +126,59 @@ internal sealed class EditorAccess : IDisposable
             var selected = ranges[0].GetText(100001);
             if (selected.Length > 0 && selected != snapshot.Text || snapshot.Range!.GetText(100001) != snapshot.Text || !active() || !valid()) return null;
             snapshot.Range.Select();
-            var confirmed = ((TextPattern)element.GetCurrentPattern(TextPattern.Pattern)).GetSelection();
-            return active() && valid() && confirmed.Length == 1 && confirmed[0].GetText(100001) == snapshot.Text
-                && confirmed[0].CompareEndpoints(TextPatternRangeEndpoint.Start, snapshot.Range, TextPatternRangeEndpoint.Start) == 0
-                && confirmed[0].CompareEndpoints(TextPatternRangeEndpoint.End, snapshot.Range, TextPatternRangeEndpoint.End) == 0 ? new object() : null;
+            // Chromium (Chrome, Edge, Electron) applies a UIA selection asynchronously: GetSelection can still
+            // report the caret right after Select(). Wait briefly for the exact range; never paste without it.
+            for (int attempt = 0; attempt < 12 && active() && valid(); attempt++)
+            {
+                if (attempt > 0) Thread.Sleep(10);
+                var confirmed = ((TextPattern)element.GetCurrentPattern(TextPattern.Pattern)).GetSelection();
+                if (confirmed.Length == 1 && confirmed[0].GetText(100001) == snapshot.Text
+                    && confirmed[0].CompareEndpoints(TextPatternRangeEndpoint.Start, snapshot.Range, TextPatternRangeEndpoint.Start) == 0
+                    && confirmed[0].CompareEndpoints(TextPatternRangeEndpoint.End, snapshot.Range, TextPatternRangeEndpoint.End) == 0)
+                    return active() && valid() ? new object() : null;
+            }
+            return null;
         }) != null;
+    }
+    /// <summary>After an aborted replacement, puts the caret back at the word's end if our selection is (still or
+    /// belatedly, in Chromium) in place, so the next typed key cannot overwrite the word.</summary>
+    public async Task CollapseIfSelected(EditorSnapshot snapshot)
+    {
+        if (snapshot.Scintilla)
+        {
+            try
+            {
+                if (snapshot.Focus == Win32.Focus() && Win32.Message(snapshot.Focus.Focus, 2143) == snapshot.Start && Win32.Message(snapshot.Focus.Focus, 2145) == snapshot.End)
+                    Win32.Message(snapshot.Focus.Focus, 2160, snapshot.End, snapshot.End);
+            }
+            catch { }
+            return;
+        }
+        await automation.Invoke<object>(active =>
+        {
+            if (snapshot.Focus != Win32.Focus()) return null;
+            var element = AutomationElement.FocusedElement;
+            if (element == null || !Automation.Compare(element, snapshot.Element)) return null;
+            var pattern = (TextPattern)element.GetCurrentPattern(TextPattern.Pattern);
+            bool Is(TextPatternRange[] ranges, TextPatternRangeEndpoint startOf) => ranges.Length == 1
+                && ranges[0].CompareEndpoints(TextPatternRangeEndpoint.Start, snapshot.Range!, startOf) == 0
+                && ranges[0].CompareEndpoints(TextPatternRangeEndpoint.End, snapshot.Range!, TextPatternRangeEndpoint.End) == 0;
+            for (int attempt = 0; attempt < 15 && active(); attempt++)
+            {
+                if (attempt > 0) Thread.Sleep(10);
+                if (!Is(pattern.GetSelection(), TextPatternRangeEndpoint.Start)) continue;
+                var caret = snapshot.Range!.Clone();
+                caret.MoveEndpointByRange(TextPatternRangeEndpoint.Start, caret, TextPatternRangeEndpoint.End);
+                caret.Select();
+                for (int wait = 0; wait < 12 && active(); wait++)
+                {
+                    if (Is(pattern.GetSelection(), TextPatternRangeEndpoint.End)) return new object();
+                    Thread.Sleep(10);
+                }
+                return null;
+            }
+            return null;
+        }, timeout: 400);
     }
     public void Dispose() => automation.Dispose();
 }

@@ -72,11 +72,16 @@ internal static class LayaTests
         store.Value.LayaModelPath = Path.Combine(store.DirectoryPath, "synthetic-model-not-on-disk");
         detection.Keys.Save("synthetic-cloud-decoy-not-a-real-key");
 
+        // Switchcraft AI has no dictionary-only mode: turning autocorrection off is the way to stop both clients.
+        store.Value.Enabled = false;
+        var result = await detection.EvaluateAsync("ghbdsn", "en", "", "", CancellationToken.None);
+        Check("disabled autocorrection uses no client", result.Text == "привіт" && localHandler.Calls == 0 && cloudHandler.Calls == 0);
+        store.Value.Enabled = true;
         store.Value.DetectionMode = "laya";
         store.Save();
         Check("local model mode persists", new SettingsStore(store.DirectoryPath).Value.DetectionMode == "laya");
         Check("local model mode is distinct from cloud mode", detection.UsesAi && detection.UsesLocalModel && !detection.UsesCloud);
-        var result = await detection.EvaluateAsync("ghbdsn", "en", "", "", CancellationToken.None);
+        result = await detection.EvaluateAsync("ghbdsn", "en", "", "", CancellationToken.None);
         Check("local model selects a deterministic Ukrainian candidate", result.Text == "привіт" && result.Reason == "laya_ai", result.Text + "/" + result.Reason);
         Check("local inference sends no cloud credential", cloudHandler.Calls == 0 && localHandler.Authorization.Length == 0);
         Check("inference endpoint stays on loopback", Uri.TryCreate(localHandler.Endpoint, UriKind.Absolute, out var endpoint) && endpoint.IsLoopback, localHandler.Endpoint);
@@ -152,18 +157,18 @@ internal static class LayaTests
         result = await detection.EvaluateAsync("ghbdtn", "en", "", "", CancellationToken.None);
         Check("disabled Russian is not restored by local model", result.Text == "ghbdtn" && !result.Changed, result.Text);
         store.Value.Languages.Add("ru"); engine.Reload();
-        store.Value.DetectionMode = "typesafe"; detection.Reset(); before = localHandler.Calls;
+        store.Value.Enabled = false; detection.Reset(); before = localHandler.Calls;
         result = await detection.EvaluateAsync("ghbdsn", "en", "", "", CancellationToken.None);
-        Check("turning model mode off stops both clients", before == localHandler.Calls && result.Text == "привіт");
-        store.Value.DetectionMode = "laya"; detection.Reset(); localHandler.Choice = "uk"; localHandler.Block(ignoreCancellation: true);
+        Check("turning autocorrection off stops both clients", before == localHandler.Calls && cloudHandler.Calls == 0 && result.Text == "привіт");
+        store.Value.Enabled = true; store.Value.DetectionMode = "laya"; detection.Reset(); localHandler.Choice = "uk"; localHandler.Block(ignoreCancellation: true);
         var modeChanged = detection.EvaluateAsync("ghbdsn", "en", "", "", CancellationToken.None);
         await localHandler.Entered.Task.WaitAsync(TimeSpan.FromSeconds(3));
-        store.Value.DetectionMode = "typesafe"; detection.Reset(); localHandler.Release!.TrySetResult(true);
+        store.Value.Enabled = false; detection.Reset(); localHandler.Release!.TrySetResult(true);
         result = await modeChanged;
-        Check("in-flight reply is not applied after local-model mode is disabled", result.Reason != "laya_ai", result.Reason);
+        Check("in-flight reply is not applied after autocorrection is disabled", result.Reason != "laya_ai" && cloudHandler.Calls == 0, result.Reason);
         Check("no cloud requests across local-model failure paths", cloudHandler.Calls == 0);
 
-        store.Value.DetectionMode = "laya"; localHandler.Release = null; localHandler.IgnoreCancellation = false;
+        store.Value.Enabled = true; store.Value.DetectionMode = "laya"; localHandler.Release = null; localHandler.IgnoreCancellation = false;
         detection.Local.SetPreparing(true); before = localHandler.Calls;
         await detection.PrepareAsync();
         result = await detection.EvaluateAsync("ghbdsn", "en", "", "", CancellationToken.None);

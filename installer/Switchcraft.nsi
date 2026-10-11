@@ -177,13 +177,14 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function InitLayaSection
-  ${If} ${FileExists} "$LOCALAPPDATA\Switchcraft-AI\Laya\model\rl_agent_config.json"
-  ${AndIf} ${FileExists} "$LOCALAPPDATA\Switchcraft-AI\Laya\venv\Scripts\python.exe"
+  ${If} ${FileExists} "$LOCALAPPDATA\Switchcraft\Laya\model\rl_agent_config.json"
+  ${AndIf} ${FileExists} "$LOCALAPPDATA\Switchcraft\Laya\venv\Scripts\python.exe"
     SectionSetText ${SecLaya} "Локальна модель Laya (вже підготовлена)"
     !insertmacro UnselectSection ${SecLaya}
     !insertmacro SetSectionFlag ${SecLaya} ${SF_RO}
     Return
   ${EndIf}
+  ; Switchcraft AI shares the Laya folder with Switchcraft (LayaSetup.DefaultRoot).
   ; Silent installs prepare Laya only on request: Setup.exe /S /LAYA
   ${If} ${Silent}
     ${GetParameters} $0

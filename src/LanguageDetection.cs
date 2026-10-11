@@ -33,9 +33,7 @@ public sealed class LanguageDetection : IDisposable
         && word.Any(char.IsLetter)
         && Regex.IsMatch(word.Normalize(NormalizationForm.FormC), @"^[\p{L}'’ʼ\-.,!?«»“”""():;\[\]{}<>`~]+$", RegexOptions.None, TimeSpan.FromMilliseconds(25))
         && !Regex.IsMatch(word, @"\p{L}\.\p{L}", RegexOptions.None, TimeSpan.FromMilliseconds(25));
-    private static readonly Regex TokenRegex = new(@"\A[«“""(\[{]*(?<word>[А-Яа-яЁёІіЇїЄєҐґA-Za-z]+(?:['’ʼ-][А-Яа-яЁёІіЇїЄєҐґA-Za-z]+)*)[.,!?;:…»”"")\]}]*\z", RegexOptions.Compiled);
-    public static string Core(string input) => TokenRegex.Match(input) is { Success: true } m ? m.Groups["word"].Value : input;
-    internal static bool IsShortMismatch(string word) => Core(word) is "ы" or "Ы";
+    internal static bool IsShortMismatch(string word) => CyrillicLexicon.Core(word) is "ы" or "Ы";
     internal static bool ShortLatinAcronym(string word)
     {
         var core = word.Trim('«', '»', '“', '”', '"', '(', ')', '[', ']', '{', '}', '.', ',', '!', '?', ':', ';');
@@ -103,13 +101,14 @@ public sealed class LanguageDetection : IDisposable
         if (answer == null) return Fallback(prefix + "fallback");
         if (!answer.Certain) return Fallback(prefix + "uncertain");
         if (answer.Choice == "keep") return new(word, word, false, answer.Confidence, "", prefix + "keep");
-        if (!candidates.TryGetValue(answer.Choice, out var chosen) || !settings.Value.Languages.Contains(answer.Choice)) return Fallback(prefix + "fallback");
+        if (!candidates.TryGetValue(answer.Choice, out var chosen) || !engine.KnownLanguages(chosen).Any(settings.Value.Languages.Contains)) return Fallback(prefix + "fallback");
         return new(word, chosen, true, answer.Confidence, ResolveTarget(chosen, source, languageContext), mode == "laya" ? "laya_ai" : "typesafe_ai");
     }
     private Dictionary<string, string> Readings(string word, string source, Correction local)
     {
         var readings = new[] { "en", "uk", "ru" }.ToDictionary(language => language, language => engine.Convert(word, language, source).Text);
-        // Keep the verified single-letter/word repair available to the word-choice head.
+        // Keep the same verified single-letter/word repair used by the shared
+        // decision policy available to the trained word-choice head.
         if (local.Changed && readings.ContainsKey(local.Target)) readings[local.Target] = local.Text;
         return readings;
     }
@@ -119,10 +118,13 @@ public sealed class LanguageDetection : IDisposable
         foreach (var target in settings.Value.Languages.ToArray())
         {
             string converted = engine.Convert(word, target, source).Text;
-            if (converted != word) candidates[target] = converted;
+            if (converted != word && engine.KnownLanguages(converted).Contains(target)) candidates[target] = converted;
         }
-        // Keep repair available even when its language is already active layout.
-        if (local.Changed && local.Text != word && settings.Value.Languages.Contains(local.Target))
+        // The current HKL is only a hint: a token may contain characters typed
+        // before an automatic layout switch. Keep the dictionary-verified repair
+        // available even when its language is already the active layout.
+        if (local.Changed && local.Text != word && settings.Value.Languages.Contains(local.Target)
+            && engine.KnownLanguages(local.Text).Contains(local.Target))
             candidates[local.Target] = local.Text;
         // Identical spellings must be one choice, otherwise probability is split
         // between UK/RU labels even when the model agrees on the actual text.
