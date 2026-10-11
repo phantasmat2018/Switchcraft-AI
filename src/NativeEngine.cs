@@ -230,6 +230,42 @@ public sealed class NativeEngine : IDisposable
             return result.Text;
         }, RegexOptions.None, TimeSpan.FromSeconds(5));
     }
+    /// <summary>Cyrillic readings of a token typed in the Latin layout that the dictionary lacks but whose stem it has:
+    /// a dictionary word plus one letter (folk uncontracted forms such as «зеленеє», «зеленая»). Such a
+    /// reading is never applied on its own, only with proof from the same sentence (<see cref="ContextLayoutRepair"/>).</summary>
+    public List<(string Text, string Language)> ContextLayoutReadings(string input, string source)
+    {
+        var readings = new List<(string Text, string Language)>();
+        if (source != "en" || input.Length is < 5 or > 64 || !Regex.IsMatch(input, "[A-Za-z]") || KnownLanguages(input).Length > 0) return readings;
+        var local = Evaluate(input, source);
+        if (local.Changed || local.Reason is "user_exception" or "protected_pattern" or "web_address" or "user_pair" or "length_limit" or "engine_stopped") return readings;
+        lock (gate)
+        {
+            var normalized = input.Normalize(NormalizationForm.FormC);
+            foreach (var language in new[] { "uk", "ru" }.Where(activeLanguages.Contains))
+            {
+                var mapped = new string(normalized.Select(ch => maps[language].GetValueOrDefault(ch, ch)).ToArray());
+                var core = CyrillicLexicon.Core(mapped);
+                if (core.Length < 5 || Regex.IsMatch(core, language == "uk" ? "[ыэёъЫЭЁЪ]" : "[іїєґІЇЄҐ'’ʼ]")) continue;
+                if (cyrillic.Known(core[..^1], language)) readings.Add((mapped, language));
+            }
+        }
+        return readings;
+    }
+    /// <summary>Applies a <see cref="ContextLayoutReadings"/> reading when the neighbouring words of the same sentence
+    /// are recognized as that language and none as another one. A neighbour still in the Latin layout counts as
+    /// the word it is corrected to (;bnj → жито), so the evidence does not wait for its replacement.</summary>
+    public Correction? ContextLayoutRepair(string input, string source, IEnumerable<string> neighbours)
+    {
+        var readings = ContextLayoutReadings(input, source);
+        if (readings.Count == 0) return null;
+        var evidence = neighbours.Where(x => x.Length > 0)
+            .Select(x => Regex.IsMatch(x, "[A-Za-z]") && Evaluate(x, "en") is { Changed: true } corrected ? corrected.Text : x)
+            .Select(IdentifyLanguage).Where(x => x.Length > 0).Distinct().ToArray();
+        if (evidence.Length != 1) return null;
+        var reading = readings.FirstOrDefault(x => x.Language == evidence[0]);
+        return reading.Text == null ? null : new(input, reading.Text, true, .9, reading.Language, "context_layout");
+    }
     public string IdentifyLanguage(string text) => cyrillic.Identify(text);
     public string[] KnownLanguages(string text)
     {

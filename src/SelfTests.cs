@@ -65,11 +65,23 @@ public static class SelfTests
             Check("Lowercase proper noun repair", engine.Evaluate("кіргізстан", "uk").Text == "кыргызстан");
             Check("Canonical Unicode is recognized", engine.Evaluate("косматій", "uk", "ru").Text == "косматый");
             Check("Known Cyrillic word overrides shipped hint", engine.Evaluate("руку", "ru", "ru").Text == "руку");
+            Check("Pasted text carries a clipboard locale that can hold it in 8-bit form", ClipboardLease.TextLocale("привіт") == 0x0422
+                && ClipboardLease.TextLocale("привет") == 0x0419 && ClipboardLease.TextLocale("hello") == 0x0409);
             Check("Browser contenteditable trailing NBSP matches the typed space", EditorAccess.Canonical("ghbdsn" + (char)0xA0) == EditorAccess.Canonical("ghbdsn "));
             foreach (var (typed, layout, address) in new[] { ("пщщпдуюсщь", "uk", "google.com"), ("глкютуе", "uk", "ukr.net"), ("пщщпдуюсщь", "ru", "google.com"), ("цццюнщгегиуюсщь", "uk", "www.youtube.com") })
                 Check("Web address typed in the Cyrillic layout: " + typed, engine.Evaluate(typed, layout) is { Changed: true, Reason: "web_address" } r && r.Text == address, engine.Evaluate(typed, layout).Text);
             Check("A real word whose keys spell no address stays", !engine.Evaluate("люди", "uk").Changed && engine.AddressReading("люди", "uk") == null);
             Check("A correctly typed address is not touched", !engine.Evaluate("google.com", "en").Changed && !engine.Evaluate("ukr.net", "en").Changed);
+            // A reading missing from the dictionary (folk «зеленеє») is converted only with proof from the same sentence.
+            Check("Folk form typed in EN converted with Ukrainian neighbours", engine.ContextLayoutRepair("Ptktyt'", "en", new[] { "жито", "зелене" }) is { Text: "Зеленеє", Changed: true, Reason: "context_layout" },
+                engine.ContextLayoutRepair("Ptktyt'", "en", new[] { "жито", "зелене" })?.Text ?? "null");
+            Check("Folk form evidence comes from neighbours still in the Latin layout", engine.ContextLayoutRepair("Ptktyt'", "en", new[] { ";bnj", "ptktyt" })?.Text == "Зеленеє",
+                engine.ContextLayoutRepair("Ptktyt'", "en", new[] { ";bnj", "ptktyt" })?.Text ?? "null");
+            Check("Folk form alone stays as typed", engine.ContextLayoutRepair("Ptktyt'", "en", Array.Empty<string>()) == null && !engine.Evaluate("Ptktyt'", "en").Changed);
+            Check("Folk form with Russian neighbours stays", engine.ContextLayoutRepair("Ptktyt'", "en", new[] { "белый", "снег" }) == null);
+            Check("Folk form with mixed-language neighbours stays", engine.ContextLayoutRepair("Ptktyt'", "en", new[] { "зелене", "белый" }) == null);
+            Check("Gibberish without a dictionary stem stays", engine.ContextLayoutRepair("qwrtzp", "en", new[] { "жито", "зелене" }) == null);
+            Check("English words and Cyrillic input have no context reading", engine.ContextLayoutReadings("hello", "en").Count == 0 && engine.ContextLayoutReadings("зеленеє", "uk").Count == 0);
             // The layout (high word of the HKL) decides the language, whatever input language it was added under.
             foreach (var (hkl, expected, name) in new (long, string, string)[]
             {
@@ -82,6 +94,8 @@ public static class SelfTests
                 (0x04230423, "", "be-BY"), (0x04070407, "", "de-DE"), (unchecked((long)0xFFFFFFFFE0010411), "", "Japanese IME"),
             })
                 Check("Keyboard layout language: " + name, Win32.LanguageOf(new IntPtr(hkl)) == expected, Win32.LanguageOf(new IntPtr(hkl)));
+            Check("Unsupported layout is described for the notice", Win32.LayoutDescription(new IntPtr(0x04230423)).EndsWith("(0x04230423)")
+                && Win32.LayoutDescription(new IntPtr(0x04230423)).StartsWith("«"), Win32.LayoutDescription(new IntPtr(0x04230423)));
             // Every Cyrillic layout installed here is recognized by what it really types on the S key (ы / і).
             var installed = new IntPtr[Win32.GetKeyboardLayoutList(0, null)]; Win32.GetKeyboardLayoutList(installed.Length, installed);
             foreach (var layout in installed)

@@ -214,6 +214,29 @@ internal static class LayaSetupTests
         Check("verified model is committed intact to a new destination", LayaSetup.HasModel(finalModel)
             && File.ReadAllText(Path.Combine(finalModel, "model.safetensors")) == "synthetic fixture, never loaded");
 
+        // A new model release replaces only a model Switchcraft installed from an earlier release, then deletes it.
+        string[] superseded = { "earlier-release-archive-hash" };
+        string upgradeRoot = Path.Combine(root, "upgrade"), outdatedModel = Path.Combine(upgradeRoot, "model");
+        Directory.CreateDirectory(upgradeRoot);
+        LayaSetup.CommitModel(StageModel(root, "outdated-stage"), outdatedModel);
+        File.WriteAllText(Path.Combine(outdatedModel, ".sha256"), superseded[0]);
+        File.WriteAllText(Path.Combine(outdatedModel, "earlier-release-only.bin"), "old weights");
+        string userModel = Path.Combine(upgradeRoot, "user-model");
+        LayaSetup.CommitModel(StageModel(root, "user-stage"), userModel);
+        Check("a model installed from an earlier release is outdated; a user-supplied model never is",
+            LayaSetup.IsOutdated(outdatedModel, superseded) && !LayaSetup.IsOutdated(userModel, superseded)
+            && !LayaSetup.IsOutdated(outdatedModel, Array.Empty<string>()));
+        string newRelease = StageModel(root, "new-release-stage");
+        File.WriteAllText(Path.Combine(newRelease, ".sha256"), "new-release-archive-hash");
+        LayaSetup.ReplaceOutdatedModel(newRelease, outdatedModel, superseded);
+        Check("the new release replaces the outdated model and the old model is deleted", LayaSetup.HasModel(outdatedModel)
+            && File.ReadAllText(Path.Combine(outdatedModel, ".sha256")) == "new-release-archive-hash"
+            && !File.Exists(Path.Combine(outdatedModel, "earlier-release-only.bin")) && !Directory.Exists(newRelease)
+            && !Directory.EnumerateDirectories(upgradeRoot, ".switchcraft-laya-old-*").Any());
+        string anotherRelease = StageModel(root, "another-release-stage");
+        rejected = Rejects(() => LayaSetup.ReplaceOutdatedModel(anotherRelease, userModel, superseded));
+        Check("a user-supplied model is never replaced or deleted", rejected && LayaSetup.HasModel(userModel) && Directory.Exists(anotherRelease));
+
         string plannedModel = Path.Combine(root, "plan-only-model");
         before = handler.Calls;
         int filesBefore = Directory.EnumerateFileSystemEntries(root, "*", SearchOption.AllDirectories).Count();

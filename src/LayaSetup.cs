@@ -23,11 +23,16 @@ public sealed record LayaSetupPlan(string ModelPath, string RuntimeRoot, string 
 /// <summary>Explicit, cancellable per-user bootstrap. Inference never invokes this installer.</summary>
 public sealed class LayaSetup : IDisposable
 {
-    internal const string ModelSha256 = "6935b48c897a5bf18d9d74acf682cc980ad2ec6698afe092b9347611f2ae8893";
+    // The model release this build installs. A model that Switchcraft installed from an earlier release (recognized by
+    // the archive hash it records in .sha256) is replaced by it and then deleted; a model the user supplied is never touched.
+    public const string Release = "laya-r4";
+    internal const string ModelSha256 = "d39ad2080b1c66b3fc103971b3f80895c5048b3068894b53655434d1ae49c9e0";
+    private const long ModelBytes = 598_627_185;
+    private const string ReleaseBase = "https://github.com/phantasmat2018/Switchcraft-AI/releases/download/" + Release + "/";
+    internal static readonly string[] SupersededModelSha256 = { "6935b48c897a5bf18d9d74acf682cc980ad2ec6698afe092b9347611f2ae8893" /* laya-r3 */ };
+    private const string ModelArchive = "switchcraft-" + Release + ".zip";
     private const string RequirementsSha256 = "8b687eda8f502aa76cac66acbeee3eaabad39cca29d6ed7d4b73dc211677aaab";
     private const string UvSha256 = "ace861f360c6de2babedc1607d0f454b6b09a820dbc8182dc15af927e4df9589";
-    private const string ReleaseBase = "https://github.com/phantasmat2018/Switchcraft-AI/releases/download/laya-r3/";
-    private const long ModelBytes = 599_689_347;
     private static readonly SemaphoreSlim installGate = new(1, 1);
     public static string DefaultRoot => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Switchcraft", "Laya");
     private readonly string root;
@@ -71,14 +76,15 @@ public sealed class LayaSetup : IDisposable
                 EnsureDiskSpace(modelPath, 2_000_000_000);
 
             string cache = Path.Combine(root, "download"); Directory.CreateDirectory(cache);
-            string requirements = Path.Combine(cache, "laya-requirements-r3.txt");
+            string requirements = Path.Combine(cache, "laya-requirements-" + Release + ".txt");
             Report("Завантажуємо перевірений список компонентів…");
             await DownloadVerifiedAsync(new(ReleaseBase + "laya-requirements.txt"), requirements, RequirementsSha256, null, 64_000, progress, cancellation).ConfigureAwait(false);
-            if (!HasModel(modelPath))
+            bool outdated = IsOutdated(modelPath);
+            if (!HasModel(modelPath) || outdated)
             {
-                Report("Завантажуємо модель Laya · приблизно 600 МБ…");
-                string archive = Path.Combine(cache, "switchcraft-laya-r3.zip");
-                await DownloadVerifiedAsync(new(ReleaseBase + "switchcraft-laya-r3.zip"), archive, ModelSha256, ModelBytes, ModelBytes, progress, cancellation).ConfigureAwait(false);
+                Report(outdated ? "Оновлюємо модель Laya до " + Release + " · приблизно 600 МБ, попередню буде видалено…" : "Завантажуємо модель Laya · приблизно 600 МБ…");
+                string archive = Path.Combine(cache, ModelArchive);
+                await DownloadVerifiedAsync(new(ReleaseBase + ModelArchive), archive, ModelSha256, ModelBytes, ModelBytes, progress, cancellation).ConfigureAwait(false);
                 string parent = Path.GetDirectoryName(modelPath) ?? throw new InvalidOperationException("Некоректна тека моделі.");
                 Directory.CreateDirectory(parent);
                 modelStage = Path.Combine(parent, ".switchcraft-laya-" + Guid.NewGuid().ToString("N"));
@@ -89,7 +95,9 @@ public sealed class LayaSetup : IDisposable
                 if (models.Length != 1) throw new InvalidDataException("Архів не містить єдиної коректної моделі Laya.");
                 string stagedModel = models[0]!;
                 await File.WriteAllTextAsync(Path.Combine(stagedModel, ".sha256"), ModelSha256, cancellation).ConfigureAwait(false);
-                cancellation.ThrowIfCancellationRequested(); CommitModel(stagedModel, modelPath);
+                cancellation.ThrowIfCancellationRequested();
+                if (outdated) { ReplaceOutdatedModel(stagedModel, modelPath); Report("Попередню модель Laya видалено."); }
+                else CommitModel(stagedModel, modelPath);
                 if (stagedModel == modelStage) modelStage = null;
             }
             else Report("Наявну модель збережено. Готуємо лише середовище.");
@@ -140,8 +148,14 @@ public sealed class LayaSetup : IDisposable
             }
             if (!ready.ModelReady || !ready.RuntimeReady) throw new InvalidOperationException("Компоненти встановлено, але перевірка Laya не завершилася. Повторіть підготовку.");
             // Archives are kept after a failure so the next run can resume; once installed they only occupy ~600 MB.
-            foreach (string archive in new[] { "switchcraft-laya-r3.zip", "uv-0.11.21.zip" })
-                try { File.Delete(Path.Combine(cache, archive)); } catch (IOException) { } catch (UnauthorizedAccessException) { }
+            // Archives and component lists of earlier model releases are never needed again.
+            foreach (string file in Directory.EnumerateFiles(cache).Where(x => Path.GetFileName(x) is var name
+                && (name.StartsWith("switchcraft-laya-", StringComparison.OrdinalIgnoreCase) || name == "uv-0.11.21.zip"
+                    || name.StartsWith("laya-requirements-", StringComparison.OrdinalIgnoreCase) && x != requirements)).ToArray())
+                try { File.Delete(file); } catch (IOException) { } catch (UnauthorizedAccessException) { }
+            // A replaced model whose files Windows still held a moment ago.
+            if (Path.GetDirectoryName(modelPath) is { } modelParent && Directory.Exists(modelParent))
+                foreach (string old in Directory.EnumerateDirectories(modelParent, ".switchcraft-laya-old-*").ToArray()) DeleteOwnedStage(old, ".switchcraft-laya-old-");
             Report(cuda && ready.Device != "cuda" ? "Laya готова · CUDA недоступна, працюватиме CPU." : "Laya готова · " + (device == "cpu" ? "CPU" : ready.Device.ToUpperInvariant()), 100);
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { Log("Підготовку скасовано."); throw; }
@@ -193,7 +207,7 @@ public sealed class LayaSetup : IDisposable
     }
 
     /// <summary>Same lookup as <see cref="LayaRuntime"/>: the model plus the shared or model-adjacent environment.</summary>
-    public static bool IsPrepared(string modelPath) => HasModel(modelPath)
+    public static bool IsPrepared(string modelPath) => HasModel(modelPath) && !IsOutdated(modelPath)
         && (File.Exists(Path.Combine(DefaultRoot, "venv", "Scripts", "python.exe"))
             || Directory.GetParent(Path.GetFullPath(modelPath)) is { } parent && File.Exists(Path.Combine(parent.FullName, "venv", "Scripts", "python.exe")));
 
@@ -202,8 +216,8 @@ public sealed class LayaSetup : IDisposable
     {
         if (!Path.IsPathFullyQualified(modelPath) || device is not ("auto" or "cpu" or "cuda")) throw new InvalidOperationException("Перевірте теку моделі та пристрій.");
         bool cuda = device != "cpu" && suitableCuda;
-        return new(Path.GetFullPath(modelPath), root, cuda ? "cu126" : "cpu", HasModel(modelPath), cuda ? 12_000_000_000 : 5_000_000_000,
-            new[] { ReleaseBase + "switchcraft-laya-r3.zip", ReleaseBase + "laya-requirements.txt", "https://github.com/astral-sh/uv/releases/download/0.11.21/uv-x86_64-pc-windows-msvc.zip", "https://download.pytorch.org/whl/" + (cuda ? "cu126" : "cpu"), "https://pypi.org/simple" });
+        return new(Path.GetFullPath(modelPath), root, cuda ? "cu126" : "cpu", HasModel(modelPath) && !IsOutdated(modelPath), cuda ? 12_000_000_000 : 5_000_000_000,
+            new[] { ReleaseBase + ModelArchive, ReleaseBase + "laya-requirements.txt", "https://github.com/astral-sh/uv/releases/download/0.11.21/uv-x86_64-pc-windows-msvc.zip", "https://download.pytorch.org/whl/" + (cuda ? "cu126" : "cpu"), "https://pypi.org/simple" });
     }
     private static void EnsureDiskSpace(string destination, long required)
     {
@@ -222,7 +236,7 @@ public sealed class LayaSetup : IDisposable
 
     public async Task<LayaSetupInspection> InspectExistingAsync(string modelPath, CancellationToken cancellation = default)
     {
-        bool model = HasModel(modelPath);
+        bool model = HasModel(modelPath) && !IsOutdated(modelPath);
         string python = Path.Combine(root, "venv", "Scripts", "python.exe");
         if (!File.Exists(python)) return new(model, false, "cpu", "Потрібне середовище Laya.");
         const string probe = "import json,importlib.metadata as m,torch,laya\nd='cpu'; safe=True\ntry:\n if torch.cuda.is_available():\n  x=torch.ones(1,device='cuda'); (x+x).cpu(); d='cuda'\nexcept Exception: safe=False\nprint(json.dumps({'ready':safe and m.version('laya')=='0.4.1' and torch.__version__.startswith('2.14.1+'),'device':d}))";
@@ -372,6 +386,40 @@ public sealed class LayaSetup : IDisposable
             }
             if (output.Length != entry.Length) throw new InvalidDataException("ZIP містить некоректну довжину файлу.");
         }
+    }
+    /// <summary>A model Switchcraft installed from an earlier release, recognized by the archive hash it recorded.
+    /// A model without that record was supplied by the user and is never treated as outdated.</summary>
+    public static bool IsOutdated(string modelPath) => IsOutdated(modelPath, SupersededModelSha256);
+    internal static bool IsOutdated(string modelPath, IReadOnlyCollection<string> superseded)
+    {
+        try
+        {
+            string marker = Path.Combine(modelPath, ".sha256");
+            return superseded.Count > 0 && HasModel(modelPath) && File.Exists(marker)
+                && superseded.Contains(File.ReadAllText(marker).Trim(), StringComparer.OrdinalIgnoreCase);
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException) { return false; }
+    }
+    /// <summary>Puts the verified new model in place of an outdated one, then deletes the old model. The old model is
+    /// moved aside first and restored if the new one cannot be placed, so a failure never leaves no model at all.</summary>
+    internal static void ReplaceOutdatedModel(string stagedModel, string destination) => ReplaceOutdatedModel(stagedModel, destination, SupersededModelSha256);
+    internal static void ReplaceOutdatedModel(string stagedModel, string destination, IReadOnlyCollection<string> superseded)
+    {
+        if (!HasModel(stagedModel)) throw new InvalidDataException("Підготовлена модель неповна.");
+        if (!IsOutdated(destination, superseded)) throw new IOException("Замінюється лише модель, яку Switchcraft встановив із попереднього випуску.");
+        destination = Path.GetFullPath(destination);
+        string retired = Path.Combine(Path.GetDirectoryName(destination)!, ".switchcraft-laya-old-" + Guid.NewGuid().ToString("N"));
+        // Setup stops the Laya process first, but Windows can release its file handles a moment later.
+        for (int attempt = 0; ; attempt++)
+        {
+            try { Directory.Move(destination, retired); break; }
+            catch (Exception ex) when ((ex is IOException or UnauthorizedAccessException) && attempt < 40) { Thread.Sleep(250); }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            { throw new IOException("Попередня модель Laya зараз використовується. Закрийте інші копії Switchcraft і повторіть.", ex); }
+        }
+        try { Directory.Move(stagedModel, destination); }
+        catch { Directory.Move(retired, destination); throw; }
+        DeleteOwnedStage(retired, ".switchcraft-laya-old-");
     }
     internal static void CommitModel(string stagedModel, string destination)
     {

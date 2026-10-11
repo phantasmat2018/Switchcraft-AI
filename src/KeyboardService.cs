@@ -31,6 +31,11 @@ public sealed class KeyboardService : IDisposable
     private readonly Channel<WordJob> jobs = Channel.CreateBounded<WordJob>(new BoundedChannelOptions(32) { SingleReader = true, FullMode = BoundedChannelFullMode.DropOldest });
     private (IntPtr Window, IntPtr Focus) tracked, permitted;
     private bool allowed, incomplete, disposed;
+    // A click or focus change starts a new check of the field. Until it decides, typed keys are kept (never
+    // processed), so the first word typed right after a click is not lost; a denial discards them.
+    private bool awaitingPermission;
+    private int probeKick;
+    private readonly HashSet<IntPtr> reportedLayouts = new();
     private volatile bool hookActive;
     private long sequence, contextEpoch, permissionTime, analysisStarted, wordOrdinal, lastInputTime, lastIdleSequence;
     private int probeBusy;
@@ -44,7 +49,7 @@ public sealed class KeyboardService : IDisposable
         string code = reason is "known_original" or "cyrillic_dictionary" or "cyrillic_context" or "layout_dictionary"
             or "ambiguous_dictionary_candidates" or "ai_keep" or "typesafe_ai" or "ai_uncertain" or "ai_fallback"
             or "laya_ai" or "local_ai_keep" or "local_ai_uncertain" or "local_ai_fallback"
-            or "user_pair" or "user_exception" or "protected_pattern" or "web_address" or "length_limit" or "engine_stopped" or "short_context"
+            or "user_pair" or "user_exception" or "protected_pattern" or "web_address" or "length_limit" or "engine_stopped" or "short_context" or "context_layout"
             ? reason : "native_result";
         Trace(stage + ":" + code);
     }
@@ -100,7 +105,7 @@ public sealed class KeyboardService : IDisposable
     private int hiddenTextNoticeShown;
     public event Action<string>? LearnWord;
     // SubmitAfter: the user's Enter was held for a wrong-layout web address and is sent after its correction.
-    private sealed record WordJob(long Sequence, long Epoch, long Ordinal, (IntPtr Window, IntPtr Focus) Focus, string Original, string Source, string Boundary, string App, long CreatedAt, bool SubmitAfter = false);
+    private sealed record WordJob(long Sequence, long Epoch, long Ordinal, (IntPtr Window, IntPtr Focus) Focus, string Original, string Source, string Boundary, string App, long CreatedAt, bool SubmitAfter = false, bool AwaitPermission = false);
     private sealed record PendingWord(WordJob Job, string Context, string Following = "", int Count = 0);
     private sealed record UndoState(EditorSnapshot Snapshot, string Original, string SourceLanguage, string LearningToken, string Boundary);
     public KeyboardService(NativeEngine engine, SettingsStore settings, bool allowOwnProcess = false, LanguageDetection? detection = null)
@@ -165,7 +170,7 @@ public sealed class KeyboardService : IDisposable
                 fresh, currentScintilla, window == tracked.Focus, eventClass == "ListBox", sameProcess, eventAncestorIsWindow);
             if (IgnoreScintillaFocus(notice))
             { Trace(notice.EventIsListBox ? "scintilla_autocomplete_focus" : "repeated_scintilla_focus"); return; }
-            Trace("focus_reset"); Reset(); allowed = false;
+            Trace("focus_reset"); Reset(); allowed = false; awaitingPermission = true;
         }
     }
     private void Run()
@@ -202,8 +207,10 @@ public sealed class KeyboardService : IDisposable
             {
                 if (!disposed && epoch == contextEpoch && focus == Win32.Focus())
                 {
-                    if (permitted != focus) Reset();
-                    permitted = focus; allowed = safe; currentApp = app; permissionTime = Environment.TickCount64;
+                    bool undecided = awaitingPermission || permitted != focus;
+                    // Keys typed into this field while it was being checked belong to it; anything else is stale.
+                    if (permitted != focus && tracked != focus || !safe && (allowed || undecided)) { Trace(safe ? "probe_new_field" : "probe_denied"); Reset(); }
+                    permitted = focus; allowed = safe; awaitingPermission = false; currentApp = app; permissionTime = Environment.TickCount64;
                 }
             }
         }
@@ -231,7 +238,7 @@ public sealed class KeyboardService : IDisposable
     public bool IsExcluded(string app) => (!allowOwnProcess && app.Equals("Switchcraft.exe", StringComparison.OrdinalIgnoreCase)) || settings.Value.ExcludedApps.ToArray().Contains(app, StringComparer.OrdinalIgnoreCase);
     private IntPtr MouseHook(int code, IntPtr message, IntPtr data)
     {
-        if (code >= 0 && message.ToInt32() is 0x0201 or 0x0204 or 0x0207 or 0x020A) { lock (gate) { Reset(); allowed = false; } }
+        if (code >= 0 && message.ToInt32() is 0x0201 or 0x0204 or 0x0207 or 0x020A) { lock (gate) { Reset(); allowed = false; awaitingPermission = true; } }
         return Win32.CallNextHookEx(mouseHook, code, message, data);
     }
     private IntPtr KeyboardHook(int code, IntPtr message, IntPtr data)
@@ -254,13 +261,26 @@ public sealed class KeyboardService : IDisposable
                 if (tracked != focus) { Reset(); tracked = focus; }
                 uint boundary = key.Vk == 0xE7 ? key.Scan : key.Vk;
                 if (boundary == 0x0A) boundary = 0x0D;
-                if (!Running || !allowed || permitted != focus || Environment.TickCount64 - permissionTime > 650 || IsExcluded(currentApp))
+                bool fresh = Environment.TickCount64 - permissionTime <= 650;
+                bool permittedNow = Running && allowed && permitted == focus && fresh && !IsExcluded(currentApp);
+                bool denied = permitted == focus && fresh && !allowed && !awaitingPermission;
+                bool pendingPermission = !permittedNow && Running && !denied && (awaitingPermission || permitted != focus || !fresh);
+                if (!permittedNow && !pendingPermission)
                 {
                     word.Clear(); undo = null; pendingWords.Clear(); recentWords.Clear(); incomplete = boundary is not (0x20 or 0x0D or 0x09); return Win32.CallNextHookEx(keyboardHook, code, message, data);
                 }
+                if (pendingPermission && Interlocked.CompareExchange(ref probeKick, 1, 0) == 0)
+                    ThreadPool.QueueUserWorkItem(_ => { Volatile.Write(ref probeKick, 0); _ = ProbeFocus(); });
                 var source = Win32.LayoutLanguage(focus.Window);
                 if (DiagnosticsEnabled) Interlocked.Increment(ref diagnosticAccepted);
-                if (!settings.Value.Languages.Contains(source)) { Reset(); return Win32.CallNextHookEx(keyboardHook, code, message, data); }
+                if (!settings.Value.Languages.Contains(source))
+                {
+                    // An unreadable layout must not look like Switchcraft silently failing: say so once per layout.
+                    var layout = Win32.GetKeyboardLayout(Win32.GetWindowThreadProcessId(focus.Window, out _));
+                    if (source.Length == 0 && reportedLayouts.Add(layout))
+                        ThreadPool.QueueUserWorkItem(_ => Notice?.Invoke($"Switchcraft не розпізнає розкладку {Win32.LayoutDescription(layout)}, тому набір у ній не виправляється. Підтримуються англійська, українська та російська розкладки."));
+                    Reset(); return Win32.CallNextHookEx(keyboardHook, code, message, data);
+                }
                 if (languageContext.ObserveLayout(source)) { word.Clear(); undo = null; pendingWords.Clear(); contextEpoch++; recentWords.Clear(); }
                 if (Win32.Down(0x11) || Win32.Down(0x12) || Win32.Down(0x5B) || Win32.Down(0x5C))
                 {
@@ -283,16 +303,16 @@ public sealed class KeyboardService : IDisposable
                         {
                             if (HoldKeys())
                             {
-                                if (jobs.Writer.TryWrite(new(sequence, contextEpoch, wordOrdinal, focus, original, source, "", currentApp, lastInputTime, SubmitAfter: true)))
+                                if (jobs.Writer.TryWrite(new(sequence, contextEpoch, wordOrdinal, focus, original, source, "", currentApp, lastInputTime, SubmitAfter: true, AwaitPermission: pendingPermission)))
                                 { Interlocked.Exchange(ref enterHeldAt, Environment.TickCount64); incomplete = false; return (IntPtr)1; }
                                 ReleaseKeys();
                             }
                             Volatile.Write(ref enterHeld, 0);
                         }
-                        jobs.Writer.TryWrite(new(sequence, contextEpoch, wordOrdinal, focus, original, source, boundary == 0x20 ? " " : "\n", currentApp, lastInputTime));
+                        jobs.Writer.TryWrite(new(sequence, contextEpoch, wordOrdinal, focus, original, source, boundary == 0x20 ? " " : "\n", currentApp, lastInputTime, AwaitPermission: pendingPermission));
                     }
                     incomplete = false;
-                    if (boundary == 0x09) { Reset(); allowed = false; }
+                    if (boundary == 0x09) { Reset(); allowed = false; awaitingPermission = true; }
                     return Win32.CallNextHookEx(keyboardHook, code, message, data);
                 }
                 if (key.Vk is 0x1B or 0x21 or 0x22 or 0x23 or 0x24 or 0x25 or 0x26 or 0x27 or 0x28 or 0x2D or 0x2E || key.Vk >= 0x70 && key.Vk <= 0x87)
@@ -318,6 +338,18 @@ public sealed class KeyboardService : IDisposable
         }
         catch (Exception ex) { Reset(); Status?.Invoke("Виправлення пропущено: " + ex.GetType().Name); }
         return Win32.CallNextHookEx(keyboardHook, code, message, data);
+    }
+    private async Task<bool> PermissionFor(WordJob job)
+    {
+        for (long deadline = Environment.TickCount64 + 600; Environment.TickCount64 < deadline; await Task.Delay(15))
+        {
+            lock (gate)
+            {
+                if (disposed || job.Epoch != contextEpoch) return false;
+                if (permitted == job.Focus && !awaitingPermission && Environment.TickCount64 - permissionTime <= 650) return allowed;
+            }
+        }
+        return false;
     }
     private bool Current(long id, (IntPtr Window, IntPtr Focus) focus, bool manual = false)
     {
@@ -350,6 +382,8 @@ public sealed class KeyboardService : IDisposable
         await foreach (var job in jobs.Reader.ReadAllAsync())
         {
             if (job.SubmitAfter) { await SubmitAddress(job); continue; }
+            // A word typed while its field was still being checked is not even evaluated until the field is allowed.
+            if (job.AwaitPermission && !await PermissionFor(job)) { Trace("permission_not_granted"); continue; }
             if (DiagnosticsEnabled) Interlocked.Increment(ref diagnosticJobs);
             try
             {
@@ -363,7 +397,9 @@ public sealed class KeyboardService : IDisposable
                 }
                 Interlocked.Exchange(ref analysisStarted, Environment.TickCount64);
                 var local = engine.Evaluate(job.Original, job.Source, context);
-                bool needsContext = detection?.UsesAi == true && (local.Changed || detection.NeedsContext(job.Original, job.Source));
+                bool needsContext = detection?.UsesAi == true && (local.Changed || detection.NeedsContext(job.Original, job.Source))
+                    // In every mode: a reading the dictionary lacks may still be settled by the rest of the sentence.
+                    || !local.Changed && !idle && engine.ContextLayoutReadings(job.Original, job.Source).Count > 0;
                 string identified = local.Changed ? "" : engine.IdentifyLanguage(job.Original);
                 // Wrong-layout punctuation keys can represent letters, e.g.
                 // cke;bk -> служил. Only the verified spelling defines its scope.
@@ -383,8 +419,10 @@ public sealed class KeyboardService : IDisposable
                     {
                         var retry = pendingWords[i];
                         string following = retry.Following.Length == 0 ? job.Original : retry.Following + " " + job.Original;
+                        // A different layout here is Switchcraft's own switch after a correction: a manual
+                        // switch already cleared every pending word in the keyboard hook.
                         if (retry.Job.Epoch != job.Epoch || retry.Job.Ordinal + retry.Count + 1 != job.Ordinal
-                            || retry.Job.Focus != job.Focus || retry.Job.Source != job.Source || job.Boundary == "\n"
+                            || retry.Job.Focus != job.Focus || job.Boundary == "\n"
                             || retry.Count >= 3 || following.Length > 160 || job.CreatedAt - retry.Job.CreatedAt > 15_000
                             || !LanguageDetection.Sendable(job.Original)) pendingWords.RemoveAt(i);
                         else
@@ -444,6 +482,9 @@ public sealed class KeyboardService : IDisposable
                         if (detection?.UsesAi == true)
                             result = await detection.EvaluateAsync(attempt.Job.Original, attempt.Job.Source, context,
                                 attempt.Context, cancellation.Token, attempt.Following);
+                        if (deferred && !result.Changed && engine.ContextLayoutRepair(attempt.Job.Original, attempt.Job.Source,
+                            attempt.Following.Split(' ').Concat(attempt.Context.Split(' ').TakeLast(3))) is { } repaired)
+                            result = repaired;
                         cancellation.Token.ThrowIfCancellationRequested();
                         TraceDecision("decision", result.Reason);
                         // A known word gets a final veto. An unknown word can be
@@ -486,9 +527,11 @@ public sealed class KeyboardService : IDisposable
                                 Trace("replacement_confirmed");
                                 lock (gate)
                                 {
+                                    // The editor now holds the corrected spelling even when the user kept typing
+                                    // (those keys were held and replayed after it), so earlier pending words must see it.
+                                    if (job.Epoch == contextEpoch) RebasePendingFollowing(attempt, result.Text);
                                     if (Current(job.Sequence, job.Focus))
                                     {
-                                        RebasePendingFollowing(attempt, result.Text);
                                         recentWords.Clear();
                                         if (job.Boundary != "\n") undo = new(after, originalTail, job.Source, result.Original, job.Boundary);
                                     }
@@ -523,17 +566,17 @@ public sealed class KeyboardService : IDisposable
         Volatile.Write(ref lastReplayed, 0);
         try
         {
-            if (!Valid()) return null;
+            if (!Valid()) { Trace("replace_abort:stale"); return null; }
             if (!before.Scintilla)
             {
                 clipboard = await ClipboardLease.Acquire(replacement, Valid);
-                if (clipboard == null) { Status?.Invoke("Буфер обміну зайнятий — заміну пропущено."); return null; }
+                if (clipboard == null) { Trace("replace_abort:clipboard"); Status?.Invoke("Буфер обміну зайнятий — заміну пропущено."); return null; }
             }
             ownsHold = HoldKeys(); long holdStart = Environment.TickCount64; selecting = true;
-            if (!Valid() || !await editor.SelectIfCurrent(before, Valid)) return null;
+            if (!Valid() || !await editor.SelectIfCurrent(before, Valid)) { Trace(Valid() ? "replace_abort:select" : "replace_abort:stale_select"); return null; }
             // Never hold the hook's gate during SendInput: external input can
             // otherwise wait for this lock while SendInput waits for the hook.
-            if (!Valid() || clipboard != null && !clipboard.IsOwned) return null;
+            if (!Valid() || clipboard != null && !clipboard.IsOwned) { Trace("replace_abort:before_paste"); return null; }
             submitted = true;
             bool sent = clipboard == null ? Win32.Send(Win32.TextInput(replacement)) : Win32.Chord(0x56);
             if (!sent) { Pause(); Status?.Invoke("Windows не завершила заміну. Автовиправлення призупинено; перевірте текст."); return null; }
@@ -599,6 +642,7 @@ public sealed class KeyboardService : IDisposable
     {
         try
         {
+            if (job.AwaitPermission && !await PermissionFor(job)) return;
             if (!await operation.WaitAsync(300)) return;
             try
             {

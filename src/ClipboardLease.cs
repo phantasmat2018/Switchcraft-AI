@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,6 +16,9 @@ internal sealed class ClipboardLease
     private readonly uint owned;
     private ClipboardLease(IDataObject backup, uint owned) { this.backup = backup; this.owned = owned; }
     public bool IsOwned => Win32.GetClipboardSequenceNumber() == owned;
+    /// <summary>The locale whose 8-bit code page can hold the text: Ukrainian or Russian for Cyrillic, otherwise English.</summary>
+    internal static int TextLocale(string text) => text.Any(ch => ch is 'і' or 'ї' or 'є' or 'ґ' or 'І' or 'Ї' or 'Є' or 'Ґ') ? 0x0422
+        : text.Any(ch => ch is >= 'А' and <= 'я' or 'ё' or 'Ё') ? 0x0419 : 0x0409;
     public static async Task<ClipboardLease?> Acquire(string text, Func<bool> valid)
     {
         for (int i = 0; i < 3 && valid(); i++)
@@ -39,6 +43,10 @@ internal sealed class ClipboardLease
             }
             if (!active() || !valid() || Environment.TickCount64 >= deadline || sequence != Win32.GetClipboardSequenceNumber()) return null;
             var data = new DataObject(); data.SetText(text);
+            // An editor falls back to 8-bit text when the Unicode copy is briefly unavailable (clipboard watchers such as
+            // messengers open the clipboard right after every change). Windows converts that copy with the clipboard
+            // locale, taken from this thread's keyboard layout, which may be English just now: Cyrillic would become "?".
+            data.SetData(DataFormats.Locale, new MemoryStream(BitConverter.GetBytes(TextLocale(text))));
             data.SetData("CanIncludeInClipboardHistory", new MemoryStream(BitConverter.GetBytes(0)));
             data.SetData("CanUploadToCloudClipboard", new MemoryStream(BitConverter.GetBytes(0)));
             uint? published = null;

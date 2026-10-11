@@ -51,7 +51,7 @@ internal static class InputIntegration
                 foreach (char ch in text)
                 {
                     RequireTestFocus();
-                    ushort vk = ch switch { ' ' => 32, '\n' => 13, ';' => 0xBA, ',' => 0xBC, '.' => 0xBE, _ => (ushort)char.ToUpperInvariant(ch) };
+                    ushort vk = ch switch { ' ' => 32, '\n' => 13, ';' => 0xBA, ',' => 0xBC, '.' => 0xBE, '\'' => 0xDE, _ => (ushort)char.ToUpperInvariant(ch) };
                     var down = Win32.Key(vk); down.Data.Keyboard.Extra = UIntPtr.Zero;
                     var up = Win32.Key(vk, true); up.Data.Keyboard.Extra = UIntPtr.Zero;
                     Win32.Send(new[] { down, up }); await Task.Delay(30);
@@ -302,6 +302,8 @@ internal static class InputIntegration
                 await Reset(); Win32.SwitchLayout(hwnd, "ru"); await Task.Delay(300); await Type("hello ");
                 Check("English typed in the Russian layout is corrected", field.Text == "hello ", Win32.LayoutLanguage(hwnd) + ": " + field.Text);
             }
+            keyboard.DiagnosticsEnabled = true; await Reset(); await Type("ptktyt' ;bnj ptktyt "); await Task.Delay(800);
+            Check("Folk word missing from the dictionary is converted once its sentence proves Ukrainian", field.Text == "зеленеє жито зелене ", field.Text + " | " + System.Text.Json.JsonSerializer.Serialize(keyboard.InputDiagnostics())); keyboard.DiagnosticsEnabled = false;
             if (Win32.LayoutFor("uk") != IntPtr.Zero && Win32.LayoutFor("ru") != IntPtr.Zero)
             {
                 await Reset(); store.Value.SwitchLayout = true; await Type("ghbdtn ");

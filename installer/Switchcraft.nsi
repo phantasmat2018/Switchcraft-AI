@@ -175,16 +175,29 @@ SectionEnd
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SecCore} "Програма, механізм правил та необхідне середовище виконання."
   !insertmacro MUI_DESCRIPTION_TEXT ${SecDesktop} "Створити ярлик Switchcraft AI на робочому столі."
-  !insertmacro MUI_DESCRIPTION_TEXT ${SecLaya} "Після встановлення завантажити з GitHub модель Laya r3 (≈600 МБ) і компоненти (≈1 ГБ, для NVIDIA CUDA — більше), перевірити контрольні суми й підготувати для поточного користувача. Потрібні інтернет і до 5 ГБ вільного місця."
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecLaya} "Після встановлення завантажити з GitHub модель Laya r4 (≈600 МБ; встановлену раніше r3 буде замінено й видалено) і компоненти (≈1 ГБ, для NVIDIA CUDA — більше), перевірити контрольні суми й підготувати для поточного користувача. Потрібні інтернет і до 5 ГБ вільного місця."
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function InitLayaSection
   ${If} ${FileExists} "$LOCALAPPDATA\Switchcraft\Laya\model\rl_agent_config.json"
   ${AndIf} ${FileExists} "$LOCALAPPDATA\Switchcraft\Laya\venv\Scripts\python.exe"
-    SectionSetText ${SecLaya} "Локальна модель Laya (вже підготовлена)"
-    !insertmacro UnselectSection ${SecLaya}
-    !insertmacro SetSectionFlag ${SecLaya} ${SF_RO}
-    Return
+    ; A model Switchcraft installed from laya-r3 records that archive's hash; it is offered as an update to r4,
+    ; and the app deletes the old model once the new one is in place. A user-supplied model is never touched.
+    StrCpy $1 ""
+    ClearErrors
+    FileOpen $0 "$LOCALAPPDATA\Switchcraft\Laya\model\.sha256" r
+    ${IfNot} ${Errors}
+      FileRead $0 $1
+      FileClose $0
+    ${EndIf}
+    ${If} $1 == "6935b48c897a5bf18d9d74acf682cc980ad2ec6698afe092b9347611f2ae8893"
+      SectionSetText ${SecLaya} "Локальна модель Laya (оновлення до r4)"
+    ${Else}
+      SectionSetText ${SecLaya} "Локальна модель Laya (вже підготовлена)"
+      !insertmacro UnselectSection ${SecLaya}
+      !insertmacro SetSectionFlag ${SecLaya} ${SF_RO}
+      Return
+    ${EndIf}
   ${EndIf}
   ; Switchcraft AI shares the Laya folder with Switchcraft (LayaSetup.DefaultRoot).
   ; Silent installs prepare Laya only on request: Setup.exe /S /LAYA

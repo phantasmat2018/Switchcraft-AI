@@ -131,6 +131,19 @@ internal static class Win32
         }
         return language;
     });
+    /// <summary>A layout as people know it, for messages: the native name of its input language and its HKL.</summary>
+    public static string LayoutDescription(IntPtr layout)
+    {
+        long value = layout.ToInt64() & 0xFFFFFFFF;
+        var name = new StringBuilder(85); string display = "";
+        if (LCIDToLocaleName((uint)(value & 0xFFFF), name, name.Capacity, 0x08000000) > 0)
+        {
+            display = name.ToString();
+            try { display = System.Globalization.CultureInfo.GetCultureInfo(display).NativeName; }
+            catch (System.Globalization.CultureNotFoundException) { }
+        }
+        return (display.Length > 0 ? "«" + display + "» " : "") + $"(0x{value:X8})";
+    }
     private static string PrimaryLanguage(int langId) => (langId & 0x3FF) switch { 0x22 => "uk", 0x19 => "ru", 0x09 => "en", _ => "" };
     private static int VariantLanguage(int layoutId)
     {

@@ -49,7 +49,7 @@ public partial class MainWindow : Window
         LayaModelPathBox.Text = Store.Value.LayaModelPath;
         LayaDeviceBox.SelectedIndex = Store.Value.LayaDevice == "cpu" ? 1 : Store.Value.LayaDevice == "cuda" ? 2 : 0;
         RefreshAiSettings();
-        if (Host.Detection.UsesLocalModel && !LayaSetup.IsPrepared(Store.Value.LayaModelPath)) LocalModelConfigStatus.Text = LayaMissingText;
+        if (Host.Detection.UsesLocalModel && !LayaSetup.IsPrepared(Store.Value.LayaModelPath)) LocalModelConfigStatus.Text = LayaSetupText;
         using (var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run")) LaunchAtLogin.IsChecked = key?.GetValue(StartupValueName) != null;
         RefreshLanguages(); RefreshRules(); RefreshExcluded(); BuildHotkeys(); RefreshStatus(); UpdateQuick();
         SourceInitialized += (_, _) =>
@@ -70,7 +70,7 @@ public partial class MainWindow : Window
         AiServiceStatus.Text = Host.Detection.Api.Status;
         LocalModelServiceStatus.Text = Host.Detection.Local.Status;
         if (localSetup == null)
-            SetupLocalModelButton.Content = LayaSetup.IsPrepared(Store.Value.LayaModelPath) ? "Перевірити компоненти" : "Завантажити й підготувати";
+            SetupLocalModelButton.Content = LayaSetup.IsPrepared(Store.Value.LayaModelPath) ? "Перевірити компоненти" : LayaSetup.IsOutdated(Store.Value.LayaModelPath) ? "Оновити модель" : "Завантажити й підготувати";
         bool running = Host.Keyboard.Running;
         EnabledToggle.IsChecked = running;
         StateLabel.Text = running ? "●  Активний" : "Ⅱ  На паузі";
@@ -306,7 +306,7 @@ public partial class MainWindow : Window
         Store.Value.DetectionMode = mode;
         CancelAiWork(); Store.Save(); RefreshAiSettings(); RefreshStatus();
         _ = PrepareLocalModelAsync();
-        if (mode == "laya" && localSetup == null && !LayaSetup.IsPrepared(Store.Value.LayaModelPath)) LocalModelConfigStatus.Text = LayaMissingText;
+        if (mode == "laya" && localSetup == null && !LayaSetup.IsPrepared(Store.Value.LayaModelPath)) LocalModelConfigStatus.Text = LayaSetupText;
         // Switching mode itself does not send the example text. The next live edit does.
         QuickReason.Text = Host.Detection.ModeLabel + " · введіть слово для перевірки";
         ShowStatus("Режим: " + Host.Detection.ModeLabel + ".");
@@ -433,6 +433,9 @@ public partial class MainWindow : Window
         if (busy) SetupLocalModelButton.Content = "Підготовка…";
     }
     private const string LayaMissingText = "Laya ще не встановлена на цьому комп’ютері. Натисніть «Завантажити й підготувати»: потрібен інтернет, модель ≈600 МБ і компоненти ≈1 ГБ. ";
+    private string LayaSetupText => LayaSetup.IsOutdated(Store.Value.LayaModelPath)
+        ? "Доступна новіша модель Laya (" + LayaSetup.Release + "). Натисніть «Оновити модель»: буде завантажено ≈600 МБ, а попередню модель після цього буде видалено. Поки що працює встановлена модель."
+        : LayaMissingText;
     /// <summary>Opens the Laya section and prepares missing components; used after the installer's optional Laya step.</summary>
     public void BeginLayaSetup()
     {

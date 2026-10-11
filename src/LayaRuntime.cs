@@ -18,20 +18,28 @@ internal sealed class LayaRuntime : IDisposable
 {
     // CUDA availability only checks the driver. Test the tensor operations used
     // by this encoder before selecting a GPU whose kernels the wheel may lack.
+    // Another program (a game, model training) can hold most of the GPU memory:
+    // the model would then fail or crawl there, so it runs on the CPU instead.
     // Running this bootstrap in the server process imports torch only once.
-    private const string StartupScript = """
+    internal const long MinimumFreeGpuMemory = 1536L * 1024 * 1024;
+    internal const string LowGpuMemoryMarker = "SWITCHCRAFT_GPU_LOW_MEMORY";
+    internal const string StartupScript = """
 import os, runpy, torch
 if os.environ.get('LAYA_DEVICE', '').strip().lower() != 'cpu':
     usable = False
     try:
         if torch.cuda.is_available():
-            dtype = torch.bfloat16 if torch.cuda.get_device_capability()[0] >= 8 else torch.float16
-            x = torch.ones((1, 2, 16, 32), device='cuda', dtype=dtype)
-            y = torch.nn.functional.scaled_dot_product_attention(x, x, x)
-            z = torch.nn.functional.layer_norm(y @ x.transpose(-2, -1), (16,))
-            torch.cuda.synchronize()
-            del x, y, z
-            usable = True
+            free, _ = torch.cuda.mem_get_info()
+            if free < int(os.environ.get('SWITCHCRAFT_MIN_GPU_FREE', '0')):
+                print('SWITCHCRAFT_GPU_LOW_MEMORY', flush=True)
+            else:
+                dtype = torch.bfloat16 if torch.cuda.get_device_capability()[0] >= 8 else torch.float16
+                x = torch.ones((1, 2, 16, 32), device='cuda', dtype=dtype)
+                y = torch.nn.functional.scaled_dot_product_attention(x, x, x)
+                z = torch.nn.functional.layer_norm(y @ x.transpose(-2, -1), (16,))
+                torch.cuda.synchronize()
+                del x, y, z
+                usable = True
     except Exception:
         pass
     if not usable:
@@ -56,7 +64,10 @@ runpy.run_module('laya.serve', run_name='__main__')
     private int revision;
     private bool disposed;
     internal string Status => Volatile.Read(ref status);
-    internal string DeviceLabel => Volatile.Read(ref actualDevice) == "cpu" ? (device == "cuda" ? "CPU · GPU недоступний" : "CPU") : "GPU · " + Volatile.Read(ref actualDevice).ToUpperInvariant();
+    private int gpuLowMemory;
+    internal string DeviceLabel => Volatile.Read(ref actualDevice) == "cpu"
+        ? Volatile.Read(ref gpuLowMemory) == 1 ? "CPU · GPU зайнятий: мало вільної пам'яті" : device == "cuda" ? "CPU · GPU недоступний" : "CPU"
+        : "GPU · " + Volatile.Read(ref actualDevice).ToUpperInvariant();
     internal void Configure(string preference, int cpuThreads)
     {
         lock (gate)
@@ -162,6 +173,7 @@ runpy.run_module('laya.serve', run_name='__main__')
             // is not accepted by the server's torch.device environment parser.
             start.Environment["LAYA_DEVICE"] = selectedDevice == "auto" ? "" : selectedDevice;
             start.Environment["LAYA_THREADS"] = selectedThreads.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            start.Environment["SWITCHCRAFT_MIN_GPU_FREE"] = MinimumFreeGpuMemory.ToString(System.Globalization.CultureInfo.InvariantCulture);
             start.Environment["LAYA_MAX_LOADED"] = "1";
             start.Environment["LAYA_MAX_CONCURRENT"] = "1";
             start.Environment["LAYA_AUTO_TASK"] = "0";
@@ -172,8 +184,10 @@ runpy.run_module('laya.serve', run_name='__main__')
             start.Environment["HF_HUB_DISABLE_TELEMETRY"] = "1";
             start.Environment["TOKENIZERS_PARALLELISM"] = "false";
             owned = new Process { StartInfo = start };
-            // Drain diagnostics without retaining model input, paths, or credentials in logs.
-            owned.OutputDataReceived += (_, _) => { };
+            // Drain diagnostics without retaining model input, paths, or credentials in logs. The only line
+            // read is the bootstrap's own marker, printed before the server accepts any text.
+            Volatile.Write(ref gpuLowMemory, 0);
+            owned.OutputDataReceived += (_, e) => { if (e.Data == LowGpuMemoryMarker) Volatile.Write(ref gpuLowMemory, 1); };
             owned.ErrorDataReceived += (_, _) => { };
             lock (gate)
             {
