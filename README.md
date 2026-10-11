@@ -1,4 +1,4 @@
-# Switchcraft AI 1.6.1
+# Switchcraft AI 1.6.2
 
 [![Release](https://img.shields.io/github/v/release/phantasmat2018/Switchcraft-AI?color=blue&label=Реліз)](https://github.com/phantasmat2018/Switchcraft-AI/releases/latest)
 [![Platform](https://img.shields.io/badge/платформа-Windows%20x64-informational)](https://github.com/phantasmat2018/Switchcraft-AI/releases/latest)
@@ -14,7 +14,7 @@
 Останні версії завжди доступні на сторінці **[GitHub Releases](https://github.com/phantasmat2018/Switchcraft-AI/releases/latest)**:
 
 * 📥 **[SwitchcraftSetup.exe](https://github.com/phantasmat2018/Switchcraft-AI/releases/latest/download/SwitchcraftSetup.exe)** — швидкий інсталятор для Windows x64 (рекомендовано). Права адміністратора не потрібні; створює ярлики та запис у списку програм.
-* 📦 **[Switchcraft-AI-1.6.1-portable.zip](https://github.com/phantasmat2018/Switchcraft-AI/releases/download/v1.6.1/Switchcraft-AI-1.6.1-portable.zip)** — портативна версія (розпакуйте та запустіть `Switchcraft.exe`).
+* 📦 **[Switchcraft-AI-1.6.2-portable.zip](https://github.com/phantasmat2018/Switchcraft-AI/releases/download/v1.6.2/Switchcraft-AI-1.6.2-portable.zip)** — портативна версія (розпакуйте та запустіть `Switchcraft.exe`).
 
 > [!TIP]
 > Під час першого встановлення інсталятор може одразу підготувати компонент **Локальна модель Laya** для повністю автономної роботи штучного інтелекту на вашому комп’ютері.
@@ -36,8 +36,7 @@
 - **Перевірка оновлень**: кнопка «Перевірити оновлення» в налаштуваннях миттєво перевіряє свіжі релізи на GitHub.
 - **Швидке скасування**: безпечне повернення тексту комбінацією клавіш (`Ctrl + Alt + Backspace`) або додавання слова до винятків у режимі навчання.
 - **Гнучкі налаштування**: списки виключених програм, гарячі клавіші, пошук і додавання власних правил та замін, імпорт та експорт налаштувань у форматі JSON.
-- **Сумісність**: перевірено справжнім набором у Chrome і Edge (textarea, input і contenteditable, як у Gmail чи Telegram Web) та Notepad++. В адресному рядку Chrome пошукові запити виправляються, а адреси (`google.com`) не змінюються. Якщо під час заміни слова ви вже друкуєте далі, натискання на мить притримуються й передаються в тому ж порядку одразу після заміни. У VS Code увімкніть `"editor.accessibilitySupport": "on"` — інакше редактор не надає текст через UI Automation і виправлення пропускаються. У Блокноті Windows 11 скасування гарячою клавішею недоступне (перевірено в повній версії Switchcraft з тим самим кодом доступу до редакторів).
-
+- **Сумісність**: перевірено справжнім набором у Chrome і Edge (textarea, input і contenteditable, як у Gmail чи Telegram Web), Блокноті Windows 11, Notepad++ і VS Code — виправлення, збереження правильних слів, перемикання розкладки та скасування гарячою клавішею. В адресному рядку Chrome пошукові запити виправляються, правильно набрані адреси (`google.com`) не змінюються, а адреса, набрана в українській чи російській розкладці (`пщщпдуюсщь`), перетворюється на `google.com` і після пробілу, і після Enter (Enter притримується до 1,5 с, доки адресу не виправлено). Якщо під час заміни слова ви вже друкуєте далі, натискання на мить притримуються й передаються в тому ж порядку одразу після заміни. VS Code без режиму для екранного диктора не надає текст редактора через UI Automation, тому виправлення там пропускаються, а Switchcraft один раз повідомляє про це в треї; увімкніть режим: Shift+Alt+F1 або `"editor.accessibilitySupport": "on"`.
 ---
 
 ## ⌨️ Стандартні гарячі клавіші

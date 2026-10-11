@@ -58,7 +58,11 @@ internal sealed class EditorAccess : IDisposable
         if (Win32.ClassName(focus.Focus) == "Scintilla") return Win32.IsWritableScintilla(focus, "Scintilla");
         return await automation.Invoke<object>(_ => focus == Win32.Focus() && Safe(AutomationElement.FocusedElement) ? new object() : null) != null;
     }
-    public Task<EditorSnapshot?> Capture((IntPtr Window, IntPtr Focus) focus, string? tail = null)
+    /// <param name="afterPaste">Verifying our own paste: an inline completion that the editor selected after the
+    /// caret (Chrome's address bar) is allowed, and the text up to its start is checked.</param>
+    /// <param name="pasted">The field we pasted into. Chrome moves UIA focus to its suggestion list after a pasted
+    /// address, so verification reads that same field rather than whatever element reports focus.</param>
+    public Task<EditorSnapshot?> Capture((IntPtr Window, IntPtr Focus) focus, string? tail = null, bool afterPaste = false, AutomationElement? pasted = null)
     {
         if (Win32.ClassName(focus.Focus) == "Scintilla")
         {
@@ -67,13 +71,17 @@ internal sealed class EditorAccess : IDisposable
         return automation.Invoke<EditorSnapshot>(_ =>
         {
             if (focus != Win32.Focus()) return null;
-            var element = AutomationElement.FocusedElement; if (!Safe(element)) return null;
+            var element = afterPaste && pasted != null ? pasted : AutomationElement.FocusedElement; if (!Safe(element)) return null;
             var pattern = (TextPattern)element.GetCurrentPattern(TextPattern.Pattern);
             var ranges = pattern.GetSelection(); if (ranges.Length != 1) return null;
             var range = ranges[0].Clone();
             if (tail != null)
             {
-                if (range.CompareEndpoints(TextPatternRangeEndpoint.Start, range, TextPatternRangeEndpoint.End) != 0) return null;
+                if (range.CompareEndpoints(TextPatternRangeEndpoint.Start, range, TextPatternRangeEndpoint.End) != 0)
+                {
+                    if (!afterPaste) return null;
+                    range.MoveEndpointByRange(TextPatternRangeEndpoint.End, range, TextPatternRangeEndpoint.Start);
+                }
                 range.MoveEndpointByUnit(TextPatternRangeEndpoint.Start, TextUnit.Character, -Canonical(tail).Length);
             }
             var text = range.GetText(tail == null ? 100001 : tail.Length + 2);
@@ -140,6 +148,15 @@ internal sealed class EditorAccess : IDisposable
             return null;
         }) != null;
     }
+    /// <summary>VS Code (Monaco) outside screen-reader mode exposes an empty edit context instead of its text, so
+    /// corrections there cannot be verified and are skipped.</summary>
+    public async Task<bool> IsHiddenEditorText((IntPtr Window, IntPtr Focus) focus) => await automation.Invoke<object>(_ =>
+    {
+        if (focus != Win32.Focus()) return null;
+        var element = AutomationElement.FocusedElement;
+        if (element == null || element.Current.ClassName != "native-edit-context") return null;
+        return element.TryGetCurrentPattern(ValuePattern.Pattern, out var value) && ((ValuePattern)value).Current.Value.Length == 0 ? new object() : null;
+    }) != null;
     /// <summary>After an aborted replacement, puts the caret back at the word's end if our selection is (still or
     /// belatedly, in Chromium) in place, so the next typed key cannot overwrite the word.</summary>
     public async Task CollapseIfSelected(EditorSnapshot snapshot)

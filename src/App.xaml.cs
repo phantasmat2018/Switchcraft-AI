@@ -87,6 +87,7 @@ public partial class App : Application
                 Shell.RefreshStatus();
             });
             Keyboard.Status += message => Dispatcher.BeginInvoke(() => Shell.ShowStatus(message));
+            Keyboard.Notice += message => Dispatcher.BeginInvoke(() => { Shell.ShowStatus(message); tray?.ShowBalloonTip(8000, "Switchcraft", message, Forms.ToolTipIcon.Info); });
             Keyboard.LearnWord += word => Dispatcher.BeginInvoke(() =>
             {
                 try { Store.AddNever(word); Engine.Reload(); Shell.RefreshRules(); Shell.ShowStatus("Слово додано до винятків після скасування."); }

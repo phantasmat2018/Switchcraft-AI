@@ -21,6 +21,24 @@ public sealed class NativeEngine : IDisposable
     private readonly Dictionary<string, HashSet<string>> dictionaries;
     private readonly CyrillicLexicon cyrillic = CyrillicLexicon.Shared;
     private readonly Dictionary<string, Dictionary<char, char>> maps = new();
+    // Read-only after construction, so the keyboard hook may use it without the native engine.
+    private readonly Dictionary<string, Dictionary<char, char>> toEnglish = new();
+    private static readonly Regex AddressPattern = new(
+        @"\A(?:https?://)?(?:www\.)?(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:com|net|org|info|biz|io|dev|app|ai|me|tv|co|gg|ua|eu|uk|us|ca|de|fr|it|es|pl|cz|kz|edu|gov)(?::\d{1,5})?(?:/[\w\-./?%&=#~+]*)?\z",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant, TimeSpan.FromMilliseconds(20));
+    /// <summary>A web address typed with a Cyrillic layout active (пщщпдуюсщь → google.com), or null.
+    /// Uses only immutable layout maps: safe to call from the keyboard hook.</summary>
+    public string? AddressReading(string word, string source)
+    {
+        if (source is not ("uk" or "ru") || word.Length < 4 || !toEnglish.TryGetValue(source, out var map)) return null;
+        var chars = new char[word.Length];
+        for (int i = 0; i < word.Length; i++)
+            if (map.TryGetValue(word[i], out var key)) chars[i] = key;
+            else if (char.IsAsciiDigit(word[i]) || word[i] == '-') chars[i] = word[i];
+            else return null;
+        var text = new string(chars);
+        try { return AddressPattern.IsMatch(text) ? text : null; } catch (RegexMatchTimeoutException) { return null; }
+    }
     private readonly Dictionary<string, string> shippedPairs;
     private Dictionary<string, string> pairs = new(), customPairs = new();
     private HashSet<string> never = new(), activeLanguages = new();
@@ -44,9 +62,13 @@ public sealed class NativeEngine : IDisposable
         foreach (var language in new[] { "uk", "ru" })
         {
             var map = maps[language] = new();
+            var back = toEnglish[language] = new();
             foreach (var suffix in new[] { "", "_shift" })
                 foreach (var item in settings.Rules["keyboard_layout"]!["maps"]![$"en_to_{language}{suffix}"]!.AsObject())
-                    map[item.Key[0]] = item.Value!.GetValue<string>()[0];
+                {
+                    char key = item.Key[0], letter = item.Value!.GetValue<string>()[0];
+                    map[key] = letter; back.TryAdd(letter, key);
+                }
         }
         Reload();
     }
@@ -85,6 +107,9 @@ public sealed class NativeEngine : IDisposable
             var core = normalized.Trim('«', '»', '“', '”', '"', '(', ')', '[', ']', '.', ',', '!', '?', ':', ';', '…');
             bool careful = settings.Value.Sensitivity == "careful";
             if (never.Contains(normalized) || never.Contains(core)) return new(input, input, false, 0, "", "user_exception");
+            // A real Cyrillic word is never turned into an address, even when its keys spell one.
+            if (activeLanguages.Contains("en") && AddressReading(normalized, source) is { } address && !cyrillic.IsKnown(normalized))
+                return new(input, address, true, 1, "en", "web_address");
             if (customPairs.TryGetValue(normalized, out var explicitText) || customPairs.TryGetValue(core, out explicitText))
             {
                 var value = normalized.Equals(core, StringComparison.Ordinal) ? explicitText : normalized.Replace(core, explicitText, StringComparison.Ordinal);

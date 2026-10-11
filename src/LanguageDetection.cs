@@ -57,7 +57,7 @@ public sealed class LanguageDetection : IDisposable
         cancellation.ThrowIfCancellationRequested();
         string mode = settings.Value.DetectionMode;
         var local = engine.Evaluate(word, source, languageContext);
-        if (!settings.Value.Enabled || mode is not ("typesafe" or "laya") || !Sendable(word) || local.Reason is "user_pair" or "user_exception" or "protected_pattern" or "length_limit" or "engine_stopped") return local;
+        if (!settings.Value.Enabled || mode is not ("typesafe" or "laya") || !Sendable(word) || local.Reason is "user_pair" or "user_exception" or "protected_pattern" or "web_address" or "length_limit" or "engine_stopped") return local;
         // Short Latin capitals are commonly identifiers (RGB, VNC, API). Some
         // map to real Cyrillic words, so dictionary validity alone is insufficient.
         if (ShortLatinAcronym(word)) return new(word, word, false, 0, "en", "protected_pattern");
@@ -141,7 +141,7 @@ public sealed class LanguageDetection : IDisposable
     {
         if (!Sendable(word) || ShortLatinAcronym(word)) return false;
         var local = engine.Evaluate(word, source);
-        if (local.Reason is "user_pair" or "user_exception" or "protected_pattern" or "length_limit" or "engine_stopped") return false;
+        if (local.Reason is "user_pair" or "user_exception" or "protected_pattern" or "web_address" or "length_limit" or "engine_stopped") return false;
         if (local.Reason == "known_original")
         {
             var languages = engine.KnownLanguages(word);

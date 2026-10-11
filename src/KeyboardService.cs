@@ -44,7 +44,7 @@ public sealed class KeyboardService : IDisposable
         string code = reason is "known_original" or "cyrillic_dictionary" or "cyrillic_context" or "layout_dictionary"
             or "ambiguous_dictionary_candidates" or "ai_keep" or "typesafe_ai" or "ai_uncertain" or "ai_fallback"
             or "laya_ai" or "local_ai_keep" or "local_ai_uncertain" or "local_ai_fallback"
-            or "user_pair" or "user_exception" or "protected_pattern" or "length_limit" or "engine_stopped" or "short_context"
+            or "user_pair" or "user_exception" or "protected_pattern" or "web_address" or "length_limit" or "engine_stopped" or "short_context"
             ? reason : "native_result";
         Trace(stage + ":" + code);
     }
@@ -58,7 +58,8 @@ public sealed class KeyboardService : IDisposable
     private const int MaxHoldMs = 400;
     // Replayed keys carry their own tag: processed as ordinary typing, never held again.
     private static readonly UIntPtr ReplayTag = new(0x53574352);
-    private void HoldKeys() { lock (holdGate) { heldKeys.Clear(); holdingKeys = true; } }
+    /// <summary>Starts holding user keys; returns false when a hold is already active (its owner releases it).</summary>
+    private bool HoldKeys() { lock (holdGate) { if (holdingKeys) return false; heldKeys.Clear(); holdingKeys = true; return true; } }
     /// <summary>Replays held keys in order and returns their count. Holding ends only when nothing is left:
     /// a key typed while replaying is held too and sent after the earlier ones, so order is preserved.</summary>
     private int ReleaseKeys()
@@ -94,8 +95,12 @@ public sealed class KeyboardService : IDisposable
     public string Health => !hookActive ? "Обробка клавіатури недоступна" : Interlocked.Read(ref analysisStarted) > 0 && Environment.TickCount64 - Interlocked.Read(ref analysisStarted) >= 2000 ? "Мовний аналіз не відповідає" : "";
     public event Action<Correction, string>? Corrected;
     public event Action<string>? Status;
+    /// <summary>A one-time hint that deserves a tray notification, not just the status line.</summary>
+    public event Action<string>? Notice;
+    private int hiddenTextNoticeShown;
     public event Action<string>? LearnWord;
-    private sealed record WordJob(long Sequence, long Epoch, long Ordinal, (IntPtr Window, IntPtr Focus) Focus, string Original, string Source, string Boundary, string App, long CreatedAt);
+    // SubmitAfter: the user's Enter was held for a wrong-layout web address and is sent after its correction.
+    private sealed record WordJob(long Sequence, long Epoch, long Ordinal, (IntPtr Window, IntPtr Focus) Focus, string Original, string Source, string Boundary, string App, long CreatedAt, bool SubmitAfter = false);
     private sealed record PendingWord(WordJob Job, string Context, string Following = "", int Count = 0);
     private sealed record UndoState(EditorSnapshot Snapshot, string Original, string SourceLanguage, string LearningToken, string Boundary);
     public KeyboardService(NativeEngine engine, SettingsStore settings, bool allowOwnProcess = false, LanguageDetection? detection = null)
@@ -109,7 +114,7 @@ public sealed class KeyboardService : IDisposable
     public void Start()
     {
         thread.Start(); _ = Task.Run(ProcessWords);
-        privacyTimer = new System.Threading.Timer(_ => { _ = ProbeFocus(); QueueIdleRetry(); }, null, 0, 150);
+        privacyTimer = new System.Threading.Timer(_ => { _ = ProbeFocus(); QueueIdleRetry(); EnterWatchdog(); }, null, 0, 150);
     }
     internal readonly record struct FocusNotice(uint Event, int Object, int Child, bool SameFocus,
         bool Permitted, bool FreshPermission, bool Scintilla, bool EventIsEditor, bool EventIsListBox,
@@ -270,7 +275,22 @@ public sealed class KeyboardService : IDisposable
                     var original = word.ToString(); word.Clear();
                     wordOrdinal++;
                     if (!incomplete && original.Length > 0 && boundary != 0x09)
+                    {
+                        // A web address typed with a Cyrillic layout (пщщпдуюсщь): hold this Enter and later keys
+                        // until the address is corrected, so it is not submitted in the wrong layout.
+                        if (boundary == 0x0D && settings.Value.Languages.Contains("en") && engine.AddressReading(original, source) != null
+                            && Interlocked.CompareExchange(ref enterHeld, 1, 0) == 0)
+                        {
+                            if (HoldKeys())
+                            {
+                                if (jobs.Writer.TryWrite(new(sequence, contextEpoch, wordOrdinal, focus, original, source, "", currentApp, lastInputTime, SubmitAfter: true)))
+                                { Interlocked.Exchange(ref enterHeldAt, Environment.TickCount64); incomplete = false; return (IntPtr)1; }
+                                ReleaseKeys();
+                            }
+                            Volatile.Write(ref enterHeld, 0);
+                        }
                         jobs.Writer.TryWrite(new(sequence, contextEpoch, wordOrdinal, focus, original, source, boundary == 0x20 ? " " : "\n", currentApp, lastInputTime));
+                    }
                     incomplete = false;
                     if (boundary == 0x09) { Reset(); allowed = false; }
                     return Win32.CallNextHookEx(keyboardHook, code, message, data);
@@ -329,6 +349,7 @@ public sealed class KeyboardService : IDisposable
     {
         await foreach (var job in jobs.Reader.ReadAllAsync())
         {
+            if (job.SubmitAfter) { await SubmitAddress(job); continue; }
             if (DiagnosticsEnabled) Interlocked.Increment(ref diagnosticJobs);
             try
             {
@@ -444,7 +465,17 @@ public sealed class KeyboardService : IDisposable
                                 before = await editor.Capture(job.Focus, originalTail + job.Boundary);
                                 if (before != null) break;
                             }
-                            if (before == null || !Current(job.Sequence, job.Focus)) { Trace("capture_skipped"); continue; }
+                            if (before == null || !Current(job.Sequence, job.Focus))
+                            {
+                                Trace("capture_skipped");
+                                if (before == null && result.Changed && Interlocked.CompareExchange(ref hiddenTextNoticeShown, 1, 0) == 0)
+                                {
+                                    if (await editor.IsHiddenEditorText(job.Focus))
+                                        Notice?.Invoke("VS Code не показує текст редактора, тому Switchcraft пропускає там виправлення. Увімкніть у VS Code режим для екранного диктора: Shift+Alt+F1 або параметр \"editor.accessibilitySupport\": \"on\".");
+                                    else Volatile.Write(ref hiddenTextNoticeShown, 0);
+                                }
+                                continue;
+                            }
                             if (DiagnosticsEnabled) Interlocked.Increment(ref diagnosticCaptures);
                             if (result.Changed)
                             {
@@ -488,7 +519,7 @@ public sealed class KeyboardService : IDisposable
     private async Task<EditorSnapshot?> ReplaceVerified(EditorSnapshot before, string replacement, long id, bool manual = false)
     {
         bool Valid() => Current(id, before.Focus, manual) && !Win32.ModifiersDown;
-        ClipboardLease? clipboard = null; bool submitted = false, confirmed = false, selecting = false;
+        ClipboardLease? clipboard = null; bool submitted = false, confirmed = false, selecting = false, ownsHold = false;
         Volatile.Write(ref lastReplayed, 0);
         try
         {
@@ -498,7 +529,7 @@ public sealed class KeyboardService : IDisposable
                 clipboard = await ClipboardLease.Acquire(replacement, Valid);
                 if (clipboard == null) { Status?.Invoke("Буфер обміну зайнятий — заміну пропущено."); return null; }
             }
-            HoldKeys(); long holdStart = Environment.TickCount64; selecting = true;
+            ownsHold = HoldKeys(); long holdStart = Environment.TickCount64; selecting = true;
             if (!Valid() || !await editor.SelectIfCurrent(before, Valid)) return null;
             // Never hold the hook's gate during SendInput: external input can
             // otherwise wait for this lock while SendInput waits for the hook.
@@ -509,20 +540,30 @@ public sealed class KeyboardService : IDisposable
             // Chromium's address bar trims whitespace from pasted text, which would drop the user's space.
             string trimmed = replacement.TrimEnd(' ');
             bool boundaryTyped = clipboard == null || trimmed.Length == 0 || trimmed.Length == replacement.Length;
+            EditorSnapshot? pastedWithoutBoundary = null; int typedAt = 0;
             for (int i = 0; i < 20 && Current(id, before.Focus, manual); i++)
             {
+                if (pastedWithoutBoundary != null && i - typedAt > 4) break;
                 await Task.Delay(15);
                 // Keys typed after the paste are safe; never delay typing for long.
-                if (Environment.TickCount64 - holdStart > MaxHoldMs) Interlocked.Add(ref lastReplayed, ReleaseKeys());
-                var after = await editor.Capture(before.Focus, replacement);
+                if (ownsHold && Environment.TickCount64 - holdStart > MaxHoldMs) Interlocked.Add(ref lastReplayed, ReleaseKeys());
+                var after = await editor.Capture(before.Focus, replacement, afterPaste: true, pasted: before.Element);
                 if (after != null && (!before.Scintilla || after.Document == before.Document && after.Start == before.Start)) { confirmed = true; return after; }
                 // Only exactly our replacement without its trailing space qualifies; then type the space itself.
-                if (!boundaryTyped && await editor.Capture(before.Focus, trimmed) != null && Valid())
+                if (!boundaryTyped)
                 {
-                    boundaryTyped = true;
-                    if (!Win32.Send(Win32.TextInput(replacement[trimmed.Length..]))) break;
+                    var trimmedAfter = await editor.Capture(before.Focus, trimmed, afterPaste: true, pasted: before.Element);
+                    if (trimmedAfter != null && Valid())
+                    {
+                        boundaryTyped = true;
+                        if (!Win32.Send(Win32.TextInput(replacement[trimmed.Length..]))) break;
+                        pastedWithoutBoundary = trimmedAfter; typedAt = i;
+                    }
                 }
             }
+            // The paste itself was verified and the space was typed by us. Chrome's address bar then replaces
+            // its accessible text with a suggestion description, which is not a failed replacement.
+            if (pastedWithoutBoundary != null && Current(id, before.Focus, manual)) { confirmed = true; return pastedWithoutBoundary; }
             if (Current(id, before.Focus, manual)) { Pause(); Status?.Invoke("Редактор не підтвердив заміну. Автовиправлення призупинено; перевірте текст."); }
             return null;
         }
@@ -536,10 +577,45 @@ public sealed class KeyboardService : IDisposable
                 else Status?.Invoke("Вставлення не підтверджене; виправлений текст залишено в буфері обміну.");
             }
             // After the clipboard is restored, so a held Ctrl+V pastes the user's own content.
-            Interlocked.Add(ref lastReplayed, ReleaseKeys());
+            if (ownsHold) Interlocked.Add(ref lastReplayed, ReleaseKeys());
         }
     }
     private int lastReplayed;
+    private int enterHeld;
+    private long enterHeldAt;
+    /// <summary>Delivers the held Enter exactly once, before every key typed after it.</summary>
+    private void SendHeldEnter()
+    {
+        if (Interlocked.Exchange(ref enterHeld, 0) == 0) return;
+        Win32.Send(new[] { new Win32.Input { Type = 1, Data = new() { Keyboard = new() { Vk = 0x0D, Scan = 0x1C, Extra = ReplayTag } } } });
+        ReleaseKeys();
+    }
+    // A lost or stuck correction must never swallow the user's Enter.
+    private void EnterWatchdog()
+    {
+        if (Volatile.Read(ref enterHeld) == 1 && Environment.TickCount64 - Interlocked.Read(ref enterHeldAt) > 1500) SendHeldEnter();
+    }
+    private async Task SubmitAddress(WordJob job)
+    {
+        try
+        {
+            if (!await operation.WaitAsync(300)) return;
+            try
+            {
+                var result = engine.Evaluate(job.Original, job.Source);
+                TraceDecision("decision", result.Reason);
+                if (result.Reason != "web_address" || !Current(job.Sequence, job.Focus)) return;
+                var before = await editor.Capture(job.Focus, job.Original);
+                if (before == null) { Trace("capture_skipped"); return; }
+                if (await ReplaceVerified(before, result.Text, job.Sequence) == null) { Trace("replacement_skipped"); return; }
+                Trace("replacement_confirmed");
+                Corrected?.Invoke(result, job.App);
+            }
+            finally { operation.Release(); }
+        }
+        catch (Exception ex) { Status?.Invoke("Виправлення пропущено: " + ex.GetType().Name); }
+        finally { SendHeldEnter(); }
+    }
     private async Task SwitchLayout(IntPtr window, string language, long id)
     {
         if (!settings.Value.SwitchLayout || !settings.Value.Languages.Contains(language) || Win32.LayoutFor(language) == IntPtr.Zero) return;

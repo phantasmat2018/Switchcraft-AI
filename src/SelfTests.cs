@@ -66,6 +66,10 @@ public static class SelfTests
             Check("Canonical Unicode is recognized", engine.Evaluate("косматій", "uk", "ru").Text == "косматый");
             Check("Known Cyrillic word overrides shipped hint", engine.Evaluate("руку", "ru", "ru").Text == "руку");
             Check("Browser contenteditable trailing NBSP matches the typed space", EditorAccess.Canonical("ghbdsn" + (char)0xA0) == EditorAccess.Canonical("ghbdsn "));
+            foreach (var (typed, layout, address) in new[] { ("пщщпдуюсщь", "uk", "google.com"), ("глкютуе", "uk", "ukr.net"), ("пщщпдуюсщь", "ru", "google.com"), ("цццюнщгегиуюсщь", "uk", "www.youtube.com") })
+                Check("Web address typed in the Cyrillic layout: " + typed, engine.Evaluate(typed, layout) is { Changed: true, Reason: "web_address" } r && r.Text == address, engine.Evaluate(typed, layout).Text);
+            Check("A real word whose keys spell no address stays", !engine.Evaluate("люди", "uk").Changed && engine.AddressReading("люди", "uk") == null);
+            Check("A correctly typed address is not touched", !engine.Evaluate("google.com", "en").Changed && !engine.Evaluate("ukr.net", "en").Changed);
             Check("Full dictionaries rank Ukrainian Latin-key input", engine.Evaluate("ge,kswbcnbxybq", "en").Text == "публіцистичний");
             Check("Full dictionaries rank Russian Latin-key input", engine.Evaluate("ytdsgkfnf", "en").Text == "невыплата");
             Check("Valid mixed-language quotation", engine.CorrectText("Когда служил, записал: «Вона у косматій шапці».") == "Когда служил, записал: «Вона у косматій шапці».");
