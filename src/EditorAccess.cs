@@ -148,6 +148,14 @@ internal sealed class EditorAccess : IDisposable
             return null;
         }) != null;
     }
+    /// <summary>Puts focus back on the corrected field when its window moved focus to another element of the same window
+    /// (Windows 11 Notepad does so after a paste). Used only for an undo the user asked for; never moves between windows.</summary>
+    public async Task<bool> RefocusField(EditorSnapshot snapshot) => snapshot.Element != null && await automation.Invoke<object>(_ =>
+    {
+        if (Win32.Focus().Window != snapshot.Focus.Window) return null;
+        snapshot.Element.SetFocus();
+        return new object();
+    }) != null;
     /// <summary>VS Code (Monaco) outside screen-reader mode exposes an empty edit context instead of its text, so
     /// corrections there cannot be verified and are skipped.</summary>
     public async Task<bool> IsHiddenEditorText((IntPtr Window, IntPtr Focus) focus) => await automation.Invoke<object>(_ =>

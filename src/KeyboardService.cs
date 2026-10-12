@@ -90,6 +90,9 @@ public sealed class KeyboardService : IDisposable
     }
     private System.Threading.Timer? privacyTimer;
     private UndoState? undo;
+    // Some editors (Windows 11 Notepad) move focus to another element of their window right after a paste. That hop
+    // must not lose the undo: it is kept here and still verified against the text and caret when used.
+    private (UndoState State, long At)? undoAcrossFocusHop;
     private readonly List<PendingWord> pendingWords = new(4);
     private readonly bool allowOwnProcess;
     private string currentApp = "";
@@ -170,6 +173,7 @@ public sealed class KeyboardService : IDisposable
                 fresh, currentScintilla, window == tracked.Focus, eventClass == "ListBox", sameProcess, eventAncestorIsWindow);
             if (IgnoreScintillaFocus(notice))
             { Trace(notice.EventIsListBox ? "scintilla_autocomplete_focus" : "repeated_scintilla_focus"); return; }
+            if (undo != null && current.Window == tracked.Window) undoAcrossFocusHop = (undo, Environment.TickCount64);
             Trace("focus_reset"); Reset(); allowed = false; awaitingPermission = true;
         }
     }
@@ -267,7 +271,7 @@ public sealed class KeyboardService : IDisposable
                 bool pendingPermission = !permittedNow && Running && !denied && (awaitingPermission || permitted != focus || !fresh);
                 if (!permittedNow && !pendingPermission)
                 {
-                    word.Clear(); undo = null; pendingWords.Clear(); recentWords.Clear(); incomplete = boundary is not (0x20 or 0x0D or 0x09); return Win32.CallNextHookEx(keyboardHook, code, message, data);
+                    word.Clear(); undo = null; undoAcrossFocusHop = null; pendingWords.Clear(); recentWords.Clear(); incomplete = boundary is not (0x20 or 0x0D or 0x09); return Win32.CallNextHookEx(keyboardHook, code, message, data);
                 }
                 if (pendingPermission && Interlocked.CompareExchange(ref probeKick, 1, 0) == 0)
                     ThreadPool.QueueUserWorkItem(_ => { Volatile.Write(ref probeKick, 0); _ = ProbeFocus(); });
@@ -281,14 +285,14 @@ public sealed class KeyboardService : IDisposable
                         ThreadPool.QueueUserWorkItem(_ => Notice?.Invoke($"Switchcraft не розпізнає розкладку {Win32.LayoutDescription(layout)}, тому набір у ній не виправляється. Підтримуються англійська, українська та російська розкладки."));
                     Reset(); return Win32.CallNextHookEx(keyboardHook, code, message, data);
                 }
-                if (languageContext.ObserveLayout(source)) { word.Clear(); undo = null; pendingWords.Clear(); contextEpoch++; recentWords.Clear(); }
+                if (languageContext.ObserveLayout(source)) { word.Clear(); undo = null; undoAcrossFocusHop = null; pendingWords.Clear(); contextEpoch++; recentWords.Clear(); }
                 if (Win32.Down(0x11) || Win32.Down(0x12) || Win32.Down(0x5B) || Win32.Down(0x5C))
                 {
                     word.Clear(); contextEpoch++; pendingWords.Clear(); languageContext.Reset(); recentWords.Clear();
-                    if (!HotkeyRegistry.Matches(settings.Value.Hotkeys["undo"], key.Vk)) undo = null;
+                    if (!HotkeyRegistry.Matches(settings.Value.Hotkeys["undo"], key.Vk)) { undo = null; undoAcrossFocusHop = null; }
                     return Win32.CallNextHookEx(keyboardHook, code, message, data);
                 }
-                undo = null;
+                undo = null; undoAcrossFocusHop = null;
                 if (key.Vk == 8) { pendingWords.Clear(); contextEpoch++; if (word.Length > 0) word.Length--; else { incomplete = true; recentWords.Clear(); } return Win32.CallNextHookEx(keyboardHook, code, message, data); }
                 if (boundary is 0x20 or 0x0D or 0x09)
                 {
@@ -350,6 +354,14 @@ public sealed class KeyboardService : IDisposable
             }
         }
         return false;
+    }
+    // Diagnostics only: which condition of Current() failed, as categories (never text or handles).
+    private string StaleReason(long id, (IntPtr Window, IntPtr Focus) focus, bool manual)
+    {
+        lock (gate)
+            return string.Join(",", new[] { disposed ? "disposed" : "", !(manual ? hookActive : Running) ? "stopped" : "", id != sequence ? "keys" : "",
+                focus != Win32.Focus() ? "focus" : "", !allowed ? (awaitingPermission ? "pending" : "denied") : "", permitted != focus ? "unprobed" : "",
+                Environment.TickCount64 - permissionTime > 650 ? "expired" : "", Win32.ModifiersDown ? "modifiers" : "" }.Where(x => x.Length > 0));
     }
     private bool Current(long id, (IntPtr Window, IntPtr Focus) focus, bool manual = false)
     {
@@ -533,7 +545,7 @@ public sealed class KeyboardService : IDisposable
                                     if (Current(job.Sequence, job.Focus))
                                     {
                                         recentWords.Clear();
-                                        if (job.Boundary != "\n") undo = new(after, originalTail, job.Source, result.Original, job.Boundary);
+                                        if (job.Boundary != "\n") { undo = new(after, originalTail, job.Source, result.Original, job.Boundary); undoAcrossFocusHop = null; }
                                     }
                                 }
                                 // Earlier corrections must not change the layout of
@@ -566,13 +578,15 @@ public sealed class KeyboardService : IDisposable
         Volatile.Write(ref lastReplayed, 0);
         try
         {
-            if (!Valid()) { Trace("replace_abort:stale"); return null; }
+            if (!Valid()) { Trace("replace_abort:stale:" + StaleReason(id, before.Focus, manual)); return null; }
+            // Hold the user's next keys from the start: a busy clipboard must not let them make this word stale.
+            ownsHold = HoldKeys(); long holdStart = Environment.TickCount64;
             if (!before.Scintilla)
             {
                 clipboard = await ClipboardLease.Acquire(replacement, Valid);
-                if (clipboard == null) { Trace("replace_abort:clipboard"); Status?.Invoke("Буфер обміну зайнятий — заміну пропущено."); return null; }
+                if (clipboard == null) { Trace("replace_abort:clipboard:" + ClipboardLease.LastFailure); Status?.Invoke("Буфер обміну зайнятий — заміну пропущено."); return null; }
             }
-            ownsHold = HoldKeys(); long holdStart = Environment.TickCount64; selecting = true;
+            selecting = true;
             if (!Valid() || !await editor.SelectIfCurrent(before, Valid)) { Trace(Valid() ? "replace_abort:select" : "replace_abort:stale_select"); return null; }
             // Never hold the hook's gate during SendInput: external input can
             // otherwise wait for this lock while SendInput waits for the hook.
@@ -674,9 +688,16 @@ public sealed class KeyboardService : IDisposable
         if (!await operation.WaitAsync(0)) return;
         try
         {
-            UndoState? saved; lock (gate) { saved = undo; undo = null; word.Clear(); }
+            UndoState? saved;
+            lock (gate)
+            {
+                saved = undo ?? (undoAcrossFocusHop is { } hop && Environment.TickCount64 - hop.At < 10_000 && hop.State.Snapshot.Focus.Window == Win32.Focus().Window ? hop.State : null);
+                undo = null; undoAcrossFocusHop = null; word.Clear();
+            }
             if (saved == null) { Status?.Invoke("Немає виправлення для скасування."); return; }
             if (!await WaitModifiersAsync()) return;
+            if (!await FieldReadyAsync(saved.Snapshot.Focus) && !(await editor.RefocusField(saved.Snapshot) && await FieldReadyAsync(saved.Snapshot.Focus)))
+            { Status?.Invoke("Текст або позиція курсора змінилися — скасування пропущено."); return; }
             long id; lock (gate) id = sequence;
             var after = await ReplaceVerified(saved.Snapshot, saved.Original + saved.Boundary, id, manual: true);
             if (after == null) { Status?.Invoke("Текст або позиція курсора змінилися — скасування пропущено."); return; }
@@ -686,6 +707,17 @@ public sealed class KeyboardService : IDisposable
             Status?.Invoke("Останнє виправлення скасовано.");
         }
         finally { operation.Release(); }
+    }
+    /// <summary>After a hotkey, Alt can briefly move focus to the window menu (Windows 11 Notepad), and the field is then
+    /// checked again. Waits until that same field has focus and is allowed, never longer than 0.8 s.</summary>
+    private async Task<bool> FieldReadyAsync((IntPtr Window, IntPtr Focus) focus)
+    {
+        for (long deadline = Environment.TickCount64 + 800; Environment.TickCount64 < deadline; await Task.Delay(20))
+        {
+            lock (gate) if (!disposed && focus == Win32.Focus() && allowed && permitted == focus && Environment.TickCount64 - permissionTime <= 650) return true;
+            _ = ProbeFocus();
+        }
+        return false;
     }
     public static async Task<bool> WaitModifiersAsync()
     {
@@ -698,7 +730,7 @@ public sealed class KeyboardService : IDisposable
         try
         {
             var focus = Win32.Focus();
-            if (!await WaitModifiersAsync() || focus != Win32.Focus()) return;
+            if (!await WaitModifiersAsync() || !await FieldReadyAsync(focus)) return;
             Reset(); long id; lock (gate) id = sequence;
             if (!Current(id, focus, manual: true)) return;
             var before = await editor.Capture(focus);
