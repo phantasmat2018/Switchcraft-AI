@@ -79,7 +79,7 @@ public sealed class TypeSafeDetector : IDisposable
             cancellation.ThrowIfCancellationRequested();
             if (currentRevision != Volatile.Read(ref revision)) return null;
             if (!test) { if (cache.Count >= 64) cache.Clear(); cache[cacheKey] = answer; }
-            Volatile.Write(ref status, !answer.Certain ? "TypeSafe не впевнений" : answer.Choice == "keep" ? "TypeSafe · текст збережено" : "TypeSafe · " + answer.Choice.ToUpperInvariant());
+            Volatile.Write(ref status, !answer.Certain ? "TypeSafe не впевнений" : "TypeSafe · API працює");
             return answer;
         }
         catch (OperationCanceledException) when (!cancellation.IsCancellationRequested)

@@ -32,7 +32,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         // The shown version always comes from the build itself, never from text typed into the layout.
-        SidebarVersion.Text = "SWITCHCRAFT  /  " + AppVersion; AboutTitle.Text += " " + AppVersion;
+        SidebarVersion.Text = "SWITCHCRAFT AI  /  " + AppVersion; AboutTitle.Text += " " + AppVersion;
         UseLayoutRounding = true; SnapsToDevicePixels = true;
         System.Windows.Media.TextOptions.SetTextFormattingMode(this, System.Windows.Media.TextFormattingMode.Display);
         System.Windows.Media.TextOptions.SetTextRenderingMode(this, System.Windows.Media.TextRenderingMode.Grayscale);
@@ -40,6 +40,7 @@ public partial class MainWindow : Window
         Width = Math.Min(1180, SystemParameters.WorkArea.Width - 30);
         foreach (var (box, hint) in new[] { (RuleSearch, "Пошук правил…"), (PairSource, "Що замінити"), (PairTarget, "На що замінити"), (NeverWord, "Слово-виняток"), (ExcludedName, "Наприклад, Code.exe"), (SourceText, "Вставте або введіть текст…") })
         { box.Style = (Style)FindResource("Watermark"); box.Tag = hint; }
+        StateChanged += (_, _) => UpdateWindowState(); UpdateWindowState();
         ready = true;
         HistoryList.ItemsSource = Host.History;
         StartMinimized.IsChecked = Store.Value.StartMinimized; SwitchLayoutCheck.IsChecked = Store.Value.SwitchLayout;
@@ -56,6 +57,7 @@ public partial class MainWindow : Window
         {
             hotkeys = new HotkeyRegistry((HwndSource)PresentationSource.FromVisual(this));
             hotkeys.Pressed += HandleHotkey; ApplyHotkeys();
+            ((HwndSource)PresentationSource.FromVisual(this)).AddHook(WindowMessage);
         };
         Closing += (_, e) => { e.Cancel = true; Hide(); };
         Host.Exit += (_, _) => localSetup?.Cancel();
@@ -77,7 +79,12 @@ public partial class MainWindow : Window
         AutoDescription.Text = running ? "Допомагає у фоновому режимі" : Host.Keyboard.PausedUntil > DateTime.Now ? "Пауза до " + Host.Keyboard.PausedUntil.Value.ToString("HH:mm") : "Увімкніть, коли знадобиться допомога";
         if (Host.Keyboard.Health.Length > 0) { StateLabel.Text = "●  Потрібна увага"; AutoDescription.Text = Host.Keyboard.Health; }
         CorrectionCount.Text = Host.SessionCorrections.ToString();
+        CorrectionLabel.Text = Plural(Host.SessionCorrections, "виправлення", "виправлення", "виправлень") + " за сесію";
         LanguageCount.Text = Store.Value.Languages.Count.ToString();
+        LanguageCountLabel.Text = Plural(Store.Value.Languages.Count, "мова", "мови", "мов") + " у вашому просторі";
+        bool paused = Host.Keyboard.SessionPaused || Host.Keyboard.PausedUntil > DateTime.Now;
+        PauseButton.Content = paused ? "Продовжити роботу" : "Пауза на 15 хв";
+        ClearHistoryButton.Visibility = Host.History.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
         FooterLanguages.Text = string.Join("   /   ", Store.Value.Languages.Select(x => x == "uk" ? "УК" : x.ToUpperInvariant()));
         HistoryEmpty.Visibility = Host.History.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         HistoryEmpty.Text = Store.Value.KeepHistory ? "Поки що тихо. Ваші виправлення з’являться тут." : "Історію вимкнено в налаштуваннях.";
@@ -89,6 +96,28 @@ public partial class MainWindow : Window
     }
     private void Minimize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
     private void Maximize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+    /// <summary>Maximized, the window fills the work area (see WindowMessage) without its own border; the button shows
+    /// and says what it will do.</summary>
+    private void UpdateWindowState()
+    {
+        bool maximized = WindowState == WindowState.Maximized;
+        if (Content is System.Windows.Controls.Border root) root.BorderThickness = new Thickness(maximized ? 0 : 1);
+        string label = maximized ? "Відновити розмір" : "Розгорнути";
+        MaximizeButton.Content = maximized ? "\uE923" : "\uE922"; MaximizeButton.ToolTip = label;
+        System.Windows.Automation.AutomationProperties.SetName(MaximizeButton, label);
+    }
+    private static IntPtr WindowMessage(IntPtr window, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
+    {
+        // WM_GETMINMAXINFO: without a system frame Windows would maximize over the taskbar and cut off the status bar.
+        if (message == 0x0024) Win32.FitMaximizedToWorkArea(window, lParam);
+        return IntPtr.Zero;
+    }
+    /// <summary>Ukrainian plural: 1 виправлення, 2 виправлення, 5 виправлень (11–14 take the "many" form).</summary>
+    internal static string Plural(long count, string one, string few, string many)
+    {
+        long n = Math.Abs(count) % 100, last = n % 10;
+        return n is >= 11 and <= 14 ? many : last == 1 ? one : last is >= 2 and <= 4 ? few : many;
+    }
     private void Close_Click(object sender, RoutedEventArgs e) => Hide();
     private void Enabled_Click(object sender, RoutedEventArgs e)
     {
@@ -130,42 +159,97 @@ public partial class MainWindow : Window
     {
         try
         {
+            if (SourceText.Text.Length == 0) { ShowStatus("Введіть або вставте текст для перетворення."); SourceText.Focus(); return; }
             var target = (TargetLanguage.SelectedItem as ComboBoxItem)?.Tag?.ToString();
             ResultText.Text = target == "correct" ? Host.Engine.CorrectText(SourceText.Text) : Host.Engine.Convert(SourceText.Text, target == "auto" ? null : target).Text;
-            ShowStatus($"Перетворено {SourceText.Text.Length:N0} символів.");
+            ShowStatus($"Перетворено {SourceText.Text.Length:N0} {Plural(SourceText.Text.Length, "символ", "символи", "символів")}.");
         }
         catch (Exception ex) { ShowStatus(ex.Message); }
     }
-    private void Paste_Click(object sender, RoutedEventArgs e) { try { if (Clipboard.ContainsText()) SourceText.Text = Clipboard.GetText()[..Math.Min(Clipboard.GetText().Length, 100_000)]; } catch { ShowStatus("Буфер обміну зайнятий."); } }
-    private void Copy_Click(object sender, RoutedEventArgs e) { try { if (ResultText.Text.Length > 0) { Clipboard.SetText(ResultText.Text); ShowStatus("Результат скопійовано."); } } catch { ShowStatus("Буфер обміну зайнятий."); } }
+    private void Paste_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (!Clipboard.ContainsText()) { ShowStatus("У буфері обміну немає тексту."); return; }
+            string text = Clipboard.GetText(); SourceText.Text = text[..Math.Min(text.Length, 100_000)];
+            ShowStatus(text.Length > 100_000 ? "Вставлено перші 100 000 символів." : "Текст вставлено.");
+        }
+        catch { ShowStatus("Буфер обміну зайнятий."); }
+    }
+    private void Copy_Click(object sender, RoutedEventArgs e) { try { if (ResultText.Text.Length == 0) { ShowStatus("Немає результату для копіювання. Спочатку натисніть «Перетворити»."); return; } Clipboard.SetText(ResultText.Text); ShowStatus("Результат скопійовано."); } catch { ShowStatus("Буфер обміну зайнятий."); } }
     private void RefreshLanguages()
     {
         string? selected = (LanguageList.SelectedItem as LanguageRow)?.Code;
         var order = Store.Value.Languages.Concat(new[] { "en", "uk", "ru" }).Distinct();
-        var rows = order.Select((code, i) => new LanguageRow(code, $"{i + 1:00}    {LanguageName(code)}    ·    {(Store.Value.Languages.Contains(code) ? "активна" : "вимкнена")}" + (Win32.LayoutFor(code) == IntPtr.Zero ? "   /   розкладку не встановлено" : ""))).ToList();
+        string State(string code) => Store.Value.Languages.IndexOf(code) switch { 0 => "активна, головна", > 0 => "активна", _ => "вимкнена" };
+        var rows = order.Select((code, i) => new LanguageRow(code, $"{i + 1:00}    {LanguageName(code)}    ·    {State(code)}" + (Win32.LayoutFor(code) == IntPtr.Zero ? "   /   розкладку не встановлено" : ""))).ToList();
         LanguageList.ItemsSource = rows; LanguageList.SelectedItem = rows.FirstOrDefault(x => x.Code == selected) ?? rows.FirstOrDefault();
         RefreshStatus();
     }
     private void MoveLanguage(int direction)
     {
-        if (LanguageList.SelectedItem is not LanguageRow row) return;
+        if (LanguageList.SelectedItem is not LanguageRow row) { ShowStatus("Виберіть мову в списку."); return; }
         int index = Store.Value.Languages.IndexOf(row.Code), next = index + direction;
-        if (index <= 0 || next <= 0 || next >= Store.Value.Languages.Count) return;
+        if (index < 0) { ShowStatus("Спочатку ввімкніть цю мову."); return; }
+        if (next < 0 || next >= Store.Value.Languages.Count) return;
         (Store.Value.Languages[index], Store.Value.Languages[next]) = (Store.Value.Languages[next], Store.Value.Languages[index]);
         Store.Save(); Host.Engine.Reload(); Host.Keyboard.Reset(); RefreshLanguages(); UpdateQuick();
+        ShowStatus(index == 0 || next == 0 ? "Головна мова: " + LanguageName(Store.Value.Languages[0]) + "." : "Порядок мов змінено.");
     }
     private void LanguageUp_Click(object sender, RoutedEventArgs e) => MoveLanguage(-1);
     private void LanguageDown_Click(object sender, RoutedEventArgs e) => MoveLanguage(1);
     private void LanguageToggle_Click(object sender, RoutedEventArgs e)
     {
-        if (LanguageList.SelectedItem is not LanguageRow row || row.Code == "en") { ShowStatus("English є базовою мовою й залишається активною."); return; }
+        if (LanguageList.SelectedItem is not LanguageRow row) { ShowStatus("Виберіть мову в списку."); return; }
+        var (name, accusative) = LanguageForms(row.Code);
         if (Store.Value.Languages.Contains(row.Code))
         {
             if (Store.Value.Languages.Count <= 2) { ShowStatus("Залиште принаймні дві активні мови."); return; }
-            Store.Value.Languages.Remove(row.Code);
+            if (Store.Value.Languages[0] == row.Code)
+            {
+                // The primary language goes: one of the remaining active languages takes its place.
+                var primary = AskPrimaryLanguage(row.Code, Store.Value.Languages.Where(x => x != row.Code).ToList());
+                if (primary == null) { ShowStatus(char.ToUpper(name[0]) + name[1..] + " залишається активною й головною."); return; }
+                Store.Value.Languages.Remove(row.Code); Store.Value.Languages.Remove(primary); Store.Value.Languages.Insert(0, primary);
+                ShowStatus(char.ToUpper(accusative[0]) + accusative[1..] + " вимкнено. Головна мова: " + LanguageName(primary) + ".");
+            }
+            else { Store.Value.Languages.Remove(row.Code); ShowStatus(char.ToUpper(accusative[0]) + accusative[1..] + " вимкнено."); }
         }
-        else Store.Value.Languages.Add(row.Code);
+        else { Store.Value.Languages.Add(row.Code); ShowStatus(char.ToUpper(accusative[0]) + accusative[1..] + " увімкнено."); }
         Store.Save(); Host.Engine.Reload(); Host.Keyboard.Reset(); RefreshLanguages(); UpdateQuick();
+    }
+    private static (string Name, string Accusative) LanguageForms(string code) => code switch { "en" => ("англійська", "англійську"), "uk" => ("українська", "українську"), _ => ("російська", "російську") };
+    /// <summary>Asks which of the remaining active languages becomes the primary one; null when the user keeps the current one.</summary>
+    private string? AskPrimaryLanguage(string leaving, IReadOnlyList<string> candidates)
+    {
+        string? chosen = null;
+        var dialog = new Window
+        {
+            Owner = this, Title = "Головна мова", WindowStyle = WindowStyle.None, ResizeMode = ResizeMode.NoResize, ShowInTaskbar = false,
+            SizeToContent = SizeToContent.WidthAndHeight, WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            Background = (System.Windows.Media.Brush)FindResource("Panel")
+        };
+        var panel = new StackPanel { Margin = new Thickness(28, 24, 28, 22), Width = 440 };
+        panel.Children.Add(new TextBlock { Text = "Оберіть головну мову", FontSize = 19, FontWeight = FontWeights.SemiBold, Margin = new Thickness(0, 0, 0, 10) });
+        panel.Children.Add(new TextBlock
+        {
+            Text = $"{char.ToUpper(LanguageForms(leaving).Name[0])}{LanguageForms(leaving).Name[1..]} більше не буде активною. Головна мова стоїть першою у списку й має пріоритет, коли неоднозначне слово перетворюється вручну.",
+            Style = (Style)FindResource("MutedText"), Margin = new Thickness(0, 0, 0, 20)
+        });
+        var choices = new WrapPanel();
+        foreach (var code in candidates)
+        {
+            var choice = new Button { Content = LanguageName(code), Style = (Style)FindResource("Primary"), MinWidth = 150, Margin = new Thickness(0, 0, 10, 10) };
+            System.Windows.Automation.AutomationProperties.SetName(choice, "Зробити головною: " + LanguageName(code));
+            choice.Click += (_, _) => { chosen = code; dialog.DialogResult = true; };
+            choices.Children.Add(choice);
+        }
+        panel.Children.Add(choices);
+        panel.Children.Add(new Button { Content = "Скасувати", IsCancel = true, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, 10, 0, 0) });
+        dialog.Content = new System.Windows.Controls.Border { BorderBrush = (System.Windows.Media.Brush)FindResource("Line"), BorderThickness = new Thickness(1), Child = panel };
+        dialog.MouseLeftButtonDown += (_, e) => { if (e.ButtonState == MouseButtonState.Pressed) dialog.DragMove(); };
+        dialog.Loaded += (_, _) => (choices.Children[0] as Button)?.Focus();
+        return dialog.ShowDialog() == true ? chosen : null;
     }
     private void BuildHotkeys()
     {
@@ -176,7 +260,7 @@ public partial class MainWindow : Window
             var row = new Grid { Margin = new Thickness(0, 8, 0, 8) };
             row.ColumnDefinitions.Add(new ColumnDefinition()); row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(235) });
             row.Children.Add(new TextBlock { Text = item.Value, VerticalAlignment = VerticalAlignment.Center });
-            var box = new TextBox { Text = Store.Value.Hotkeys.GetValueOrDefault(item.Key, ""), IsReadOnly = true, Tag = item.Key, ToolTip = "Натисніть комбінацію. Delete — прибрати." };
+            var box = new TextBox { Text = Store.Value.Hotkeys.GetValueOrDefault(item.Key, ""), IsReadOnly = true, Style = (Style)FindResource("Watermark"), Tag = "Не призначено", ToolTip = "Натисніть комбінацію. Delete — прибрати, Esc — повернути збережену." };
             System.Windows.Automation.AutomationProperties.SetName(box, item.Value);
             box.GotKeyboardFocus += (_, _) => hotkeys?.Apply(new());
             box.LostKeyboardFocus += (_, _) => ApplyHotkeys();
@@ -188,7 +272,7 @@ public partial class MainWindow : Window
         var box = (TextBox)sender; var key = e.Key == Key.System ? e.SystemKey : e.Key;
         if (key == Key.Tab) return;
         e.Handled = true;
-        if (key == Key.Escape) { box.Text = Store.Value.Hotkeys.GetValueOrDefault((string)box.Tag, ""); return; }
+        if (key == Key.Escape) { box.Text = Store.Value.Hotkeys.GetValueOrDefault(hotkeyBoxes.First(x => x.Value == box).Key, ""); return; }
         if (key == Key.Delete || key == Key.Back && Keyboard.Modifiers == ModifierKeys.None) { box.Text = ""; return; }
         if (key is Key.LeftCtrl or Key.RightCtrl or Key.LeftAlt or Key.RightAlt or Key.LeftShift or Key.RightShift or Key.LWin or Key.RWin) return;
         var mods = Keyboard.Modifiers;
@@ -202,9 +286,9 @@ public partial class MainWindow : Window
         var values = hotkeyBoxes.ToDictionary(x => x.Key, x => x.Value.Text);
         var duplicate = values.Values.Where(x => x.Length > 0).GroupBy(x => x, StringComparer.OrdinalIgnoreCase).FirstOrDefault(x => x.Count() > 1);
         if (duplicate != null) { ShowStatus("Комбінація повторюється: " + duplicate.Key); return; }
-        Store.Value.Hotkeys = values; Store.Save(); ApplyHotkeys(); ShowStatus("Гарячі клавіші збережено. " + HotkeyWarning.Text);
+        Store.Value.Hotkeys = values; Store.Save(); ApplyHotkeys(); ShowStatus(("Гарячі клавіші збережено. " + HotkeyWarning.Text).Trim());
     }
-    private void ResetHotkeys_Click(object sender, RoutedEventArgs e) { Store.Value.Hotkeys = new Preferences().Hotkeys; Store.Save(); BuildHotkeys(); ApplyHotkeys(); }
+    private void ResetHotkeys_Click(object sender, RoutedEventArgs e) { Store.Value.Hotkeys = new Preferences().Hotkeys; Store.Save(); BuildHotkeys(); ApplyHotkeys(); if (HotkeyWarning.Text.Length == 0) ShowStatus("Стандартні гарячі клавіші відновлено."); }
     private void ApplyHotkeys()
     {
         var failures = hotkeys?.Apply(Store.Value.Hotkeys) ?? new();
@@ -227,7 +311,7 @@ public partial class MainWindow : Window
         string query = RuleSearch.Text.Trim();
         PairsList.ItemsSource = Store.Pairs.Select(x => new PairRow(x.Key, x.Value?.GetValue<string>() ?? "")).Where(x => x.Label.Contains(query, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.Source).ToList();
         NeverList.ItemsSource = Store.Never.Select(x => x!.GetValue<string>()).Where(x => x.Contains(query, StringComparison.OrdinalIgnoreCase)).OrderBy(x => x).ToList();
-        RulesCount.Text = $"{Store.Pairs.Count} правил заміни · {Store.Never.Count} слів-винятків";
+        RulesCount.Text = $"{Store.Pairs.Count} {Plural(Store.Pairs.Count, "правило", "правила", "правил")} заміни · {Store.Never.Count} {Plural(Store.Never.Count, "слово-виняток", "слова-винятки", "слів-винятків")}";
     }
     private void SaveRules() { Store.SaveRules(); Host.Engine.Reload(); Host.Keyboard.Reset(); RefreshRules(); UpdateQuick(); ShowStatus("Правила збережено й застосовано."); }
     private void AddPair_Click(object sender, RoutedEventArgs e)
@@ -241,6 +325,7 @@ public partial class MainWindow : Window
     }
     private void RemovePair_Click(object sender, RoutedEventArgs e)
     {
+        if (PairsList.SelectedItem is not PairRow) { ShowStatus("Виберіть правило в списку, щоб видалити його."); return; }
         if (PairsList.SelectedItem is PairRow row) { Store.Pairs.Remove(row.Source); Store.UserPairs.Remove(row.Source); Store.Rules["manual_overrides"]!["exact_pairs_meta"]?.AsObject().Remove(row.Source); SaveRules(); }
     }
     private void AddNever_Click(object sender, RoutedEventArgs e)
@@ -250,6 +335,7 @@ public partial class MainWindow : Window
     }
     private void RemoveNever_Click(object sender, RoutedEventArgs e)
     {
+        if (NeverList.SelectedItem is not string) { ShowStatus("Виберіть слово в списку, щоб видалити його."); return; }
         if (NeverList.SelectedItem is string word) { var item = Store.Never.FirstOrDefault(x => x?.GetValue<string>() == word); if (item != null) Store.Never.Remove(item); SaveRules(); }
     }
     private void Import_Click(object sender, RoutedEventArgs e)
@@ -264,7 +350,11 @@ public partial class MainWindow : Window
         if (dialog.ShowDialog(this) != true) return;
         try { Store.Export(dialog.FileName); ShowStatus("Правила експортовано."); } catch (Exception ex) { ShowStatus("Експорт не виконано: " + ex.Message); }
     }
-    public void RefreshExcluded() => ExcludedList.ItemsSource = Store.Value.ExcludedApps.OrderBy(x => x).ToList();
+    public void RefreshExcluded()
+    {
+        ExcludedList.ItemsSource = Store.Value.ExcludedApps.OrderBy(x => x).ToList();
+        ExcludedEmpty.Visibility = Store.Value.ExcludedApps.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
     private void AddExcluded(string value)
     {
         string name = Path.GetFileName(value.Trim());
@@ -274,7 +364,11 @@ public partial class MainWindow : Window
     }
     private void AddExcluded_Click(object sender, RoutedEventArgs e) => AddExcluded(ExcludedName.Text);
     private void BrowseExcluded_Click(object sender, RoutedEventArgs e) { var dialog = new OpenFileDialog { Filter = "Програми Windows (*.exe)|*.exe" }; if (dialog.ShowDialog(this) == true) AddExcluded(dialog.FileName); }
-    private void RemoveExcluded_Click(object sender, RoutedEventArgs e) { if (ExcludedList.SelectedItem is string value) { Store.Value.ExcludedApps.Remove(value); Store.Save(); RefreshExcluded(); } }
+    private void RemoveExcluded_Click(object sender, RoutedEventArgs e)
+    {
+        if (ExcludedList.SelectedItem is not string value) { ShowStatus("Виберіть програму в списку, щоб видалити її."); return; }
+        Store.Value.ExcludedApps.Remove(value); Store.Save(); Host.Keyboard.Reset(); RefreshExcluded(); ShowStatus("Виняток видалено: " + value);
+    }
     private void Preference_Click(object sender, RoutedEventArgs e)
     {
         Store.Value.StartMinimized = StartMinimized.IsChecked == true; Store.Value.SwitchLayout = SwitchLayoutCheck.IsChecked == true;
@@ -507,7 +601,11 @@ public partial class MainWindow : Window
         catch (Exception ex) { LaunchAtLogin.IsChecked = false; ShowStatus("Не вдалося змінити автозапуск: " + ex.Message); }
     }
     private void OpenSettingsFolder_Click(object sender, RoutedEventArgs e) => Process.Start(new ProcessStartInfo(Store.DirectoryPath) { UseShellExecute = true });
-    private void Pause_Click(object sender, RoutedEventArgs e) { Host.Keyboard.Pause(15); RefreshStatus(); ShowStatus("Виправлення призупинено на 15 хвилин."); }
+    private void Pause_Click(object sender, RoutedEventArgs e)
+    {
+        if (Host.Keyboard.SessionPaused || Host.Keyboard.PausedUntil > DateTime.Now) { Host.Keyboard.Resume(); Store.Save(); RefreshStatus(); ShowStatus("Автоматичне виправлення ввімкнено."); return; }
+        Host.Keyboard.Pause(15); RefreshStatus(); ShowStatus("Виправлення призупинено на 15 хвилин.");
+    }
     private void Quit_Click(object sender, RoutedEventArgs e) => Host.Quit();
     private async void CheckUpdate_Click(object sender, RoutedEventArgs e)
     {

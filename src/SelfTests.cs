@@ -119,6 +119,16 @@ public static class SelfTests
             store.Value.Languages.Remove("ru"); store.Save(); engine.Reload();
             Check("Disabled Russian language is not selected", !engine.Evaluate("Кіргізстан", "uk").Changed && !engine.Evaluate("ghbdtn", "en").Changed);
             store.Value.Languages.Add("ru"); store.Save(); engine.Reload();
+            store.Value.Languages = new() { "uk", "ru" }; store.Save(); engine.Reload();
+            Check("Without English the English layout is still corrected into the active languages", engine.Evaluate("ghbdsn", "en").Text == "привіт" && engine.Evaluate("ghbdtn", "en").Text == "привет");
+            Check("Without English nothing is converted to English", !engine.Evaluate("руддщ", "uk").Changed && engine.Evaluate("hello", "en").Text == "hello");
+            Check("The primary language leads an ambiguous manual conversion", engine.Convert("lfdfq", null, "en").Target == "uk");
+            store.Value.Languages = new() { "ru", "uk" }; store.Save(); engine.Reload();
+            Check("A Russian primary language leads an ambiguous manual conversion", engine.Convert("lfdfq", null, "en").Target == "ru");
+            Check("Settings keep a primary language other than English", new SettingsStore(store.DirectoryPath).Value.Languages.SequenceEqual(new[] { "ru", "uk" }));
+            store.Value.Languages = new() { "ru" }; store.Save();
+            Check("A single active language is completed to two", new SettingsStore(store.DirectoryPath).Value.Languages.SequenceEqual(new[] { "ru", "en" }));
+            store.Value.Languages = new() { "en", "uk", "ru" }; store.Save(); engine.Reload();
             var context = new TypingContext(); context.ObserveLayout("uk"); context.Observe("ru");
             Check("One word cannot force ambiguous context", context.Language == ""); context.Observe("ru");
             Check("Two observations do not force an ambiguous word", context.Language == ""); context.Observe("ru");

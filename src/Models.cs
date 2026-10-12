@@ -77,9 +77,10 @@ public sealed class SettingsStore
         if (string.IsNullOrWhiteSpace(Value.LayaModelPath)) Value.LayaModelPath = new Preferences().LayaModelPath;
         if (Value.LayaDevice is not ("auto" or "cpu" or "cuda")) Value.LayaDevice = "auto";
         Value.LayaCpuThreads = Math.Clamp(Value.LayaCpuThreads, 0, 8);
+        // The order is the priority; the first active language is the primary one (English by default, but it can be
+        // switched off). At least two languages stay active.
         Value.Languages = (Value.Languages ?? new()).Where(x => x is "en" or "uk" or "ru").Distinct().ToList();
-        Value.Languages.Remove("en"); Value.Languages.Insert(0, "en");
-        if (Value.Languages.Count < 2) Value.Languages.Add("uk");
+        foreach (var fallback in new[] { "en", "uk", "ru" }) if (Value.Languages.Count < 2 && !Value.Languages.Contains(fallback)) Value.Languages.Add(fallback);
         Value.ExcludedApps ??= new();
         Value.Hotkeys ??= new Preferences().Hotkeys;
         foreach (var item in new Preferences().Hotkeys) Value.Hotkeys.TryAdd(item.Key, item.Value);

@@ -87,7 +87,7 @@ public partial class App : Application
                 Shell.RefreshStatus();
             });
             Keyboard.Status += message => Dispatcher.BeginInvoke(() => Shell.ShowStatus(message));
-            Keyboard.Notice += message => Dispatcher.BeginInvoke(() => { Shell.ShowStatus(message); tray?.ShowBalloonTip(8000, "Switchcraft", message, Forms.ToolTipIcon.Info); });
+            Keyboard.Notice += message => Dispatcher.BeginInvoke(() => { Shell.ShowStatus(message); tray?.ShowBalloonTip(8000, "Switchcraft AI", message, Forms.ToolTipIcon.Info); });
             Keyboard.LearnWord += word => Dispatcher.BeginInvoke(() =>
             {
                 try { Store.AddNever(word); Engine.Reload(); Shell.RefreshRules(); Shell.ShowStatus("Слово додано до винятків після скасування."); }
@@ -110,7 +110,7 @@ public partial class App : Application
                 var app = Win32.AppName(hwnd);
                 if (hwnd != IntPtr.Zero && app.Length > 0 && app is not "Switchcraft.exe" and not "explorer.exe") lastExternalWindow = hwnd;
                 Shell.RefreshStatus();
-                if (tray != null) tray.Text = Keyboard.Running ? "Switchcraft • Активний" : "Switchcraft • На паузі";
+                if (tray != null) tray.Text = Keyboard.Running ? "Switchcraft AI • Активний" : "Switchcraft AI • На паузі";
                 if (diagnosticPath != null)
                     try { File.WriteAllText(diagnosticPath, System.Text.Json.JsonSerializer.Serialize(Keyboard.InputDiagnostics())); } catch (IOException) { }
             };
@@ -127,10 +127,10 @@ public partial class App : Application
     private void CreateTray()
     {
         using var stream = GetResourceStream(new Uri("pack://application:,,,/Assets/Switchcraft.ico")).Stream;
-        tray = new Forms.NotifyIcon { Icon = new Icon(stream), Text = "Switchcraft", Visible = true };
+        tray = new Forms.NotifyIcon { Icon = new Icon(stream), Text = "Switchcraft AI", Visible = true };
         var menu = new Forms.ContextMenuStrip { BackColor = Color.FromArgb(25, 28, 35), ForeColor = Color.FromArgb(235, 240, 245), ShowImageMargin = false };
         void Add(string title, Action action) => menu.Items.Add(title, null, (_, _) => Dispatcher.BeginInvoke(action));
-        Add("Відкрити Switchcraft", ShowShell);
+        Add("Відкрити Switchcraft AI", ShowShell);
         Add("Увімкнути / призупинити", () => { if (Keyboard.Running) Keyboard.Pause(); else Keyboard.Resume(); Store.Save(); Shell.RefreshStatus(); });
         Add("Пауза на 15 хвилин", () => { Keyboard.Pause(15); Shell.RefreshStatus(); });
         menu.Items.Add(new Forms.ToolStripSeparator());
@@ -156,7 +156,7 @@ public partial class App : Application
         await System.Threading.Tasks.Task.Delay(250);
         await Keyboard.ConvertSelectionAsync(language);
     }
-    public void ShowShell() { Shell.Show(); Shell.WindowState = WindowState.Normal; Shell.Activate(); }
+    public void ShowShell() { Shell.Show(); if (Shell.WindowState == WindowState.Minimized) Shell.WindowState = WindowState.Normal; Shell.Activate(); }
     public void Quit() { Store?.Save(); Shutdown(); }
     protected override void OnExit(ExitEventArgs e)
     {

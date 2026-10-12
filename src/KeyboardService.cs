@@ -303,7 +303,9 @@ public sealed class KeyboardService : IDisposable
                     ThreadPool.QueueUserWorkItem(_ => { Volatile.Write(ref probeKick, 0); _ = ProbeFocus(); });
                 var source = Win32.LayoutLanguage(focus.Window);
                 if (DiagnosticsEnabled) Interlocked.Increment(ref diagnosticAccepted);
-                if (!settings.Value.Languages.Contains(source))
+                // Typing in the English layout is always followed: with English switched off its words are still corrected
+                // into the active languages (the engine never converts into an inactive one).
+                if (source.Length == 0 || source != "en" && !settings.Value.Languages.Contains(source))
                 {
                     // An unreadable layout must not look like Switchcraft silently failing: say so once per layout.
                     var layout = Win32.GetKeyboardLayout(Win32.GetWindowThreadProcessId(focus.Window, out _));
@@ -737,7 +739,8 @@ public sealed class KeyboardService : IDisposable
     }
     private async Task SwitchLayout(IntPtr window, string language, long id)
     {
-        if (!settings.Value.SwitchLayout || !settings.Value.Languages.Contains(language) || Win32.LayoutFor(language) == IntPtr.Zero) return;
+        // The English layout stays reachable when English is not active (undo, an explicit conversion, a user rule).
+        if (!settings.Value.SwitchLayout || !(settings.Value.Languages.Contains(language) || language == "en") || Win32.LayoutFor(language) == IntPtr.Zero) return;
         lock (gate) { if (id != sequence) { Trace("layout_kept:keys"); return; } languageContext.ExpectLayout(language); }
         Win32.SwitchLayout(window, language);
         for (int i = 0; i < 8; i++) { if (Win32.LayoutLanguage(window) == language) { Trace("layout_switched"); return; } await Task.Delay(15); }

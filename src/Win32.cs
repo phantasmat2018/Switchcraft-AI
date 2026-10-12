@@ -188,4 +188,20 @@ internal static class Win32
         return Send(inputs);
     }
     public static bool Chord(ushort key) => Send(new[] { Key(0x11), Key(key), Key(key, true), Key(0x11, true) });
+    [StructLayout(LayoutKind.Sequential)] private struct MonitorInfo { public int Size; public Rect Monitor, Work; public uint Flags; }
+    [StructLayout(LayoutKind.Sequential)] private struct MinMaxInfo { public int ReservedX, ReservedY, MaxSizeX, MaxSizeY, MaxPositionX, MaxPositionY, MinTrackX, MinTrackY, MaxTrackX, MaxTrackY; }
+    [DllImport("user32.dll")] private static extern IntPtr MonitorFromWindow(IntPtr window, uint flags);
+    [DllImport("user32.dll")] private static extern bool GetMonitorInfo(IntPtr monitor, ref MonitorInfo info);
+    /// <summary>Answers WM_GETMINMAXINFO for a window without a system frame: maximized, it fills the work area of its
+    /// monitor instead of the whole screen, so the taskbar does not cover its bottom edge.</summary>
+    public static void FitMaximizedToWorkArea(IntPtr window, IntPtr minMaxInfo)
+    {
+        var info = new MonitorInfo { Size = Marshal.SizeOf<MonitorInfo>() };
+        IntPtr monitor = MonitorFromWindow(window, 2); // MONITOR_DEFAULTTONEAREST
+        if (monitor == IntPtr.Zero || !GetMonitorInfo(monitor, ref info)) return;
+        var limits = Marshal.PtrToStructure<MinMaxInfo>(minMaxInfo);
+        limits.MaxPositionX = info.Work.Left - info.Monitor.Left; limits.MaxPositionY = info.Work.Top - info.Monitor.Top;
+        limits.MaxSizeX = info.Work.Right - info.Work.Left; limits.MaxSizeY = info.Work.Bottom - info.Work.Top;
+        Marshal.StructureToPtr(limits, minMaxInfo, false);
+    }
 }

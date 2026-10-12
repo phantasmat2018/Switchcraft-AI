@@ -191,7 +191,7 @@ public sealed class LayaDetector : IDisposable
                 }
             }
             SetStatus(snapshot.Revision, answer is not { Certain: true } ? "Laya не впевнена"
-                : answer.Choice == "keep" ? "Laya · текст збережено" : "Laya · " + answer.Choice.ToUpperInvariant());
+                : "Laya · модель працює");
             return answer;
         }
         catch (OperationCanceledException) when (!cancellation.IsCancellationRequested)

@@ -325,6 +325,16 @@ internal static class InputIntegration
                 await Reset(); Win32.SwitchLayout(hwnd, "ru"); await Task.Delay(300); await Type("hello ");
                 Check("English typed in the Russian layout is corrected", field.Text == "hello ", Win32.LayoutLanguage(hwnd) + ": " + field.Text);
             }
+            if (Win32.LayoutFor("uk") != IntPtr.Zero)
+            {
+                // English switched off, Ukrainian primary: the English layout is still followed, nothing becomes English.
+                store.Value.Languages = new() { "uk", "ru" }; store.Save(); engine.Reload();
+                await Reset(); await Type("ghbdsn ");
+                Check("Without English the English layout is still corrected", field.Text == "привіт ", Win32.LayoutLanguage(hwnd) + ": " + field.Text);
+                await Reset(); Win32.SwitchLayout(hwnd, "uk"); await Task.Delay(300); await Type("hello ");
+                Check("Without English nothing is converted to English", field.Text == "руддщ ", Win32.LayoutLanguage(hwnd) + ": " + field.Text);
+                store.Value.Languages = new() { "en", "uk", "ru" }; store.Save(); engine.Reload();
+            }
             keyboard.DiagnosticsEnabled = true; await Reset(); await Type("ptktyt' ;bnj ptktyt "); await Task.Delay(800);
             Check("Folk word missing from the dictionary is converted once its sentence proves Ukrainian", field.Text == "зеленеє жито зелене ", field.Text + " | " + System.Text.Json.JsonSerializer.Serialize(keyboard.InputDiagnostics())); keyboard.DiagnosticsEnabled = false;
             if (Win32.LayoutFor("uk") != IntPtr.Zero && Win32.LayoutFor("ru") != IntPtr.Zero)
