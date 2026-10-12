@@ -42,7 +42,7 @@ public sealed class KeyboardService : IDisposable
     private long diagnosticKeys, diagnosticAccepted, diagnosticJobs, diagnosticCaptures, diagnosticReplacements;
     private readonly Queue<string> diagnosticStages = new();
     public bool DiagnosticsEnabled { get; set; }
-    private void Trace(string stage) { if (DiagnosticsEnabled) lock (gate) { diagnosticStages.Enqueue(stage); while (diagnosticStages.Count > 32) diagnosticStages.Dequeue(); } }
+    private void Trace(string stage) { if (DiagnosticsEnabled) lock (gate) { diagnosticStages.Enqueue(stage); while (diagnosticStages.Count > 96) diagnosticStages.Dequeue(); } }
     private void TraceDecision(string stage, string reason)
     {
         if (!DiagnosticsEnabled) return;
@@ -65,6 +65,7 @@ public sealed class KeyboardService : IDisposable
     private static readonly UIntPtr ReplayTag = new(0x53574352);
     /// <summary>Starts holding user keys; returns false when a hold is already active (its owner releases it).</summary>
     private bool HoldKeys() { lock (holdGate) { if (holdingKeys) return false; heldKeys.Clear(); holdingKeys = true; return true; } }
+    internal bool HoldingKeys => Volatile.Read(ref holdingKeys);
     /// <summary>Replays held keys in order and returns their count. Holding ends only when nothing is left:
     /// a key typed while replaying is held too and sent after the earlier ones, so order is preserved.</summary>
     private int ReleaseKeys()
@@ -93,7 +94,11 @@ public sealed class KeyboardService : IDisposable
     // Some editors (Windows 11 Notepad) move focus to another element of their window right after a paste. That hop
     // must not lose the undo: it is kept here and still verified against the text and caret when used.
     private (UndoState State, long At)? undoAcrossFocusHop;
-    private readonly List<PendingWord> pendingWords = new(4);
+    // Words whose check was interrupted by further typing wait here for the next pause. Their context is still only the
+    // next three words (the detector takes no more), but a fast typist may type several more before pausing: a word stays
+    // until MaxPendingFollowing words (and at most 160 characters) follow it, instead of being dropped after three.
+    private const int MaxPendingFollowing = 8;
+    private readonly List<PendingWord> pendingWords = new(MaxPendingFollowing);
     private readonly bool allowOwnProcess;
     private string currentApp = "";
     private readonly HashSet<string> passwordApps = new(StringComparer.OrdinalIgnoreCase) { "KeePass.exe", "KeePassXC.exe", "1Password.exe", "Bitwarden.exe", "CredentialUIBroker.exe", "LogonUI.exe", "consent.exe" };
@@ -110,6 +115,20 @@ public sealed class KeyboardService : IDisposable
     // SubmitAfter: the user's Enter was held for a wrong-layout web address and is sent after its correction.
     private sealed record WordJob(long Sequence, long Epoch, long Ordinal, (IntPtr Window, IntPtr Focus) Focus, string Original, string Source, string Boundary, string App, long CreatedAt, bool SubmitAfter = false, bool AwaitPermission = false);
     private sealed record PendingWord(WordJob Job, string Context, string Following = "", int Count = 0);
+    private readonly record struct BatchFix(long Ordinal, string Original, string Text, string Target);
+    /// <summary>The attempt's preceding words with the corrections already confirmed in this batch. A word is replaced only
+    /// at its own position, counted back from the attempt (the context holds the words typed right before it).</summary>
+    private static string BatchContext(PendingWord attempt, List<BatchFix> fixes)
+    {
+        if (fixes.Count == 0 || attempt.Context.Length == 0) return attempt.Context;
+        var tokens = attempt.Context.Split(' ');
+        foreach (var fix in fixes)
+        {
+            long index = tokens.Length - (attempt.Job.Ordinal - fix.Ordinal);
+            if (index >= 0 && index < tokens.Length && tokens[index] == fix.Original) tokens[index] = fix.Text;
+        }
+        return string.Join(" ", tokens);
+    }
     private sealed record UndoState(EditorSnapshot Snapshot, string Original, string SourceLanguage, string LearningToken, string Boundary);
     public KeyboardService(NativeEngine engine, SettingsStore settings, bool allowOwnProcess = false, LanguageDetection? detection = null)
     {
@@ -206,11 +225,18 @@ public sealed class KeyboardService : IDisposable
         {
             var focus = Win32.Focus(); var app = Win32.AppName(focus.Window);
             long epoch; lock (gate) epoch = contextEpoch;
-            bool safe = app.Length > 0 && !passwordApps.Contains(app) && !IsExcluded(app) && await editor.IsWritable(focus);
+            bool? writable = app.Length > 0 && !passwordApps.Contains(app) && !IsExcluded(app) ? await editor.IsWritable(focus) : false;
             lock (gate)
             {
-                if (!disposed && epoch == contextEpoch && focus == Win32.Focus())
+                if (!disposed && epoch == contextEpoch && focus == Win32.Focus() && writable == null)
                 {
+                    // No answer is not a denial: keys typed meanwhile wait (and are discarded only if the field is then denied).
+                    // An allowed field keeps its permission until it expires, then its keys wait the same way.
+                    if (permitted != focus || !allowed) { if (!awaitingPermission) Trace("probe_unknown"); awaitingPermission = true; }
+                }
+                else if (!disposed && epoch == contextEpoch && focus == Win32.Focus())
+                {
+                    bool safe = writable == true;
                     bool undecided = awaitingPermission || permitted != focus;
                     // Keys typed into this field while it was being checked belong to it; anything else is stale.
                     if (permitted != focus && tracked != focus || !safe && (allowed || undecided)) { Trace(safe ? "probe_new_field" : "probe_denied"); Reset(); }
@@ -435,7 +461,7 @@ public sealed class KeyboardService : IDisposable
                         // switch already cleared every pending word in the keyboard hook.
                         if (retry.Job.Epoch != job.Epoch || retry.Job.Ordinal + retry.Count + 1 != job.Ordinal
                             || retry.Job.Focus != job.Focus || job.Boundary == "\n"
-                            || retry.Count >= 3 || following.Length > 160 || job.CreatedAt - retry.Job.CreatedAt > 15_000
+                            || retry.Count >= MaxPendingFollowing || following.Length > 160 || job.CreatedAt - retry.Job.CreatedAt > 15_000
                             || !LanguageDetection.Sendable(job.Original)) pendingWords.RemoveAt(i);
                         else
                         {
@@ -465,7 +491,7 @@ public sealed class KeyboardService : IDisposable
                         && LanguageDetection.Sendable(job.Original) && !LanguageDetection.LetterMention(job.Original, recent))
                     {
                         pendingWords.Add(new(job, recent));
-                        if (pendingWords.Count > 4) pendingWords.RemoveAt(0);
+                        if (pendingWords.Count > MaxPendingFollowing) pendingWords.RemoveAt(0);
                     }
                     // Record independently known words before the cancellable HTTP
                     // wait, otherwise continuous typing silently loses this evidence.
@@ -477,7 +503,7 @@ public sealed class KeyboardService : IDisposable
                     }
                 }
                 if (!idle) attempts.Add(new(job, recent));
-                if (!Current(job.Sequence, job.Focus)) continue;
+                if (!Current(job.Sequence, job.Focus)) { Trace("job_stale"); continue; }
                 // An implicit UIA paragraph terminator cannot prove an Enter was
                 // consumed. A second Enter could submit a form.
                 if (job.Boundary == "\n" && Win32.ClassName(job.Focus.Focus) != "Scintilla") continue;
@@ -486,16 +512,23 @@ public sealed class KeyboardService : IDisposable
                 try
                 {
                     if (detection?.UsesAi == true) await Task.Delay(120, cancellation.Token);
+                    Trace("attempts:" + attempts.Count);
+                    // A phrase typed without a pause is corrected here in one batch: later words are judged with the
+                    // corrected spelling (and language) of the earlier ones, not with the wrong-layout text typed.
+                    var batchFixes = new List<BatchFix>(attempts.Count);
                     foreach (var attempt in attempts)
                     {
-                        if (!Current(job.Sequence, job.Focus)) break;
+                        if (!Current(job.Sequence, job.Focus)) { Trace("batch_stale"); break; }
                         bool deferred = attempt.Job.Sequence != job.Sequence;
-                        var result = deferred ? engine.Evaluate(attempt.Job.Original, attempt.Job.Source, context) : local;
+                        string preceding = BatchContext(attempt, batchFixes);
+                        string batchLanguage = batchFixes.Count >= 2 && batchFixes.All(x => x.Target == batchFixes[0].Target)
+                            && batchFixes[0].Target is "uk" or "ru" ? batchFixes[0].Target : context;
+                        var result = deferred || batchLanguage != context ? engine.Evaluate(attempt.Job.Original, attempt.Job.Source, batchLanguage) : local;
                         if (detection?.UsesAi == true)
-                            result = await detection.EvaluateAsync(attempt.Job.Original, attempt.Job.Source, context,
-                                attempt.Context, cancellation.Token, attempt.Following);
+                            result = await detection.EvaluateAsync(attempt.Job.Original, attempt.Job.Source, batchLanguage,
+                                preceding, cancellation.Token, attempt.Following);
                         if (deferred && !result.Changed && engine.ContextLayoutRepair(attempt.Job.Original, attempt.Job.Source,
-                            attempt.Following.Split(' ').Concat(attempt.Context.Split(' ').TakeLast(3))) is { } repaired)
+                            attempt.Following.Split(' ').Concat(preceding.Split(' ').TakeLast(3))) is { } repaired)
                             result = repaired;
                         cancellation.Token.ThrowIfCancellationRequested();
                         TraceDecision("decision", result.Reason);
@@ -505,7 +538,7 @@ public sealed class KeyboardService : IDisposable
                         {
                             lock (gate) pendingWords.RemoveAll(x => x.Job.Sequence == attempt.Job.Sequence);
                         }
-                        if (deferred && !result.Changed) continue;
+                        if (deferred && !result.Changed) { Trace("deferred_kept"); continue; }
                         string originalTail = attempt.Job.Original + (attempt.Following.Length == 0 ? "" : " " + attempt.Following);
                         string replacementTail = result.Text + (attempt.Following.Length == 0 ? "" : " " + attempt.Following);
                         if (!Current(job.Sequence, job.Focus) || !await operation.WaitAsync(0)) break;
@@ -533,10 +566,17 @@ public sealed class KeyboardService : IDisposable
                             if (result.Changed)
                             {
                                 var delimiter = before.Text.EndsWith("\r\n") ? "\r\n" : job.Boundary;
-                                var after = await ReplaceVerified(before, replacementTail + delimiter, job.Sequence);
+                                // The layout follows the correction, also when the user kept typing: the switch happens while
+                                // those keys are held, so they are replayed in the corrected layout. An earlier word switches
+                                // only then (the rest of this batch is skipped once the user types; otherwise its last word
+                                // decides), never while a word is still being typed (idle), and never over a valid word after it.
+                                bool switchLayout = !idle && (!deferred || local.Changed || !engine.KnownLanguages(job.Original).Contains(job.Source));
+                                var after = await ReplaceVerified(before, replacementTail + delimiter, job.Sequence,
+                                    layout: switchLayout ? result.Target : null, layoutOnlyWhenTyping: deferred);
                                 if (after == null) { Trace("replacement_skipped"); continue; }
                                 if (DiagnosticsEnabled) Interlocked.Increment(ref diagnosticReplacements);
                                 Trace("replacement_confirmed");
+                                batchFixes.Add(new(attempt.Job.Ordinal, attempt.Job.Original, result.Text, result.Target));
                                 lock (gate)
                                 {
                                     // The editor now holds the corrected spelling even when the user kept typing
@@ -548,10 +588,6 @@ public sealed class KeyboardService : IDisposable
                                         if (job.Boundary != "\n") { undo = new(after, originalTail, job.Source, result.Original, job.Boundary); undoAcrossFocusHop = null; }
                                     }
                                 }
-                                // Earlier corrections must not change the layout of
-                                // the word the user is currently entering.
-                                // Replayed keys were typed in the old layout and may still be queued: keep it.
-                                if (!deferred && Volatile.Read(ref lastReplayed) == 0) await SwitchLayout(job.Focus.Window, result.Target, job.Sequence);
                                 Corrected?.Invoke(result, job.App);
                             }
                             else if (!deferred)
@@ -567,25 +603,31 @@ public sealed class KeyboardService : IDisposable
                 }
                 finally { lock (gate) { if (activeAnalysis == cancellation) activeAnalysis = null; } }
             }
-            catch (OperationCanceledException) { Interlocked.Exchange(ref analysisStarted, 0); }
+            catch (OperationCanceledException) { Interlocked.Exchange(ref analysisStarted, 0); Trace("analysis_cancelled"); }
             catch (Exception ex) { Interlocked.Exchange(ref analysisStarted, 0); Status?.Invoke("Виправлення пропущено: " + ex.GetType().Name); }
         }
     }
-    private async Task<EditorSnapshot?> ReplaceVerified(EditorSnapshot before, string replacement, long id, bool manual = false)
+    /// <summary>Replaces the captured text and verifies it. With <paramref name="layout"/>, a confirmed replacement also
+    /// switches the keyboard layout before the held keys are replayed, so they are typed in that layout;
+    /// with <paramref name="layoutOnlyWhenTyping"/>, only if the user typed meanwhile (keys are held).</summary>
+    private async Task<EditorSnapshot?> ReplaceVerified(EditorSnapshot before, string replacement, long id, bool manual = false,
+        string? layout = null, bool layoutOnlyWhenTyping = false)
     {
         bool Valid() => Current(id, before.Focus, manual) && !Win32.ModifiersDown;
         ClipboardLease? clipboard = null; bool submitted = false, confirmed = false, selecting = false, ownsHold = false;
-        Volatile.Write(ref lastReplayed, 0);
         try
         {
             if (!Valid()) { Trace("replace_abort:stale:" + StaleReason(id, before.Focus, manual)); return null; }
             // Hold the user's next keys from the start: a busy clipboard must not let them make this word stale.
-            ownsHold = HoldKeys(); long holdStart = Environment.TickCount64;
+            ownsHold = HoldKeys();
             if (!before.Scintilla)
             {
                 clipboard = await ClipboardLease.Acquire(replacement, Valid);
                 if (clipboard == null) { Trace("replace_abort:clipboard:" + ClipboardLease.LastFailure); Status?.Invoke("Буфер обміну зайнятий — заміну пропущено."); return null; }
             }
+            // The early-release budget starts with the selection: a clipboard wait must not use it up, or the held keys
+            // would be released before the paste is confirmed and the confirmation would fail.
+            long holdStart = Environment.TickCount64;
             selecting = true;
             if (!Valid() || !await editor.SelectIfCurrent(before, Valid)) { Trace(Valid() ? "replace_abort:select" : "replace_abort:stale_select"); return null; }
             // Never hold the hook's gate during SendInput: external input can
@@ -597,30 +639,47 @@ public sealed class KeyboardService : IDisposable
             // Chromium's address bar trims whitespace from pasted text, which would drop the user's space.
             string trimmed = replacement.TrimEnd(' ');
             bool boundaryTyped = clipboard == null || trimmed.Length == 0 || trimmed.Length == replacement.Length;
-            EditorSnapshot? pastedWithoutBoundary = null; int typedAt = 0;
-            for (int i = 0; i < 20 && Current(id, before.Focus, manual); i++)
+            EditorSnapshot? pastedWithoutBoundary = null; int typedAt = 0; bool resent = false;
+            for (int round = 0; round < 3; round++)
             {
-                if (pastedWithoutBoundary != null && i - typedAt > 4) break;
-                await Task.Delay(15);
-                // Keys typed after the paste are safe; never delay typing for long.
-                if (ownsHold && Environment.TickCount64 - holdStart > MaxHoldMs) Interlocked.Add(ref lastReplayed, ReleaseKeys());
-                var after = await editor.Capture(before.Focus, replacement, afterPaste: true, pasted: before.Element);
-                if (after != null && (!before.Scintilla || after.Document == before.Document && after.Start == before.Start)) { confirmed = true; return after; }
-                // Only exactly our replacement without its trailing space qualifies; then type the space itself.
-                if (!boundaryTyped)
+                for (int i = 0; i < 20 && Current(id, before.Focus, manual); i++)
                 {
-                    var trimmedAfter = await editor.Capture(before.Focus, trimmed, afterPaste: true, pasted: before.Element);
-                    if (trimmedAfter != null && Valid())
+                    if (pastedWithoutBoundary != null && i - typedAt > 4) break;
+                    await Task.Delay(15);
+                    // Keys typed after the paste are safe; never delay typing for long. Not while our selection is still
+                    // there (the editor has not applied the paste yet): a released key would overwrite the selected words.
+                    if (ownsHold && Environment.TickCount64 - holdStart > MaxHoldMs && !await editor.StillSelected(before)) ReleaseKeys();
+                    var after = await editor.Capture(before.Focus, replacement, afterPaste: true, pasted: before.Element);
+                    if (after != null && (!before.Scintilla || after.Document == before.Document && after.Start == before.Start)) { confirmed = true; return after; }
+                    // Only exactly our replacement without its trailing space qualifies; then type the space itself.
+                    if (!boundaryTyped)
                     {
-                        boundaryTyped = true;
-                        if (!Win32.Send(Win32.TextInput(replacement[trimmed.Length..]))) break;
-                        pastedWithoutBoundary = trimmedAfter; typedAt = i;
+                        var trimmedAfter = await editor.Capture(before.Focus, trimmed, afterPaste: true, pasted: before.Element);
+                        if (trimmedAfter != null && Valid())
+                        {
+                            boundaryTyped = true;
+                            if (!Win32.Send(Win32.TextInput(replacement[trimmed.Length..]))) break;
+                            pastedWithoutBoundary = trimmedAfter; typedAt = i;
+                        }
                     }
                 }
+                // The paste itself was verified and the space was typed by us. Chrome's address bar then replaces
+                // its accessible text with a suggestion description, which is not a failed replacement.
+                if (pastedWithoutBoundary != null && Current(id, before.Focus, manual)) { confirmed = true; return pastedWithoutBoundary; }
+                // Windows 11 Notepad occasionally ignores one of several quick pastes: our selection still holds exactly the
+                // original text. After a settle time (a late paste would show by then) it is pasted once more; if that is
+                // ignored too, the word is skipped (selection collapsed, clipboard restored) instead of pausing all corrections.
+                if (!Current(id, before.Focus, manual) || !await editor.StillSelected(before)) break;
+                await Task.Delay(300);
+                if (!Current(id, before.Focus, manual)) break;
+                if (!await editor.StillSelected(before)) continue; // changed meanwhile: confirm what is there now
+                if (!resent && (clipboard == null || clipboard.IsOwned) && Valid())
+                {
+                    resent = true; Trace("paste_retry");
+                    if (clipboard == null ? Win32.Send(Win32.TextInput(replacement)) : Win32.Chord(0x56)) continue;
+                }
+                submitted = false; Trace("replace_abort:not_pasted"); return null;
             }
-            // The paste itself was verified and the space was typed by us. Chrome's address bar then replaces
-            // its accessible text with a suggestion description, which is not a failed replacement.
-            if (pastedWithoutBoundary != null && Current(id, before.Focus, manual)) { confirmed = true; return pastedWithoutBoundary; }
             if (Current(id, before.Focus, manual)) { Pause(); Status?.Invoke("Редактор не підтвердив заміну. Автовиправлення призупинено; перевірте текст."); }
             return null;
         }
@@ -633,11 +692,13 @@ public sealed class KeyboardService : IDisposable
                 if (confirmed || !submitted) { if (!await clipboard.Restore()) Status?.Invoke("Буфер зайнятий — попередній вміст не вдалося відновити."); }
                 else Status?.Invoke("Вставлення не підтверджене; виправлений текст залишено в буфері обміну.");
             }
-            // After the clipboard is restored, so a held Ctrl+V pastes the user's own content.
-            if (ownsHold) Interlocked.Add(ref lastReplayed, ReleaseKeys());
+            // After the clipboard is restored, so a held Ctrl+V pastes the user's own content. Keys released early
+            // (MaxHoldMs) were already typed in the old layout: SwitchLayout then sees a newer sequence and keeps it.
+            bool typing; lock (holdGate) typing = heldKeys.Any(x => x.Message is 0x0100 or 0x0104); // a key press, not a late key-up
+            try { if (confirmed && layout != null && (typing || !layoutOnlyWhenTyping)) await SwitchLayout(before.Focus.Window, layout, id); }
+            finally { if (ownsHold) ReleaseKeys(); }
         }
     }
-    private int lastReplayed;
     private int enterHeld;
     private long enterHeldAt;
     /// <summary>Delivers the held Enter exactly once, before every key typed after it.</summary>
@@ -677,9 +738,10 @@ public sealed class KeyboardService : IDisposable
     private async Task SwitchLayout(IntPtr window, string language, long id)
     {
         if (!settings.Value.SwitchLayout || !settings.Value.Languages.Contains(language) || Win32.LayoutFor(language) == IntPtr.Zero) return;
-        lock (gate) { if (id != sequence) return; languageContext.ExpectLayout(language); }
+        lock (gate) { if (id != sequence) { Trace("layout_kept:keys"); return; } languageContext.ExpectLayout(language); }
         Win32.SwitchLayout(window, language);
-        for (int i = 0; i < 8; i++) { if (Win32.LayoutLanguage(window) == language) return; await Task.Delay(15); }
+        for (int i = 0; i < 8; i++) { if (Win32.LayoutLanguage(window) == language) { Trace("layout_switched"); return; } await Task.Delay(15); }
+        Trace("layout_unconfirmed");
         lock (gate) languageContext.Reset();
         Status?.Invoke("Заміна виконана, але редактор не підтвердив перемикання розкладки.");
     }
@@ -699,10 +761,9 @@ public sealed class KeyboardService : IDisposable
             if (!await FieldReadyAsync(saved.Snapshot.Focus) && !(await editor.RefocusField(saved.Snapshot) && await FieldReadyAsync(saved.Snapshot.Focus)))
             { Status?.Invoke("Текст або позиція курсора змінилися — скасування пропущено."); return; }
             long id; lock (gate) id = sequence;
-            var after = await ReplaceVerified(saved.Snapshot, saved.Original + saved.Boundary, id, manual: true);
+            var after = await ReplaceVerified(saved.Snapshot, saved.Original + saved.Boundary, id, manual: true, layout: saved.SourceLanguage);
             if (after == null) { Status?.Invoke("Текст або позиція курсора змінилися — скасування пропущено."); return; }
             lock (gate) { languageContext.Reset(); recentWords.Clear(); pendingWords.Clear(); }
-            await SwitchLayout(saved.Snapshot.Focus.Window, saved.SourceLanguage, id);
             if (settings.Value.LearningMode) LearnWord?.Invoke(saved.LearningToken);
             Status?.Invoke("Останнє виправлення скасовано.");
         }
@@ -737,8 +798,7 @@ public sealed class KeyboardService : IDisposable
             if (before == null) { Status?.Invoke("Виділіть текст у підтримуваному редакторі."); return; }
             var result = await Task.Run(() => engine.Convert(before.Text, target, Win32.LayoutLanguage(focus.Window)));
             if (result.Text == before.Text) return;
-            if (await ReplaceVerified(before, result.Text, id, manual: true) == null) return;
-            await SwitchLayout(focus.Window, target ?? result.Target, id);
+            if (await ReplaceVerified(before, result.Text, id, manual: true, layout: target ?? result.Target) == null) return;
             Status?.Invoke("Виділений текст перетворено.");
         }
         catch (Exception ex) { Status?.Invoke("Перетворення пропущено: " + ex.Message); }

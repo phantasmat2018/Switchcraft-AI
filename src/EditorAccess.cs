@@ -53,10 +53,14 @@ internal sealed class EditorAccess : IDisposable
         if (element.TryGetCurrentPattern(ValuePattern.Pattern, out var value) && ((ValuePattern)value).Current.IsReadOnly) return false;
         return element.TryGetCurrentPattern(TextPattern.Pattern, out var text) && !Equals(((TextPattern)text).DocumentRange.GetAttributeValue(TextPattern.IsReadOnlyAttribute), true);
     }
-    public async Task<bool> IsWritable((IntPtr Window, IntPtr Focus) focus)
+    private static readonly object Writable = new(), NotWritable = new();
+    /// <summary>Null when the answer is unknown: the application did not answer in time (Chrome is busy right after a new
+    /// tab opens), focus moved during the check, or the element vanished. Unknown is not "not writable".</summary>
+    public async Task<bool?> IsWritable((IntPtr Window, IntPtr Focus) focus)
     {
         if (Win32.ClassName(focus.Focus) == "Scintilla") return Win32.IsWritableScintilla(focus, "Scintilla");
-        return await automation.Invoke<object>(_ => focus == Win32.Focus() && Safe(AutomationElement.FocusedElement) ? new object() : null) != null;
+        var answer = await automation.Invoke<object>(_ => focus != Win32.Focus() ? null : Safe(AutomationElement.FocusedElement) ? Writable : NotWritable);
+        return answer == Writable ? true : answer == NotWritable ? false : null;
     }
     /// <param name="afterPaste">Verifying our own paste: an inline completion that the editor selected after the
     /// caret (Chrome's address bar) is allowed, and the text up to its start is checked.</param>
@@ -204,6 +208,37 @@ internal sealed class EditorAccess : IDisposable
             }
             return null;
         }, timeout: 400);
+    }
+    /// <summary>True when our selection is still in place over exactly the original text: a paste was sent but did not
+    /// change anything (Windows 11 Notepad occasionally ignores one of several quick pastes).</summary>
+    public async Task<bool> StillSelected(EditorSnapshot snapshot)
+    {
+        if (snapshot.Scintilla)
+        {
+            try
+            {
+                return snapshot.Focus == Win32.Focus() && Win32.Message(snapshot.Focus.Focus, 2143) == snapshot.Start && Win32.Message(snapshot.Focus.Focus, 2145) == snapshot.End
+                    && CaptureScintillaRange(snapshot) == snapshot.Text;
+            }
+            catch { return false; }
+        }
+        return await automation.Invoke<object>(_ =>
+        {
+            if (snapshot.Focus != Win32.Focus()) return null;
+            var element = AutomationElement.FocusedElement;
+            if (element == null || !Automation.Compare(element, snapshot.Element)) return null;
+            var ranges = ((TextPattern)element.GetCurrentPattern(TextPattern.Pattern)).GetSelection();
+            return ranges.Length == 1 && ranges[0].CompareEndpoints(TextPatternRangeEndpoint.Start, snapshot.Range!, TextPatternRangeEndpoint.Start) == 0
+                && ranges[0].CompareEndpoints(TextPatternRangeEndpoint.End, snapshot.Range!, TextPatternRangeEndpoint.End) == 0
+                && Canonical(ranges[0].GetText(snapshot.Text.Length + 2)) == Canonical(snapshot.Text) ? new object() : null;
+        }) != null;
+    }
+    private static string CaptureScintillaRange(EditorSnapshot snapshot)
+    {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        int cp = (int)Win32.Message(snapshot.Focus.Focus, 2137);
+        var encoding = Encoding.GetEncoding(cp == 0 ? (int)Win32.GetACP() : cp, EncoderFallback.ExceptionFallback, DecoderFallback.ExceptionFallback);
+        return encoding.GetString(Win32.ReadScintillaRange(snapshot.Focus.Focus, snapshot.Start, (int)(snapshot.End - snapshot.Start)));
     }
     public void Dispose() => automation.Dispose();
 }

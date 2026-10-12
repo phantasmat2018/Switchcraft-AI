@@ -23,10 +23,11 @@ internal static class AiTests
         public double Confidence = .98, Probability = .98;
         public readonly ConcurrentDictionary<string, (string Choice, double Confidence, double Probability)> WordAnswers = new();
         public bool Cancelled;
+        public readonly ConcurrentQueue<string> Bodies = new();
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken token)
         {
             Interlocked.Increment(ref Calls); Endpoint = request.RequestUri!.ToString(); Authorization = request.Headers.Authorization?.Scheme ?? "";
-            LastBody = await request.Content!.ReadAsStringAsync(token);
+            LastBody = await request.Content!.ReadAsStringAsync(token); Bodies.Enqueue(LastBody);
             try { if (DelayMs > 0) await Task.Delay(DelayMs, token); }
             catch (OperationCanceledException) { Cancelled = true; throw; }
             using var doc = JsonDocument.Parse(LastBody);

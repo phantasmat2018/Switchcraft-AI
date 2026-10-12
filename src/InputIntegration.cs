@@ -14,6 +14,8 @@ namespace Switchcraft;
 /// untagged external SendInput events; only the exclusion of our own test window is lifted.</summary>
 internal static class InputIntegration
 {
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool OpenClipboard(IntPtr owner);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] private static extern bool CloseClipboard();
     internal static async void Run(string output, bool aiOnly = false, bool liveShort = false, bool contextOnly = false, bool layaShort = false)
     {
         string dir = Path.Combine(Path.GetTempPath(), "Switchcraft-input-tests-" + Guid.NewGuid().ToString("N"));
@@ -46,7 +48,7 @@ internal static class InputIntegration
             }
             RequireTestFocus(); field.Focus();
             Win32.SwitchLayout(hwnd, "en"); keyboard.Start(); await Task.Delay(1000);
-            async Task Type(string text)
+            async Task Type(string text, int settle = 350)
             {
                 foreach (char ch in text)
                 {
@@ -56,7 +58,7 @@ internal static class InputIntegration
                     var up = Win32.Key(vk, true); up.Data.Keyboard.Extra = UIntPtr.Zero;
                     Win32.Send(new[] { down, up }); await Task.Delay(30);
                 }
-                await Task.Delay(350);
+                await Task.Delay(settle);
             }
             async Task Reset()
             {
@@ -114,9 +116,17 @@ internal static class InputIntegration
                 Check("Mode off cancels idle retry", field.Text == "Былий і чорний", field.Text);
                 store.Value.DetectionMode = "typesafe"; aiHandler.DelayMs = 0;
                 await ResetContext(); await TypeUnicode("Былий і дуже гарний чорний "); await Task.Delay(1200);
-                Check("Retry does not reach beyond three following words", field.Text == "Былий і дуже гарний чорний ", field.Text);
-                await ResetContext(); await TypeUnicode("Былий свыт чорний "); await Task.Delay(700);
+                Check("A word interrupted by fast typing is still corrected after four following words", field.Text == "Білий і дуже гарний чорний ", field.Text);
+                await ResetContext(); await TypeUnicode("Былий і дуже гарний чорний кіт спить на теплому вікні "); await Task.Delay(1500);
+                Check("Retry does not reach beyond eight following words", field.Text.StartsWith("Былий "), field.Text);
+                aiHandler.Bodies.Clear(); await ResetContext(); await TypeUnicode("Былий свыт чорний "); await Task.Delay(700);
                 Check("Two completed errors are both corrected after continuous typing", field.Text == "Білий світ чорний ", field.Text);
+                string? LastPreceding(string word) => aiHandler.Bodies.Select(body =>
+                {
+                    using var request = JsonDocument.Parse(body); var state = request.RootElement.GetProperty("state");
+                    return (Word: state.GetProperty("word").GetString(), Preceding: state.GetProperty("preceding_words").GetString());
+                }).LastOrDefault(x => x.Word == word).Preceding;
+                Check("A later word of the batch is judged after the corrected earlier word", LastPreceding("свыт") == "Білий", LastPreceding("свыт") ?? "no request");
                 await keyboard.UndoAsync(); await Task.Delay(200);
                 Check("Undo after a correction batch restores only its last changed word", field.Text == "Білий свыт чорний ", field.Text);
                 await ResetContext(); await TypeUnicode("Былий свыт чорний"); await Task.Delay(1400);
@@ -295,6 +305,19 @@ internal static class InputIntegration
                 Check("System layout switches after correction", Win32.LayoutLanguage(hwnd) == "uk", Win32.LayoutLanguage(hwnd));
                 await keyboard.UndoAsync(); await Task.Delay(200);
                 Check("Undo restores previous system layout", Win32.LayoutLanguage(hwnd) == "en" && field.Text == "ghbdsn ", Win32.LayoutLanguage(hwnd) + ": " + field.Text);
+                // A fast typist's next word arrives while the correction runs: those keys are held, and the layout must be
+                // switched before they are replayed. The clipboard is kept open so the correction waits with the hold active.
+                await Reset(); bool clipboardHeld = OpenClipboard(hwnd);
+                try
+                {
+                    await Type("ghbdsn ", 0);
+                    for (int i = 0; i < 100 && !keyboard.HoldingKeys; i++) await Task.Delay(10);
+                    await Type("zr", 0);
+                }
+                finally { if (clipboardHeld) CloseClipboard(); }
+                await Task.Delay(1000);
+                Check("Keys typed during a correction are replayed in the switched layout",
+                    clipboardHeld && field.Text == "привіт як" && Win32.LayoutLanguage(hwnd) == "uk", Win32.LayoutLanguage(hwnd) + ": " + field.Text);
                 store.Value.SwitchLayout = false;
             }
             if (Win32.LayoutFor("ru") != IntPtr.Zero)
